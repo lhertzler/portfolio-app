@@ -30,11 +30,29 @@ export function SiteShell({ children }: SiteShellProps) {
   const [isHeaderFixed, setIsHeaderFixed] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+    let lastScrollY = 0;
     const handleScroll = () => {
-      setIsHeaderFixed(window.scrollY > 60);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          // Add hysteresis to prevent rapid toggling
+          // Use different thresholds for scrolling up vs down
+          if (currentScrollY > lastScrollY) {
+            // Scrolling down
+            setIsHeaderFixed(currentScrollY > 80);
+          } else {
+            // Scrolling up
+            setIsHeaderFixed(currentScrollY > 40);
+          }
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -52,7 +70,7 @@ export function SiteShell({ children }: SiteShellProps) {
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <Header />
-      <main className={`flex-1 px-4 sm:px-8 lg:px-16 pb-28 ${isHeaderFixed ? 'pt-20' : 'pt-8'}`}>
+      <main className="flex-1 px-4 sm:px-8 lg:px-16 pb-28 pt-8">
         {children}
       </main>
       <Footer />

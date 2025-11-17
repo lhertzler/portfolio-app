@@ -4,13 +4,13 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 0 0% 96%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 120 55% 40%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -28,22 +28,22 @@
 
   .dark {
     /* Supabase-inspired dark theme */
-    --background: 0 0% 7%;
-    --foreground: 0 0% 100%;
-    --card: 0 0% 9%;
-    --card-foreground: 0 0% 100%;
+    --background: 0 0% 1%;
+    --foreground: 0 0% 99%;
+    --card: 240 3% 12%;
+    --card-foreground: 0 0% 99%;
     --popover: 0 0% 9%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 152 58% 52%;
+    --popover-foreground: 0 0% 99%;
+    --primary: 130 55% 52%;
     --primary-foreground: 0 0% 7%;
     --secondary: 0 0% 18%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary-foreground: 0 0% 99%;
     --muted: 0 0% 18%;
-    --muted-foreground: 0 0% 65%;
+    --muted-foreground: 0 0% 75%;
     --accent: 152 58% 52%;
     --accent-foreground: 0 0% 7%;
     --destructive: 5 100% 71%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 99%;
     --border: 0 0% 18%;
     --input: 0 0% 18%;
     --ring: 152 58% 52%;
@@ -117,7 +117,64 @@
   
   /* Smooth transitions */
   .transition-smooth {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Black to transparent gradient overlay */
+  /* Transparent part extends 50% of the top half (25% of total height) */
+  .gradient-overlay {
+    position: relative;
+  }
+
+  .gradient-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Lighter gradient overlay for light mode */
+  .light .gradient-overlay::before {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.1) 0%,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+
+  /* Animated moving border effect - using conic-gradient for smooth rotation */
+  .animated-border {
+    border-radius: 1rem;
+    border: 2px solid transparent;
+    overflow: hidden;
+    /* Double background: padding-box for card bg, border-box for animated border */
+    /* Conic gradient rotates smoothly around the center, creating consistent movement */
+    background: 
+      linear-gradient(hsl(var(--card) / 1), hsl(var(--card) / 1)) padding-box,
+      conic-gradient(from var(--angle), hsl(var(--card) / 1) 0deg 350deg, hsl(var(--primary) / 0.5) 350deg 360deg) border-box;
+    animation: border-rotate 14s linear infinite;
+  }
+
+  /* Register --angle as animatable custom property */
+  @property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+
+  /* Animate the angle from 0 to 360 degrees */
+  @keyframes border-rotate {
+    to {
+      --angle: 360deg;
+    }
   }
 }
 

@@ -9,9 +9,9 @@ import { Button } from '@/components/ui/button';
 
 const HOME_SECTIONS = [
   { id: 'about', label: 'About me', href: '/#about' },
-  { id: 'resume', label: 'Resume', href: '/#resume' },
   { id: 'services', label: 'Services', href: '/#services' },
   { id: 'portfolio', label: 'Portfolio', href: '/#portfolio' },
+  { id: 'resume', label: 'Resume', href: '/#resume' },
   { id: 'lab', label: 'Lab', href: '/#lab' },
   { id: 'contact', label: 'Contact', href: '/contact' },
 ];
@@ -46,11 +46,29 @@ export function Header() {
   const themeMode = useUIStore((s) => s.themeMode);
 
   useEffect(() => {
+    let ticking = false;
+    let lastScrollY = 0;
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 60);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const currentScrollY = window.scrollY;
+          // Add hysteresis to prevent rapid toggling
+          // Use different thresholds for scrolling up vs down
+          if (currentScrollY > lastScrollY) {
+            // Scrolling down
+            setIsScrolled(currentScrollY > 80);
+          } else {
+            // Scrolling up
+            setIsScrolled(currentScrollY > 40);
+          }
+          lastScrollY = currentScrollY;
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -127,16 +145,23 @@ export function Header() {
   const navItems = getNavItems();
 
   return (
-    <header
-      className={`z-40 border-b border-border/50 bg-background/80 backdrop-blur-md transition-all duration-300 font-mono ${
-        isScrolled
-          ? 'fixed top-0 left-0 right-0 py-2.5 shadow-lg shadow-black/5'
-          : 'relative py-4 mt-6'
-      }`}
-      data-component="Header"
-      data-file="components/layout/header.tsx"
-    >
-      <div className="mx-auto max-w-7xl flex items-center justify-between px-4 sm:px-8">
+    <>
+      {/* Spacer to maintain layout when header is fixed */}
+      <div className="h-[73px]" />
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 mx-auto border rounded-lg backdrop-blur-md transition-all duration-700 ease-in-out font-mono will-change-transform ${
+          isScrolled
+            ? 'max-w-full bg-card/70 border-none shadow-lg shadow-black/10 translate-y-0'
+            : 'max-w-7xl bg-card dark:border-none translate-y-6'
+        }`}
+        data-component="Header"
+        data-file="components/layout/header.tsx"
+      >
+        <div className={`bg-transparent flex items-center justify-between px-4 sm:px-8 transition-all duration-700 ease-in-out ${
+          isScrolled
+            ? 'py-3 shadow-lg shadow-black/5'
+            : 'py-4'
+        }`}>
         {/* Left: Hamburger + Brand */}
         <div className="flex items-center gap-4">
           <Button
@@ -158,18 +183,19 @@ export function Header() {
             }}
             className="flex items-center gap-2 font-mono"
           >
-            <span className="text-primary text-lg font-medium">{'</>'}</span>
-            <span className={`font-semibold tracking-tight transition-all ${
-              isScrolled ? 'text-base' : 'text-lg'
+            <span className={`font-semibold text-primary tracking-tight transition-all duration-700 ease-in-out ${
+              isScrolled ? 'text-lg' : 'pl-2 text-2xl'
+            }`}>{'</>'}</span>
+            <span className={`font-bold tracking-tight transition-all duration-700 ease-in-out hover:text-primary ${
+              isScrolled ? 'text-lg' : 'pl-2 text-2xl'
             }`}>
-              Luke
+              Luke Hertzler
             </span>
-            <span className="text-muted-foreground">.dev</span>
           </Link>
         </div>
 
         {/* Center: Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-mono">
+        <nav className="hidden lg:flex items-center gap-8 text-md font-mono">
           {navItems.map((item) => {
             const isActive =
               item.id === 'contact'
@@ -236,5 +262,6 @@ export function Header() {
         </div>
       </div>
     </header>
+    </>
   );
 }

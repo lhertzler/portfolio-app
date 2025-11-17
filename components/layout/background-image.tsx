@@ -7,19 +7,20 @@ export function BackgroundImage() {
   const themeMode = useUIStore((state) => state.themeMode);
   
   // Use bg-dark.png for dark and studio themes, bg.png for light theme
-  const imageSrc = themeMode === 'light' 
-    ? '/images/layout/bg.png' 
-    : '/images/layout/bg-dark.png';
+  const imageSrc = themeMode === 'dark' || themeMode === 'studio'
+    ? '/images/layout/bg-dark.png' 
+    : '/images/layout/bg.png';
 
   return (
-    <div className="fixed inset-0 top-0 -z-10 w-full h-full pointer-events-none">
+    <div className="fixed top-0 left-0 right-0 w-full h-[628px] z-0 pointer-events-none mix-blend-difference">
       <Image
         src={imageSrc}
         alt="Background"
-        fill
-        className="object-cover object-top"
+        width={1920}
+        height={628}
+        className="w-full h-[628px] object-cover"
         priority
-        quality={90}
+        quality={100}
       />
     </div>
   );

@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 export function AboutSection() {
   return (
@@ -7,20 +8,17 @@ export function AboutSection() {
       data-section="about"
       data-component="AboutSection"
       data-file="components/home/about-section.tsx"
-      className="py-24 scroll-mt-24"
+      className="pb-24"
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">About me</h2>
-          <p className="text-lg text-muted-foreground">
-            Get to know me better
-          </p>
-        </div>
 
         <div className="grid md:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Who I Am</CardTitle>
+              <CardTitle className="flex justify-between gap-2">
+                  <span>Who I Am</span>
+                  <Badge variant="default">Passionate Architect</Badge>
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <p className="text-muted-foreground">
@@ -48,7 +46,10 @@ export function AboutSection() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Quick Facts</CardTitle>
+            <CardTitle className="flex justify-between gap-2">
+                  <span>Quick Facts</span>
+                  <Badge variant="default">Get To Know Me</Badge>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <ul className="space-y-4">
@@ -71,6 +72,13 @@ export function AboutSection() {
                   <div>
                     <p className="font-medium">Tools & Process</p>
                     <p className="text-sm text-muted-foreground">Figma, Design Systems, UX Process</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-primary font-semibold text-lg">Born</span>
+                  <div>
+                    <p className="font-medium">in England</p>
+                    <p className="text-sm text-muted-foreground">California grown.</p>
                   </div>
                 </li>
               </ul>

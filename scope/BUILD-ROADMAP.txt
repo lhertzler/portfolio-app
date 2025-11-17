@@ -1,0 +1,478 @@
+Hell yes, let’s wire this thing up like a proper dev playground.
+
+Here’s a Cursor-ready roadmap you can paste in as “Project Plan” or feed to an agent. It’s broken into phases with specific files + responsibilities so it can scaffold and then refine.
+
+⸻
+
+LukeHertzler.com – Build Roadmap for Cursor
+
+Phase 0 – Project Setup
+
+Goals: Fresh Next.js App Router project with Tailwind + shadcn, ready for components.
+
+Tasks:
+	1.	Create Next.js project
+	•	Use create-next-app with TypeScript, App Router.
+	•	Enable src/ directory if preferred.
+	2.	Install core deps
+	•	tailwindcss, postcss, autoprefixer
+	•	framer-motion
+	•	zustand
+	•	clsx, tailwind-merge
+	•	@radix-ui/react-* (if not auto-installed via shadcn)
+	•	shadcn/ui (npx shadcn-ui init)
+	3.	Configure Tailwind
+	•	Add shadcn preset.
+	•	Set up base theme (font stack, colors, etc.).
+	•	Configure content paths to include app/**/*.{ts,tsx}, components/**/*.{ts,tsx}.
+	4.	Install shadcn/ui components
+	•	Start with:
+	•	button
+	•	card
+	•	sheet
+	•	dialog
+	•	command
+	•	input
+	•	textarea
+	•	select
+	•	dropdown-menu
+	•	badge
+	•	tabs
+	•	tooltip
+
+⸻
+
+Phase 1 – Global Layout, Providers & State
+
+Goals: Root layout, global providers, UI + player stores wired up.
+
+1.1 Create state stores
+
+File: src/store/ui-store.ts
+	•	State:
+	•	themeMode: "light" | "dark" | "studio"
+	•	accentColor: string
+	•	motionPreference: "full" | "reduced"
+	•	inspectMode: boolean
+	•	isThemePanelOpen: boolean
+	•	isTerminalOpen: boolean
+	•	Actions:
+	•	setThemeMode(mode)
+	•	setAccentColor(color)
+	•	setMotionPreference(pref)
+	•	toggleInspectMode()
+	•	openThemePanel(), closeThemePanel()
+	•	openTerminal(), closeTerminal()
+	•	Add a simple persist via localStorage (client-side only).
+
+File: src/store/player-store.ts
+	•	Types:
+	•	Track type with fields: id, title, artist?, src, bpm?, duration?, coverArt?.
+	•	State:
+	•	queue: Track[]
+	•	currentTrackId: string | null
+	•	isPlaying: boolean
+	•	positionSeconds: number
+	•	Actions:
+	•	setQueue(tracks: Track[])
+	•	playTrack(id: string)
+	•	pause(), resume()
+	•	next(), prev()
+	•	seek(seconds: number)
+
+1.2 Global data files
+
+File: src/lib/tracks.ts
+	•	Export a small array of Track objects for your personal songs.
+
+File: src/lib/projects.ts
+	•	Export initial project data with:
+	•	slug, title, role, summary, tags, tech, featured: boolean, description, caseStudySections.
+
+File: src/lib/command-palette-data.ts
+	•	Export an array of commands:
+	•	{ id, type: "page" | "project" | "action", label, shortcut?, href?, actionKey? }
+	•	actionKey can be used to route into specific handlers (e.g., toggle-theme, open-terminal, play-track-prisoner).
+
+⸻
+
+Phase 2 – Root Layout & Site Shell
+
+Goals: Persistent shell, player, devtools containers.
+
+2.1 Root layout
+
+File: src/app/layout.tsx
+	•	Responsibilities:
+	•	Import global styles.
+	•	Wrap children in:
+	•	Theme provider (shadcn or custom).
+	•	Motion preference context (optional).
+	•	Render:
+	•	<SiteShell>{children}</SiteShell>
+	•	<AudioPlayer />
+	•	<CommandPalette />
+	•	<MiniTerminal />
+	•	<InspectorOverlay />
+	•	<CustomCursor />
+
+2.2 Site shell + layout structure
+
+File: src/components/layout/site-shell.tsx
+	•	Layout:
+	•	<Header />
+	•	<main className="min-h-screen pb-[playerHeight]"> {children} </main>
+	•	<Footer />
+	•	Ensure spacing at bottom so player doesn’t cover content.
+
+File: src/components/layout/header.tsx
+	•	Contents:
+	•	Logo / name (top-left).
+	•	Navigation links (Home, About, Portfolio, Resume, Lab, Contact).
+	•	Right-side icon cluster:
+	•	Theme toggle icon (opens Theme Panel).
+	•	Command palette trigger (shows ⌘K hint).
+	•	</> icon for inspect mode.
+	•	>_ icon for terminal.
+
+File: src/components/layout/footer.tsx
+	•	Simple:
+	•	© year, name, quick links (GitHub, LinkedIn, SoundVent).
+
+⸻
+
+Phase 3 – Navigation, Command Palette & Custom Cursor
+
+3.1 Main and mobile nav
+
+File: src/components/nav/main-nav.tsx
+	•	Desktop nav links (Next Link) using data from a NAV_ITEMS array.
+
+File: src/components/nav/mobile-nav.tsx
+	•	Hamburger icon → Sheet with nav items + key actions (theme toggle, command palette, terminal).
+
+3.2 Command Palette
+
+File: src/components/nav/command-palette.tsx
+	•	Use shadcn Command inside Dialog.
+	•	Listen for ⌘K / Ctrl+K key event:
+	•	Maintain local isOpen state.
+	•	Content:
+	•	Input for search.
+	•	Group “Pages” – items from nav.
+	•	Group “Projects” – mapped from projects.
+	•	Group “Actions” – things like:
+	•	Toggle Dark Mode
+	•	Toggle Studio Mode
+	•	Toggle Inspect Mode
+	•	Open Terminal
+	•	Play [Your Track]
+	•	On select:
+	•	For href → router.push(href).
+	•	For actionKey → call appropriate handler.
+
+3.3 Custom Cursor
+
+File: src/components/nav/custom-cursor.tsx
+	•	Create a React component rendered via portal that:
+	•	Attaches mousemove listener, stores {x, y} in state.
+	•	Renders a small circle div positioned absolutely at cursor.
+	•	Adjusts size/style based on data-cursor attribute on hovered element.
+	•	Make sure to:
+	•	Hide on touch devices.
+	•	Respect reduced motion preference (fall back to default cursor if needed).
+
+⸻
+
+Phase 4 – Persistent Player + Waveform Visualizer
+
+Goal: Global audio player with a simple visualizer.
+
+4.1 Audio player UI
+
+File: src/components/player/audio-player.tsx
+	•	Position: fixed bottom full-width, centered content.
+	•	Elements:
+	•	Current track title + artist.
+	•	Previous / Play-Pause / Next buttons.
+	•	Scrubber (progress bar).
+	•	Minimal time elapsed / remaining.
+	•	<WaveformVisualizer /> embedded.
+	•	Hooks into:
+	•	player-store for state/actions.
+	•	HTML <audio> element (ref) for playback.
+	•	useEffect to同步 audio element and store state.
+
+4.2 Waveform visualizer
+
+File: src/components/player/waveform-visualizer.tsx
+	•	Use Web Audio API:
+	•	Take audioElement as prop or create internal AudioContext.
+	•	Create AnalyserNode.
+	•	In requestAnimationFrame loop, get frequency/time-domain data.
+	•	Render:
+	•	A row of n bars (e.g., 32–64 divs) whose heights are driven by analyser data.
+	•	Keep styling subtle (thin bars, soft rounding).
+
+4.3 Track helpers
+
+File: src/components/player/track-list.tsx
+	•	Accepts array of tracks.
+	•	Renders:
+	•	Track name, optional “play” button.
+	•	On click:
+	•	Calls playTrack(track.id) from player-store.
+
+Use this small component in Home / About / Lab later.
+
+⸻
+
+Phase 5 – Theme Panel & UI Settings
+
+Goal: Global theming + motion preferences.
+
+5.1 Theme Panel
+
+File: src/components/ui/theme-panel.tsx
+	•	Use Sheet (shadcn).
+	•	Sections:
+	1.	Color Mode
+	•	Radio buttons or segmented control:
+	•	Light / Dark / Studio.
+	•	Calls setThemeMode.
+	2.	Accent Color
+	•	A row of color swatches.
+	•	Calls setAccentColor.
+	3.	Motion
+	•	Full / Reduced radio.
+	4.	Extras
+	•	Toggle switches:
+	•	“Enable Custom Cursor”
+	•	“Enable 3D Hero” (placeholder for later).
+	•	Hook into ui-store state for open/close and values.
+
+5.2 Theme Toggle
+
+File: src/components/ui/theme-toggle.tsx
+	•	Small icon button in header.
+	•	On click:
+	•	openThemePanel().
+
+⸻
+
+Phase 6 – Pages: Skeletons & MVP Content
+
+We’ll scaffold the pages first, then add fancy stuff.
+
+6.1 Home Page
+
+File: src/app/page.tsx
+
+Sub-components:
+	1.	Hero
+File: src/components/home/hero.tsx
+	•	Headline:
+	•	“Full-Stack Engineer. UI/UX Designer. Musician.”
+	•	Short intro sentence.
+	•	Buttons:
+	•	“View Portfolio” → /portfolio
+	•	“Download Resume” → /resume
+	•	Background: simple gradient for now (3D later).
+	2.	Identity Slider
+File: src/components/home/identity-slider.tsx
+	•	UI:
+	•	Tabs or a slider control: Dev / Design / Music.
+	•	Content area:
+	•	Each tab shows:
+	•	Title (e.g. “The Engineer”)
+	•	Description
+	•	3–4 bullet stats.
+	•	Animate transitions using Framer Motion AnimatePresence.
+	3.	Featured Projects
+File: src/components/home/featured-projects.tsx
+	•	Filter projects for featured === true.
+	•	Render a small grid using ProjectCard.
+	4.	Now Playing Preview
+File: src/components/home/now-playing-preview.tsx
+	•	Shows:
+	•	Current track or “No track playing”.
+	•	Button:
+	•	“Open Player” (scroll to bottom or just visually draw attention).
+	•	Optionally a TrackList snippet.
+
+6.2 About Page
+
+File: src/app/about/page.tsx
+
+Sub-components:
+	•	about-intro
+	•	about-timeline
+	•	about-skills
+	•	about-music-snippet
+
+For now keep it simple:
+
+File: src/components/about/about-intro.tsx
+	•	Photo + intro text.
+
+File: src/components/about/about-timeline.tsx
+	•	Vertical list of key career/milestones.
+
+File: src/components/about/about-skills.tsx
+	•	Categorized skill lists.
+
+File: src/components/about/about-music-snippet.tsx
+	•	Use TrackList to hook into player.
+
+6.3 Portfolio Index
+
+File: src/app/portfolio/page.tsx
+
+Sub-components:
+
+File: src/components/portfolio/project-card.tsx
+	•	Props: project data.
+	•	Shows:
+	•	Title, role, summary, tags.
+	•	Link → /portfolio/[slug].
+	•	Add data-component="ProjectCard" for inspect mode.
+
+File: src/components/portfolio/project-grid.tsx
+	•	Renders all projects from lib/projects.
+	•	Basic filter UI placeholder (by tag/tech) for now (logic can be added later).
+
+6.4 Portfolio Case Study
+
+File: src/app/portfolio/[slug]/page.tsx
+	•	Dynamic route.
+	•	Use projects data to find the matching project.
+	•	Layout component:
+File: src/components/portfolio/split-screen-case-study.tsx
+	•	Props: project.
+	•	Two columns:
+	•	Left: narrative sections.
+	•	Right: visual area that updates as you scroll (for now just static images/placeholders).
+	•	For MVP:
+	•	Use basic section blocks and maybe a simple IntersectionObserver or just anchor links.
+	•	Add data-component attributes for inspect mode.
+
+6.5 Resume Page
+
+File: src/app/resume/page.tsx
+
+Sub-components:
+
+File: src/components/resume/resume-section.tsx
+	•	Basic layout with left column (contact/skills) + right (experience).
+
+File: src/components/resume/resume-timeline.tsx
+	•	Renders experience / roles.
+
+Add “Download Resume” button linking to a static public/resume.pdf (placeholder).
+
+6.6 Lab Page
+
+File: src/app/lab/page.tsx
+
+Sub-components:
+
+File: src/components/lab/component-gallery.tsx
+
+File: src/components/lab/component-demo-card.tsx
+	•	Use a components-gallery.ts config to define initial 3–4 demos:
+Examples:
+	•	Animated Card Hover
+	•	Tag Input
+	•	Simple Stepper
+	•	Toast Playground (optional)
+
+6.7 Contact Page
+
+File: src/app/contact/page.tsx
+
+Sub-components:
+
+File: src/components/contact/contact-form.tsx
+	•	Fields:
+	•	Name
+	•	Email
+	•	Project Type (select)
+	•	Message
+	•	Use react-hook-form + zod later if you want, but MVP can be simple controlled inputs.
+
+API Route: src/app/api/contact/route.ts
+	•	For MVP:
+	•	Validate required fields.
+	•	Log to console or send placeholder JSON response.
+
+⸻
+
+Phase 7 – Dev Tools: Inspect Mode & Mini Terminal
+
+7.1 Inspect Mode
+
+File: src/components/devtools/inspector-toggle.tsx
+	•	Small icon button:
+	•	Calls toggleInspectMode() from ui-store.
+
+File: src/components/devtools/inspector-overlay.tsx
+	•	Only renders when inspectMode === true.
+	•	Behavior:
+	•	Full-screen pointer-events-none overlay with pointer-events-auto on highlight boxes.
+	•	On mousemove, find the element under cursor that has data-component attribute.
+	•	Draw a highlight box and label near it with:
+	•	data-component
+	•	optional data-file if present.
+	•	Implementation hint:
+	•	Use document.elementFromPoint(x, y) and walk up parentElement until data-component found.
+
+7.2 Mini Terminal
+
+File: src/components/devtools/mini-terminal.tsx
+	•	Only shows when isTerminalOpen === true.
+	•	UI:
+	•	Panel that slides up from bottom (use motion.div or Sheet-style).
+	•	Command history list + single input line.
+	•	Basic command handler:
+	•	help – lists commands.
+	•	whoami – prints short bio string.
+	•	skills – prints core stacks.
+	•	projects – lists project slugs.
+	•	open <slug> – router.push('/portfolio/' + slug).
+	•	theme <light|dark|studio> – set theme.
+	•	play <trackId> – call playTrack.
+	•	clear – clears history.
+	•	Store command definitions in a small local map inside terminal component for now.
+
+⸻
+
+Phase 8 – Motion, Transitions & Polish
+
+Once MVP is working:
+	1.	Smart page transitions
+	•	Wrap route content in AnimatePresence & motion.div at a shared layout level.
+	•	Use simple fade/slide transitions between pages.
+	•	Add shared layoutId for project thumbnail → case study hero.
+	2.	Reduced motion support
+	•	If motionPreference === "reduced", disable complex animations and use instant transitions.
+	3.	Refine custom cursor
+	•	Different styles for:
+	•	Links (data-cursor="link")
+	•	Project cards (data-cursor="view")
+	•	Terminal icon (data-cursor="hack")
+	4.	Polish theming
+	•	Tune color tokens for Studio mode (music-y, but subtle).
+	•	Ensure good contrast + accessibility.
+	5.	Copy & content
+	•	Fill in real case study content (esp. SoundVent).
+	•	Tighten About/Resume text.
+
+⸻
+
+Suggested Build Order for Cursor
+	1.	Phase 0 & 1: Setup, stores, data files.
+	2.	Phase 2 & 3: layout.tsx, SiteShell, player wired with basic playback.
+	3.	Phase 4 & 5: Nav, command palette, theme panel, custom cursor (basic).
+	4.	Phase 6: Pages skeletons with simple content.
+	5.	Phase 7: Inspect mode & mini terminal (basic commands).
+	6.	Phase 8: Animations, transitions, polish.

@@ -3,6 +3,7 @@ import { ReactNode } from 'react';
 import { DM_Mono } from 'next/font/google';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/theme-provider';
+import { ToastProvider } from '@/components/ui/toast';
 import { SiteShell } from '@/components/layout/site-shell';
 import { BackgroundImage } from '@/components/layout/background-image';
 import { AudioPlayer } from '@/components/player/audio-player';
@@ -38,16 +39,18 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" suppressHydrationWarning className={`dark ${dmMono.variable} ${inter.variable}`}>
       <body className="min-h-screen bg-background text-foreground antialiased font-mono">
         <ThemeProvider>
-          <BackgroundImage />
-          <SiteShell>{children}</SiteShell>
-          <AudioPlayer />
-          <CommandPalette />
-          <CustomCursor />
-          <EditorNavPanel />
-          <InspectorOverlay />
-          <MiniTerminal />
-          <ThemePanel />
-          <ContactDialog />
+          <ToastProvider>
+            <BackgroundImage />
+            <SiteShell>{children}</SiteShell>
+            <AudioPlayer />
+            <CommandPalette />
+            <CustomCursor />
+            <EditorNavPanel />
+            <InspectorOverlay />
+            <MiniTerminal />
+            <ThemePanel />
+            <ContactDialog />
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

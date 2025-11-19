@@ -51,8 +51,7 @@ export function WaveformVisualizer({
         source.connect(analyser);
         analyser.connect(audioContext.destination);
       } catch (error) {
-        // Source may already exist, try to reconnect analyser
-        console.warn('Audio source setup issue:', error);
+        // Source may already exist, ignore
       }
     } else {
       // Reconnect analyser if source exists
@@ -67,11 +66,6 @@ export function WaveformVisualizer({
     analyserRef.current = analyser;
     dataArrayRef.current = dataArray;
 
-    // Resume audio context if suspended (required after user interaction)
-    if (audioContext.state === 'suspended') {
-      audioContext.resume().catch(() => {});
-    }
-
     return () => {
       // Clean up analyser connections
       try {
@@ -83,6 +77,16 @@ export function WaveformVisualizer({
       }
     };
   }, [audioElement]);
+
+  // Resume audio context when playing (required for Chrome autoplay policy)
+  useEffect(() => {
+    const audioContext = audioContextRef.current;
+    if (!audioContext) return;
+
+    if (isPlaying && audioContext.state === 'suspended') {
+      audioContext.resume().catch(() => {});
+    }
+  }, [isPlaying]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

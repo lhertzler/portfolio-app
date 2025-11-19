@@ -1,0 +1,154 @@
+<p><em>A fully custom, multi-step product builder designed for creators.</em></p>
+
+<h2>Intro</h2>
+<p>
+  The SoundVent Product Creation App is a core part of the platform’s marketplace ecosystem —
+  a fully custom-built tool that allows creators to design, manage, and publish products with the
+  same level of polish and control they’d expect from Shopify or Printful. Instead of relying on
+  third-party dashboards, the system gives SoundVent complete flexibility over product data,
+  media, workflows, and presentation.
+</p>
+
+<h2>Overview</h2>
+<p>
+  At its core, the product builder is a structured, multi-step creation flow designed for clarity and
+  precision. Creators can upload images, configure variants, define pricing, and map metadata —
+  all with live validation, autosaving, and real-time UI feedback. The system is deeply integrated
+  with Supabase, allowing product data, variants, images, and relationships to be stored cleanly
+  and accessed throughout the platform.
+</p>
+<p>
+  The result is a scalable foundation for SoundVent’s commerce layer, engineered to support both
+  simple creator products and more sophisticated multi-variant offerings.
+</p>
+
+<h2>Architecture</h2>
+<p>
+  The Product Creation App is built using <strong>Next.js</strong>, <strong>Supabase</strong>, <strong>Zustand</strong>, and a modular
+  component system shared across the entire SoundVent platform.
+</p>
+<p>Key architectural concepts:</p>
+<ul>
+  <li>
+    <strong>Step-based workflow</strong><br />
+    Each step — details, images, variants, pricing, publish settings — is independently validated and saved.
+  </li>
+  <li>
+    <strong>Autosaving with Supabase</strong><br />
+    Data writes occur as the user progresses, preventing loss and keeping drafts consistent.
+  </li>
+  <li>
+    <strong>Relational product schema</strong><br />
+    Products, variants, images, categories, and metadata are normalized into clean join tables for long-term scalability.
+  </li>
+  <li>
+    <strong>Global state for in-progress product data</strong><br />
+    Zustand handles local editing state before syncing changes to Supabase.
+  </li>
+  <li>
+    <strong>Async media handling</strong><br />
+    Images are uploaded to Supabase Storage, processed, and immediately available inside the UI.
+  </li>
+  <li>
+    <strong>Strict type safety</strong><br />
+    Every field, step, and validation rule is fully typed to prevent malformed product configurations.
+  </li>
+</ul>
+<p>
+  This architecture allows the builder to behave like a desktop app while remaining entirely
+  web-based and serverless.
+</p>
+
+<h2>UI/UX</h2>
+<p>
+  The interface is designed around clarity and low cognitive load — a guided process that helps
+  creators move step-by-step without overwhelm.
+</p>
+<p>Highlights include:</p>
+<ul>
+  <li>
+    <strong>Clean, step-driven layout</strong> that mirrors enterprise dashboards
+  </li>
+  <li>
+    <strong>Instant visual feedback</strong>: image previews, live error states, and contextual helpers
+  </li>
+  <li>
+    <strong>Variant matrix UI</strong> for handling complex combinations
+  </li>
+  <li>
+    <strong>Autosave indicators</strong> so users never worry about losing work
+  </li>
+  <li>
+    <strong>Consistent components</strong> from SoundVent’s design system for a seamless, predictable feel
+  </li>
+  <li>
+    <strong>Responsive grid layouts</strong> that adapt to any screen size
+  </li>
+  <li>
+    A <strong>“draft vs publish” workflow</strong> that feels intuitive and reduces mistakes
+  </li>
+</ul>
+<p>
+  The goal was to give creators a powerful tool disguised as a simple one — professional capability
+  with a frictionless experience.
+</p>
+
+<h2>Challenges &amp; Solutions</h2>
+
+<h3>1. Keeping the workflow smooth across many steps</h3>
+<p>
+  Large creation flows often feel heavy. To avoid this, each step loads only the required data and
+  writes asynchronously.
+</p>
+<p><strong>Solution:</strong> modular steps, Zustand local staging, Supabase row updates per step.</p>
+
+<h3>2. Handling complex product variants</h3>
+<p>
+  Variants quickly become messy when mixing sizes, colors, and images.
+</p>
+<p>
+  <strong>Solution:</strong> a dynamic variant matrix that generates combinations, validates them, and stores
+  them in a clean relational structure.
+</p>
+
+<h3>3. Preventing data loss during long editing sessions</h3>
+<p>
+  Creators often move back and forth between steps or leave mid-session.
+</p>
+<p>
+  <strong>Solution:</strong> autosave on every meaningful change, backed by “draft” tables and optimistic UI.
+</p>
+
+<h3>4. Integrating media uploads smoothly</h3>
+<p>
+  Images need to upload quickly, appear instantly, and map correctly to products or variants.
+</p>
+<p>
+  <strong>Solution:</strong> media uploads flow through Supabase Storage with local preview support and immediate syncing.
+</p>
+
+<h3>5. Ensuring the builder could grow with SoundVent</h3>
+<p>
+  The system needed to support more than v1 features.
+</p>
+<p>
+  <strong>Solution:</strong> strictly typed data models, predictable component patterns, and normalized relationships.
+</p>
+
+<h2>Impact</h2>
+<p>
+  The Product Creation App became a cornerstone of SoundVent’s marketplace architecture. It
+  transformed product creation from a manual, error-prone process into a guided, professional
+  workflow that creators could trust.
+</p>
+<p>For the platform, it unlocked:</p>
+<ul>
+  <li>Consistent, structured product data</li>
+  <li>A scalable foundation for marketplace features</li>
+  <li>Seamless integration with media, profiles, and commerce flows</li>
+  <li>A fully custom system that doesn’t depend on external dashboards</li>
+</ul>
+<p>
+  And for creators, it provided a clean, intuitive way to publish products without learning a new
+  platform — a natural extension of the SoundVent environment.
+</p>

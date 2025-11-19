@@ -44,14 +44,11 @@ export function Header() {
 
   // Listen for minimize events from audio player
   useEffect(() => {
-    console.log('[Header] Minimize effect running - window exists:', typeof window !== 'undefined');
     if (typeof window === 'undefined') {
-      console.log('[Header] Minimize effect skipped - SSR');
       return;
     }
     
     const handleMinimizeChange = (e: CustomEvent<boolean>) => {
-      console.log('[Header] Minimize event received:', e.detail);
       setIsPlayerMinimized(e.detail);
     };
     
@@ -61,7 +58,6 @@ export function Header() {
     // Use requestAnimationFrame to ensure DOM is ready
     requestAnimationFrame(() => {
       const bodyHasClass = document.body.classList.contains('player-minimized');
-      console.log('[Header] Initial body class check:', bodyHasClass);
       setIsPlayerMinimized(bodyHasClass);
     });
     

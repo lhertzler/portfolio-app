@@ -7,6 +7,7 @@ import { FlaskConical, BookOpen, Calendar, Clock } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { getFeaturedPosts } from '@/lib/blog-posts';
+import { formatDate } from '@/lib/utils';
 
 export function LabAndBlogSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -96,11 +97,7 @@ export function LabAndBlogSection() {
                           <div className="flex items-center gap-1">
                             <Calendar className="h-3 w-3" />
                             <span>
-                              {new Date(post.date).toLocaleDateString('en-US', { 
-                                month: 'short', 
-                                day: 'numeric',
-                                year: 'numeric'
-                              })}
+                              {formatDate(post.date, 'short')}
                             </span>
                           </div>
                           <div className="flex items-center gap-1">

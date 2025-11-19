@@ -6,6 +6,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, ArrowLeft, Tag } from 'lucide-react';
+import { formatDate } from '@/lib/utils';
+import { StructuredData } from '@/components/seo/structured-data';
+import { generateArticleSchema } from '@/lib/structured-data';
 
 // Generate static params for all blog posts
 export async function generateStaticParams() {
@@ -49,8 +52,20 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     notFound();
   }
 
+  const articleSchema = generateArticleSchema({
+    title: post.title,
+    description: post.description,
+    slug: post.slug,
+    datePublished: post.date,
+    author: post.author,
+    bannerImage: post.bannerImage,
+    tags: post.tags,
+  });
+
   return (
-    <article className="min-h-screen py-16">
+    <>
+      <StructuredData data={articleSchema} />
+      <article className="min-h-screen py-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-8">
         {/* Back Button */}
         <div className="mb-8">
@@ -97,11 +112,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               <time dateTime={post.date}>
-                {new Date(post.date).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
+                {formatDate(post.date, 'long')}
               </time>
             </div>
             <div className="flex items-center gap-2">
@@ -155,7 +166,8 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </div>
         </div>
       </div>
-    </article>
+      </article>
+    </>
   );
 }
 

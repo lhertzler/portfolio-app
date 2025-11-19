@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { getAllPosts } from '@/lib/blog-posts';
+import { formatDate } from '@/lib/utils';
 
 export default function BlogPage() {
   const publishedPosts = getAllPosts().sort((a, b) => 
@@ -57,7 +58,7 @@ export default function BlogPage() {
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        <span>{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        <span>{formatDate(post.date, 'long')}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Clock className="h-4 w-4" />

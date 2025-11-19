@@ -1,0 +1,166 @@
+<p><em>A unified audio system powering continuous playback across the entire platform.</em></p>
+
+<h2>Intro</h2>
+<p>
+  The persistent music player is one of the foundational systems inside SoundVent — a continuous,
+  platform-wide audio engine that allows listeners to browse profiles, scroll through feeds, open
+  posts, and explore music without ever interrupting playback. Unlike traditional audio widgets or
+  page-scoped players, SoundVent’s player is built as a true singleton: one audio engine, one
+  global state, and seamless continuity across every route and interface.
+</p>
+
+<h2>Overview</h2>
+<p>
+  The SoundVent music experience needed to feel as fluid as modern streaming apps — no stopping,
+  no reloads, no restarts. To accomplish this, I designed a persistent audio system that sits at the
+  core of the platform. It controls playback, manages queues, syncs progress, and handles all
+  UI interactions, all while remaining mounted across every navigation.
+</p>
+<p>
+  Whether users are checking out artists, scrolling through posts, or exploring the marketplace,
+  their music keeps playing. The player is always available, always in sync, and behaves
+  consistently no matter where they are in the app.
+</p>
+
+<h2>Architecture</h2>
+<p>
+  The SoundVent player is built as a singleton — a single instance that owns audio playback
+  across the entire application. This ensures that music continues uninterrupted, and all UI
+  components talk to the same engine.
+</p>
+
+<p>Key architectural elements include:</p>
+<ul>
+  <li>
+    <strong>Singleton Audio Engine</strong><br />
+    The audio engine is instantiated once and shared globally. UI components never create their
+    own audio instances; they communicate through a central controller to avoid conflicts or
+    duplicated playback.
+  </li>
+
+  <li>
+    <strong>Global Store Integration</strong><br />
+    The player exposes its state and actions through a platform-level store, allowing any part of
+    the UI to update the queue, switch tracks, pause, resume, or seek.
+  </li>
+
+  <li>
+    <strong>Persistent Layout Layer</strong><br />
+    The player lives inside a non-unmounting layout boundary. This ensures both the player
+    component and the audio engine remain alive as users navigate the app.
+  </li>
+
+  <li>
+    <strong>Event-Driven Syncing</strong><br />
+    The audio engine syncs changes back to the store through event listeners for
+    <code>timeupdate</code>, <code>play</code>, <code>pause</code>, <code>ended</code>, and metadata loading.
+  </li>
+
+  <li>
+    <strong>Waveform &amp; Visualization Layer</strong><br />
+    The player exposes an analyzer node from the singleton engine to power waveform and
+    spectrum visualizations across multiple components.
+  </li>
+</ul>
+
+<p>
+  This architecture allows SoundVent to deliver a streaming experience that feels native,
+  responsive, and reliable — exactly what users expect from a modern music platform.
+</p>
+
+<h2>UI/UX</h2>
+<p>
+  The UI is designed to be familiar, approachable, and performance-focused. It blends in with the
+  SoundVent design system while maintaining its own identity as a platform-level utility.
+</p>
+
+<p>UX highlights include:</p>
+<ul>
+  <li>
+    <strong>Bottom-anchored player bar</strong> that’s always available without interrupting browsing.
+  </li>
+  <li>
+    <strong>Expandable player view</strong> with artwork, timeline, queue controls, and playback details.
+  </li>
+  <li>
+    <strong>Minimized state</strong> for users who want to browse without visual distraction.
+  </li>
+  <li>
+    <strong>Queue management</strong> that lets listeners build or modify a session on the fly.
+  </li>
+  <li>
+    <strong>Real-time visualizer</strong> driven by the singleton engine’s analyzer node.
+  </li>
+</ul>
+
+<p>
+  The overall goal was to make playback feel effortless — a stable companion to the rest of the
+  platform rather than a standalone feature.
+</p>
+
+<h2>Challenges &amp; Solutions</h2>
+
+<h3>1. Ensuring audio never restarts on navigation</h3>
+<p>
+  Traditional routing reloads audio elements, which instantly breaks continuity.
+</p>
+<p>
+  <strong>Solution:</strong> The player and audio engine live inside a persistent layout layer that never
+  unmounts. Routes load underneath it.
+</p>
+
+<h3>2. Preventing duplicate audio engine instances</h3>
+<p>
+  Multiple mounts would cause overlapping playback, unsynced UI, and inconsistent state.
+</p>
+<p>
+  <strong>Solution:</strong> A true singleton pattern ensures only one audio engine ever exists. All UI
+  modules reference the same instance.
+</p>
+
+<h3>3. Keeping progress, UI, and state in sync</h3>
+<p>
+  Audio events need to reflect instantly in the UI, and UI controls need to update the engine
+  without lag.
+</p>
+<p>
+  <strong>Solution:</strong> Event listeners fire updates into the global store, and UI actions route back
+  to the engine through a unified API.
+</p>
+
+<h3>4. Integrating waveform visualization safely</h3>
+<p>
+  The audio visualization layer required the Web Audio API, which can’t be initialized
+  prematurely or multiple times.
+</p>
+<p>
+  <strong>Solution:</strong> The analyzer is created once at engine initialization and fed into visualizers
+  on demand.
+</p>
+
+<h3>5. Maintaining performance with heavy UI</h3>
+<p>
+  A music player should never slow down browsing or affect scroll performance.
+</p>
+<p>
+  <strong>Solution:</strong> Decoupled rendering, throttled state updates, and a highly optimized visualizer.
+</p>
+
+<h2>Impact</h2>
+<p>
+  The persistent music player became a defining feature of SoundVent — a core part of the user
+  experience that makes the platform feel alive, cohesive, and modern. It elevates browsing into a
+  continuous listening session and reinforces the platform’s identity as a place where music and
+  interaction coexist seamlessly.
+</p>
+
+<p>
+  For the broader system, it demonstrates a scalable pattern: platform-wide features powered by
+  singleton engines, global state, and persistent layouts. This pattern informs many other parts of
+  SoundVent’s architecture.
+</p>
+
+<p>
+  For users, it creates an experience that feels premium, stable, and expressive — exactly the
+  tone SoundVent was built to set.
+</p>

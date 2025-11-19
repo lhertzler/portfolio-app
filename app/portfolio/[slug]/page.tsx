@@ -1,8 +1,62 @@
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import { projects } from '@/lib/projects';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { StructuredData } from '@/components/seo/structured-data';
+import { generateProjectSchema } from '@/lib/structured-data';
+
+// Generate static params for all projects
+export async function generateStaticParams() {
+  return projects.map((project) => ({
+    slug: project.slug,
+  }));
+}
+
+// Generate metadata for SEO
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> | { slug: string } }): Promise<Metadata> {
+  const resolvedParams = typeof params === 'object' && 'then' in params 
+    ? await params 
+    : params;
+  
+  const project = projects.find((p) => p.slug === resolvedParams.slug);
+
+  if (!project) {
+    return {
+      title: 'Project Not Found',
+    };
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lukehertzler.com';
+  const imageUrl = project.featuredImage 
+    ? `${siteUrl}${project.featuredImage}`
+    : `${siteUrl}/images/luke/luke-techaron.jpg`;
+
+  return {
+    title: `${project.title} | Portfolio`,
+    description: project.summary || project.description,
+    openGraph: {
+      title: `${project.title} | Portfolio`,
+      description: project.summary || project.description,
+      type: 'website',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: project.title,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${project.title} | Portfolio`,
+      description: project.summary || project.description,
+      images: [imageUrl],
+    },
+  };
+}
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
   // Handle both async and sync params (Next.js 15 compatibility)
@@ -16,8 +70,18 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     notFound();
   }
 
+  const projectSchema = generateProjectSchema({
+    title: project.title,
+    description: project.summary || project.description,
+    slug: project.slug,
+    featuredImage: project.featuredImage,
+    tags: project.tags,
+  });
+
   return (
-    <div className="max-w-6xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
+    <>
+      <StructuredData data={projectSchema} />
+      <div className="max-w-6xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
       {/* Featured Image */}
       {project.featuredImage && (
         <div className="rounded-lg overflow-hidden">
@@ -26,7 +90,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               src={project.featuredImage}
               alt={project.title}
               fill
-              className="object-cover"
+              className="object-contain"
               priority
               quality={90}
             />
@@ -118,7 +182,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
           )}
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }
 

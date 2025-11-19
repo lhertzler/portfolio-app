@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import sgMail from '@sendgrid/mail';
+
+// Initialize SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 // Rate limiting: simple in-memory store (use Redis in production)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -30,6 +36,207 @@ function validateEmail(email: string): boolean {
 
 function sanitizeInput(input: string): string {
   return input.trim().slice(0, 10000); // Max 10k characters
+}
+
+// Email template function
+function createEmailTemplate(data: {
+  name: string;
+  email: string;
+  businessName: string;
+  websiteUrl: string;
+  service: string;
+  estimatedBudget: string;
+  message: string;
+}, ip: string): { html: string; text: string } {
+  const timestamp = new Date().toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZoneName: 'short',
+  });
+
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>New Contact Form Submission</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; line-height: 1.6;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f5f5; padding: 20px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" style="max-width: 600px; width: 100%; border-collapse: collapse; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 32px 40px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 600; letter-spacing: -0.5px;">New Contact Form Submission</h1>
+              <p style="margin: 8px 0 0 0; color: rgba(255, 255, 255, 0.9); font-size: 14px; font-weight: 400;">Portfolio Contact Form</p>
+            </td>
+          </tr>
+          
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px;">
+              <!-- Contact Info Section -->
+              <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding-bottom: 16px;">
+                    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Name:</td>
+                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">${data.name}</td>
+                      </tr>
+                      <tr>
+                        <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Email:</td>
+                        <td style="padding: 8px 0;">
+                          <a href="mailto:${data.email}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.email}</a>
+                        </td>
+                      </tr>
+                      ${data.businessName ? `
+                      <tr>
+                        <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Business:</td>
+                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 500;">${data.businessName}</td>
+                      </tr>
+                      ` : ''}
+                      ${data.websiteUrl ? `
+                      <tr>
+                        <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Website:</td>
+                        <td style="padding: 8px 0;">
+                          <a href="${data.websiteUrl}" target="_blank" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.websiteUrl}</a>
+                        </td>
+                      </tr>
+                      ` : ''}
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Divider -->
+              <div style="height: 1px; background: linear-gradient(to right, transparent, #e5e7eb, transparent); margin: 24px 0;"></div>
+
+              <!-- Project Details Section -->
+              <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+                <tr>
+                  <td style="padding: 16px; background-color: #f9fafb; border-radius: 8px; border-left: 4px solid #667eea;">
+                    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="padding-bottom: 12px; color: #6b7280; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Service Requested</td>
+                      </tr>
+                      <tr>
+                        <td style="color: #111827; font-size: 16px; font-weight: 600;">${data.service}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top: 12px;">
+                    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Budget:</td>
+                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">${data.estimatedBudget}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              ${data.message ? `
+              <!-- Message Section -->
+              <div style="margin-top: 24px;">
+                <div style="padding: 20px; background-color: #f9fafb; border-radius: 8px; border-left: 4px solid #667eea;">
+                  <p style="margin: 0 0 12px 0; color: #6b7280; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Message</p>
+                  <div style="color: #374151; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${data.message.replace(/\n/g, '<br>')}</div>
+                </div>
+              </div>
+              ` : ''}
+
+              <!-- Footer -->
+              <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb;">
+                <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="padding-bottom: 8px;">
+                      <p style="margin: 0; color: #9ca3af; font-size: 12px; line-height: 1.5;">
+                        <strong style="color: #6b7280;">Submitted:</strong> ${timestamp}
+                      </p>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <p style="margin: 0; color: #9ca3af; font-size: 12px; line-height: 1.5;">
+                        <strong style="color: #6b7280;">IP Address:</strong> ${ip}
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- CTA Button -->
+              <table role="presentation" style="width: 100%; border-collapse: collapse; margin-top: 32px;">
+                <tr>
+                  <td align="center">
+                    <a href="mailto:${data.email}?subject=Re: ${data.service}" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">Reply to ${data.name}</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        
+        <!-- Footer Note -->
+        <table role="presentation" style="max-width: 600px; width: 100%; margin-top: 20px;">
+          <tr>
+            <td align="center" style="padding: 20px;">
+              <p style="margin: 0; color: #9ca3af; font-size: 12px;">This email was sent from your portfolio contact form</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `.trim();
+
+  const text = `
+NEW CONTACT FORM SUBMISSION
+Portfolio Contact Form
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+CONTACT INFORMATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name: ${data.name}
+Email: ${data.email}
+${data.businessName ? `Business: ${data.businessName}\n` : ''}${data.websiteUrl ? `Website: ${data.websiteUrl}\n` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROJECT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Service Requested: ${data.service}
+Estimated Budget: ${data.estimatedBudget}
+
+${data.message ? `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nMESSAGE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${data.message}\n` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Submitted: ${timestamp}
+IP Address: ${ip}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Reply to: ${data.email}
+  `.trim();
+
+  return { html, text };
 }
 
 export async function POST(request: NextRequest) {
@@ -86,21 +293,29 @@ export async function POST(request: NextRequest) {
       message: message ? sanitizeInput(message) : '',
     };
 
-    // TODO: Integrate with email service (Resend, SendGrid, etc.)
-    // For now, log to console and return success
-    console.log('Contact form submission:', {
-      ...sanitizedData,
-      timestamp: new Date().toISOString(),
-      ip,
-    });
+    // Send email using SendGrid
+    if (process.env.SENDGRID_API_KEY && process.env.FROM_EMAIL && process.env.CONTACT_EMAIL) {
+      const emailTemplate = createEmailTemplate(sanitizedData, ip);
+      
+      const msg = {
+        to: process.env.CONTACT_EMAIL,
+        from: process.env.FROM_EMAIL,
+        replyTo: sanitizedData.email,
+        subject: `New Contact Form Submission: ${sanitizedData.service}`,
+        html: emailTemplate.html,
+        text: emailTemplate.text,
+      };
 
-    // In production, replace this with actual email sending:
-    // await sendEmail({
-    //   to: process.env.CONTACT_EMAIL,
-    //   from: process.env.FROM_EMAIL,
-    //   subject: `New contact form submission: ${sanitizedData.service}`,
-    //   html: formatEmailTemplate(sanitizedData),
-    // });
+      await sgMail.send(msg);
+    } else {
+      // Fallback to console log if SendGrid not configured
+      console.log('Contact form submission:', {
+        ...sanitizedData,
+        timestamp: new Date().toISOString(),
+        ip,
+      });
+      console.warn('SendGrid not configured. Set SENDGRID_API_KEY, FROM_EMAIL, and CONTACT_EMAIL environment variables.');
+    }
 
     return NextResponse.json(
       {
@@ -111,6 +326,13 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('Contact form error:', error);
+    
+    // SendGrid specific error handling
+    if (error instanceof Error && 'response' in error) {
+      const sgError = error as any;
+      console.error('SendGrid error details:', sgError.response?.body);
+    }
+    
     return NextResponse.json(
       { error: 'An error occurred while processing your request.' },
       { status: 500 }

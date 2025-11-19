@@ -4,10 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUIStore } from '@/store/ui-store';
-import { usePlayerStore } from '@/store/player-store';
 import { Settings, Terminal, Music, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { motion, AnimatePresence } from 'framer-motion';
 
 const HOME_SECTIONS = [
   { id: 'solutions', label: 'Solutions', href: '/solutions' },

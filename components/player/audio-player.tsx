@@ -315,7 +315,7 @@ export function AudioPlayer() {
               </div>
 
               <div className="flex-1 flex items-center gap-2 min-w-0">
-                <span className="text-xs text-muted-foreground flex-shrink-0">
+                <span className="text-xs text-muted-foreground flex-shrink-0" suppressHydrationWarning>
                   {timeDisplay}
                 </span>
                 <input
@@ -331,7 +331,7 @@ export function AudioPlayer() {
                     transition: 'background 0.1s ease-out'
                   }}
                 />
-                <span className="text-xs text-muted-foreground flex-shrink-0">
+                <span className="text-xs text-muted-foreground flex-shrink-0" suppressHydrationWarning>
                   {durationDisplay}
                 </span>
               </div>

@@ -255,29 +255,31 @@ export function AudioPlayer() {
 
   const isSSR = typeof window === 'undefined';
   console.log('[AudioPlayer] Render - SSR:', isSSR, 'currentTrack:', currentTrack?.id, 'title:', currentTrack?.title, 'artist:', currentTrack?.artist, 'isMinimized:', isMinimized, 'duration:', duration, 'positionSeconds:', positionSeconds, 'isMounted:', isMounted);
-  
-  const timeDisplay = formatTime(positionSeconds);
-  const durationDisplay = formatTime(duration);
-  console.log('[AudioPlayer] Text content - timeDisplay:', timeDisplay, 'durationDisplay:', durationDisplay, 'title:', currentTrack?.title, 'artist:', currentTrack?.artist);
 
   return (
     <>
       {/* Audio element always mounted - CSS handles visibility */}
       <audio ref={audioRef} style={{ display: 'none' }} />
-      {currentTrack && (
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="music-player fixed bottom-0 left-0 right-0 border-t border-border/50 bg-card/70 backdrop-blur-md shadow-lg shadow-black/10 z-50"
-          data-component="AudioPlayer"
-          data-file="components/player/audio-player.tsx"
-        >
+      {typeof window !== 'undefined' && currentTrack && (() => {
+        const timeDisplay = formatTime(positionSeconds);
+        const durationDisplay = formatTime(duration);
+        console.log('[AudioPlayer] Text content - timeDisplay:', timeDisplay, 'durationDisplay:', durationDisplay, 'title:', currentTrack?.title, 'artist:', currentTrack?.artist);
+        
+        return (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className="music-player fixed bottom-0 left-0 right-0 border-t border-border/50 bg-card/70 backdrop-blur-md shadow-lg shadow-black/10 z-50"
+            data-component="AudioPlayer"
+            data-file="components/player/audio-player.tsx"
+            suppressHydrationWarning
+          >
             <div className="mx-auto max-w-7xl flex items-center gap-4 px-4 sm:px-8 py-4 text-xs sm:text-sm">
               <div className="flex flex-col min-w-0 flex-shrink-0">
-                <span className="font-medium truncate">{currentTrack.title}</span>
+                <span className="font-medium truncate" suppressHydrationWarning>{currentTrack.title}</span>
                 {currentTrack.artist && (
-                  <span className="text-muted-foreground truncate text-xs">
+                  <span className="text-muted-foreground truncate text-xs" suppressHydrationWarning>
                     {currentTrack.artist}
                   </span>
                 )}
@@ -377,7 +379,8 @@ export function AudioPlayer() {
               </button>
             </div>
           </motion.div>
-      )}
+        );
+      })()}
 
       {/* Playlist Sheet */}
       <Sheet open={playlistOpen} onOpenChange={setPlaylistOpen}>

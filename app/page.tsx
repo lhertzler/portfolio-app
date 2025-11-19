@@ -5,7 +5,6 @@ import { ServicesSection } from '@/components/home/services-section';
 import { TrustedByCarousel } from '@/components/home/trusted-by-carousel';
 import { PortfolioPreviewSection } from '@/components/home/portfolio-preview-section';
 import { WhyHireSection } from '@/components/home/why-hire-section';
-import { ResumePreviewSection } from '@/components/home/resume-preview-section';
 import { LabAndBlogSection } from '@/components/home/lab-and-blog-section';
 import { ValuePropositionTwoSection } from '@/components/home/value-proposition-section-2';
 import { ValuePropositionThreeSection } from '@/components/home/value-proposition-section-3';

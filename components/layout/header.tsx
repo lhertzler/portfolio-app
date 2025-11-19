@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUIStore } from '@/store/ui-store';
 import { usePlayerStore } from '@/store/player-store';
-import { Settings, Search, Music, Menu } from 'lucide-react';
+import { Settings, Terminal, Music, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -35,6 +35,7 @@ export function Header() {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
+  const [isPlayerMinimized, setIsPlayerMinimized] = useState(false);
   const isHomePage = pathname === '/';
 
   const openTerminal = useUIStore((s) => s.openTerminal);
@@ -42,8 +43,25 @@ export function Header() {
   const openContactDialog = useUIStore((s) => s.openContactDialog);
   const openEditorNav = useUIStore((s) => s.openEditorNav);
   const isContactDialogOpen = useUIStore((s) => s.isContactDialogOpen);
-  const playerShowing = usePlayerStore((s) => s.showing);
-  const setPlayerShowing = usePlayerStore((s) => s.setShowing);
+
+  // Sync with body class for player minimized state
+  useEffect(() => {
+    const checkMinimized = () => {
+      setIsPlayerMinimized(document.body.classList.contains('player-minimized'));
+    };
+    
+    // Check initially
+    checkMinimized();
+    
+    // Watch for changes using MutationObserver
+    const observer = new MutationObserver(checkMinimized);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let ticking = false;
@@ -243,30 +261,24 @@ export function Header() {
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Icon Buttons - Hidden on Mobile (shown in hamburger menu) */}
           <div className="hidden lg:flex items-center gap-3">
-            {/* Music Icon - Shows when player is hidden */}
-            <AnimatePresence>
-              {!playerShowing && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setPlayerShowing(true)}
-                    className="h-9 w-9 hover:bg-accent/50"
-                    aria-label="Show music player"
-                    data-cursor="tap"
-                  >
-                    <Music className="h-4 w-4" />
-                  </Button>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Music Icon - Shows when player is minimized */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => {
+                document.body.classList.remove('player-minimized');
+                setIsPlayerMinimized(false);
+              }}
+              className={`h-9 w-9 hover:bg-accent/50 transition-opacity duration-200 ${
+                isPlayerMinimized ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+              }`}
+              aria-label="Show music player"
+              data-cursor="tap"
+            >
+              <Music className="h-4 w-4" />
+            </Button>
 
-            {/* Search Icon */}
+            {/* Terminal Icon */}
             <Button
               variant="ghost"
               size="icon"
@@ -275,7 +287,7 @@ export function Header() {
               aria-label="Open terminal"
               data-cursor="tap"
             >
-              <Search className="h-4 w-4" />
+              <Terminal className="h-4 w-4" />
             </Button>
 
             {/* Settings Icon */}

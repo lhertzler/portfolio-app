@@ -202,6 +202,15 @@
   .blink-icon {
     animation: blink 1s ease-in-out infinite;
   }
+
+  /* Music player minimize animation */
+  .music-player {
+    transition: transform 0.3s ease-in-out;
+  }
+
+  body.player-minimized .music-player {
+    transform: translateY(100%) !important;
+  }
 }
 
 

@@ -22,8 +22,8 @@ export function QuickFactsSection() {
                 <p className="font-medium text-sm sm:text-base">Shopify Expert</p>
               </li>
               <li className="w-1/2 sm:flex-1 min-w-0 flex flex-col items-center justify-center text-center px-2 py-3 sm:py-2">
-                <span className="text-primary font-semibold text-base sm:text-lg mb-1">12+ Million</span>
-                <p className="font-medium text-sm sm:text-base">code lines deployed</p>
+                <span className="text-primary font-semibold text-base sm:text-lg mb-1">Trusted</span>
+                <p className="font-medium text-sm sm:text-base">by Top Brands</p>
               </li>
               <li className="w-1/2 sm:flex-1 min-w-0 flex flex-col items-center justify-center text-center px-2 py-3 sm:py-2">
                 <span className="text-primary font-semibold text-base sm:text-lg mb-1">Architect</span>

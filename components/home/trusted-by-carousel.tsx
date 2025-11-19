@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { Card } from '../ui/card';
+import { Badge } from '../ui/badge';
 
 const CLIENT_LOGOS = [
   'anchorhead-studio.png',
@@ -22,22 +23,19 @@ export function TrustedByCarousel() {
 
   return (
     <section
-      className="py-8 sm:py-12 md:pb-0 md:pt-0 overflow-visible flex items-center"
+      className="py-8 sm:py-12 md:pb-0 md:pt-0 overflow-visible"
       data-component="TrustedByCarousel"
       data-file="components/home/trusted-by-carousel.tsx"
     >
-
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
-      <Card className="w-full max-w-6xl mx-auto flex flex-col sm:flex-row items-center py-4 sm:py-6 gradient-overlay">
-        {/* Left Text - Full width on mobile, 1/8 on desktop */}
-        <div className="flex-shrink-0 px-4 sm:px-6 lg:px-8 mb-4 sm:mb-0">
-          <h2 className="text-base sm:text-lg md:text-xl font-semibold text-foreground whitespace-nowrap text-center sm:text-left">
+        <Card className="relative w-full max-w-6xl mx-auto py-4 sm:py-6 gradient-overlay">
+          <Badge 
+            className="inline-flex items-center rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-primary/20 bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-md sm:text-md px-10 sm:px-10 py-1 font-bold"
+          >
             Trusted by Top Brands
-          </h2>
-        </div>
-
-        {/* Carousel Container - Full width on mobile, 7/8 on desktop */}
-        <div className="relative overflow-hidden w-full sm:flex-1">
+          </Badge>
+          {/* Carousel Container - Full width */}
+          <div className="relative overflow-hidden w-full">
           {/* Left Fade Gradient */}
           <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 z-10 pointer-events-none bg-gradient-to-r from-card to-transparent" />
           

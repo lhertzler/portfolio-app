@@ -34,7 +34,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>((set, get) => 
   currentTrackId: null,
   isPlaying: false,
   positionSeconds: 0,
-  showing: false,
+  showing: true,
 
   setQueue: (tracks) => set({ queue: tracks }),
   playTrack: (id) =>

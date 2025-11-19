@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { usePlayerStore } from '@/store/player-store';
 import { tracks } from '@/lib/tracks';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -16,13 +16,30 @@ import { WaveformVisualizer } from './waveform-visualizer';
 export function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playlistOpen, setPlaylistOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+
+  // Sync with body class
+  useEffect(() => {
+    const checkMinimized = () => {
+      setIsMinimized(document.body.classList.contains('player-minimized'));
+    };
+    
+    checkMinimized();
+    
+    const observer = new MutationObserver(checkMinimized);
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    
+    return () => observer.disconnect();
+  }, []);
 
   const {
     queue,
     currentTrackId,
     isPlaying,
     positionSeconds,
-    showing,
     setQueue,
     playTrack,
     pause,
@@ -30,8 +47,8 @@ export function AudioPlayer() {
     next,
     prev,
     seek,
-    setShowing,
   } = usePlayerStore();
+
 
   // Initialize queue once
   useEffect(() => {
@@ -48,26 +65,26 @@ export function AudioPlayer() {
     if (!audioRef.current || !currentTrack) return;
 
     const audio = audioRef.current;
+    const currentSrc = currentTrack.src;
 
-    // When the track changes, set src and reset position
-    audio.src = currentTrack.src;
-    seek(0); // Sync store immediately
-
-    const handleLoadedData = () => {
-      audio.currentTime = 0;
+    // Only update src if it actually changed
+    if (audio.src !== currentSrc && audio.src !== `${window.location.origin}${currentSrc}`) {
+      audio.src = currentSrc;
       seek(0);
-      if (isPlaying) {
-        audio.play().catch(() => {
-          // autoplay might get blocked; handle gracefully
-        });
-      }
-    };
 
-    audio.addEventListener('loadeddata', handleLoadedData);
+      const handleLoadedData = () => {
+        audio.currentTime = 0;
+        seek(0);
+        if (isPlaying) {
+          audio.play().catch(() => {});
+        }
+      };
 
-    return () => {
-      audio.removeEventListener('loadeddata', handleLoadedData);
-    };
+      audio.addEventListener('loadeddata', handleLoadedData);
+      return () => {
+        audio.removeEventListener('loadeddata', handleLoadedData);
+      };
+    }
   }, [currentTrackId, currentTrack?.src, seek, isPlaying]);
 
   // Sync play/pause with store
@@ -76,9 +93,13 @@ export function AudioPlayer() {
     if (!audio) return;
 
     if (isPlaying) {
-      audio.play().catch(() => {});
+      if (audio.paused) {
+        audio.play().catch(() => {});
+      }
     } else {
-      audio.pause();
+      if (!audio.paused) {
+        audio.pause();
+      }
     }
   }, [isPlaying]);
 
@@ -134,7 +155,6 @@ export function AudioPlayer() {
   const handlePlayPause = () => {
     if (!currentTrack) return;
     if (!currentTrackId) {
-      // first time play
       playTrack(currentTrack.id);
       return;
     }
@@ -167,22 +187,20 @@ export function AudioPlayer() {
 
   const duration = currentTrack?.durationSeconds ?? audioRef.current?.duration ?? 0;
 
-  if (!currentTrack) return null;
 
   return (
     <>
-      <AnimatePresence>
-        {showing && (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-0 left-0 right-0 border-t border-border/50 bg-card/70 backdrop-blur-md shadow-lg shadow-black/10 z-50"
-            data-component="AudioPlayer"
-            data-file="components/player/audio-player.tsx"
-          >
-            <audio ref={audioRef} hidden />
+      {/* Audio element always mounted - CSS handles visibility */}
+      <audio ref={audioRef} style={{ display: 'none' }} />
+      {currentTrack && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+          className="music-player fixed bottom-0 left-0 right-0 border-t border-border/50 bg-card/70 backdrop-blur-md shadow-lg shadow-black/10 z-50"
+          data-component="AudioPlayer"
+          data-file="components/player/audio-player.tsx"
+        >
             <div className="mx-auto max-w-7xl flex items-center gap-4 px-4 sm:px-8 py-4 text-xs sm:text-sm">
               <div className="flex flex-col min-w-0 flex-shrink-0">
                 <span className="font-medium truncate">{currentTrack.title}</span>
@@ -267,7 +285,15 @@ export function AudioPlayer() {
               {/* Minimize Button */}
               <button
                 type="button"
-                onClick={() => setShowing(false)}
+                onClick={() => {
+                  const minimized = !isMinimized;
+                  setIsMinimized(minimized);
+                  if (minimized) {
+                    document.body.classList.add('player-minimized');
+                  } else {
+                    document.body.classList.remove('player-minimized');
+                  }
+                }}
                 className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
                 aria-label="Minimize player"
               >
@@ -275,8 +301,7 @@ export function AudioPlayer() {
               </button>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+      )}
 
       {/* Playlist Sheet */}
       <Sheet open={playlistOpen} onOpenChange={setPlaylistOpen}>

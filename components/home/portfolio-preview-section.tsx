@@ -98,6 +98,18 @@ export function PortfolioPreviewSection() {
       data-file="components/home/portfolio-preview-section.tsx"
       className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full py-6 sm:py-8"
     >
+      {/* Section Heading */}
+      <motion.div 
+        className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-12"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-100px' }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-tight sm:leading-normal lg:leading-normal">
+          Solutions I've <span className="text-primary">Crafted</span>
+        </h2>
+      </motion.div>
       <div className="h-[400px] sm:h-[500px] md:h-[600px]">
         {/* Navigation Arrow - Left */}
         <button

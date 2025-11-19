@@ -55,7 +55,7 @@ export function ServicesSection() {
             <Card className="relative flex flex-col">
             <Badge 
               variant="default" 
-              className="bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-sm sm:text-md px-6 sm:px-10 py-1 font-bold"
+              className="bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-md sm:text-md px-10 sm:px-10 py-1 font-bold"
             >
               Shopify
             </Badge>
@@ -106,7 +106,7 @@ export function ServicesSection() {
             <Card className="relative flex flex-col">
             <Badge 
               variant="default" 
-              className="bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-sm sm:text-md px-6 sm:px-10 py-1 font-bold"
+              className="bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-md sm:text-md px-10 sm:px-10 py-1 font-bold"
             >
               Applications
             </Badge>

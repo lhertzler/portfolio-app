@@ -14,7 +14,7 @@ import { generatePersonSchema, generateWebsiteSchema } from '@/lib/structured-da
 import type { Metadata } from 'next';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lukehertzler.com';
-const defaultImage = `${siteUrl}/images/luke/luke-techaron.jpg`;
+const defaultImage = `${siteUrl}/images/social-share.jpg`;
 
 export const metadata: Metadata = {
   title: 'Luke Hertzler – Portfolio | Shopify & Next.js Solutions Architect',

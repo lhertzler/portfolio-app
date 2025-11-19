@@ -82,7 +82,7 @@ export function generatePersonSchema(): PersonSchema {
       // 'https://linkedin.com/in/...',
       // 'https://twitter.com/...',
     ],
-    image: `${siteUrl}/images/luke/luke-techaron.jpg`,
+    image: `${siteUrl}/images/social-share.jpg`,
   };
 }
 

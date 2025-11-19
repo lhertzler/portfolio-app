@@ -3,7 +3,7 @@
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { useUIStore } from '@/store/ui-store';
 import { useRouter } from 'next/navigation';
-import { FileText, Settings, Music, Home, User, Briefcase, FileCheck, FlaskConical, Mail, Wrench, ChevronRight } from 'lucide-react';
+import { FileText, Settings, Music, Home, User, Briefcase, FileCheck, FlaskConical, Mail, Wrench, ChevronRight, Search, Palette, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 
 const scrollToSection = (id: string) => {
@@ -29,21 +29,24 @@ const NAV_STRUCTURE = [
       { icon: Wrench, label: 'Services', href: '/#services', id: 'services', sectionId: 'services' },
       { icon: Briefcase, label: 'Portfolio', href: '/#portfolio', id: 'portfolio', sectionId: 'portfolio' },
       { icon: FileCheck, label: 'Resume', href: '/#resume', id: 'resume', sectionId: 'resume' },
-      { icon: FlaskConical, label: 'Lab', href: '/#lab', id: 'lab', sectionId: 'lab' },
+      { icon: FlaskConical, label: 'Lab', href: '/lab', id: 'lab', sectionId: null },
+      { icon: BookOpen, label: 'Blog', href: '/blog', id: 'blog', sectionId: null },
       { icon: Mail, label: 'Contact.tsx', action: 'contact', id: 'contact' },
     ],
   },
   {
     label: 'system',
     items: [
-      { icon: Settings, label: 'Theme.config', action: 'theme', id: 'theme' },
+      { icon: Search, label: 'Search.tsx', action: 'search', id: 'search' },
+      { icon: Settings, label: 'Settings.tsx', action: 'settings', id: 'settings' },
       { icon: Music, label: 'Player.tsx', action: 'player', id: 'player' },
+      { icon: Palette, label: 'Theme.config', action: 'theme', id: 'theme' },
     ],
   },
 ];
 
 export function EditorNavPanel() {
-  const { isEditorNavOpen, closeEditorNav, openContactDialog, openThemePanel } = useUIStore();
+  const { isEditorNavOpen, closeEditorNav, openContactDialog, openThemePanel, openTerminal, openSettings } = useUIStore();
   const router = useRouter();
   const [expandedFolders, setExpandedFolders] = useState<string[]>(['app', 'system']);
 
@@ -60,6 +63,12 @@ export function EditorNavPanel() {
       if (item.action === 'contact') {
         openContactDialog();
         closeEditorNav();
+      } else if (item.action === 'search') {
+        openTerminal();
+        closeEditorNav();
+      } else if (item.action === 'settings') {
+        openSettings();
+        closeEditorNav();
       } else if (item.action === 'theme') {
         openThemePanel();
         closeEditorNav();
@@ -67,7 +76,11 @@ export function EditorNavPanel() {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         closeEditorNav();
       }
-    } else if ('sectionId' in item && item.sectionId) {
+      return;
+    }
+    
+    if ('sectionId' in item && item.sectionId) {
+      // Has a section ID - scroll to section
       if (window.location.pathname === '/') {
         scrollToSection(item.sectionId);
         closeEditorNav();
@@ -75,17 +88,13 @@ export function EditorNavPanel() {
         router.push(`/#${item.sectionId}`);
         closeEditorNav();
       }
-    } else if ('href' in item && item.href) {
-      if (item.href === '/') {
-        router.push('/');
-        closeEditorNav();
-      } else if (item.href.startsWith('/#')) {
-        router.push(item.href);
-        closeEditorNav();
-      } else {
-        router.push(item.href);
-        closeEditorNav();
-      }
+      return;
+    }
+    
+    if ('href' in item && item.href) {
+      // Has href - navigate to page
+      router.push(item.href);
+      closeEditorNav();
     }
   };
 

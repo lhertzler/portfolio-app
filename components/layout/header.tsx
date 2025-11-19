@@ -4,16 +4,16 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUIStore } from '@/store/ui-store';
-import { Menu, Sun, Moon } from 'lucide-react';
+import { usePlayerStore } from '@/store/player-store';
+import { Settings, Search, Music, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const HOME_SECTIONS = [
-  { id: 'about', label: 'About me', href: '/#about' },
-  { id: 'services', label: 'Services', href: '/#services' },
-  { id: 'portfolio', label: 'Portfolio', href: '/#portfolio' },
-  { id: 'resume', label: 'Resume', href: '/#resume' },
-  { id: 'lab', label: 'Lab', href: '/#lab' },
-  { id: 'contact', label: 'Contact', href: '/contact' },
+  { id: 'solutions', label: 'Solutions', href: '/solutions' },
+  { id: 'portfolio', label: 'Portfolio', href: '/portfolio' },
+  { id: 'lab', label: 'Lab', href: '/lab' },
+  { id: 'blog', label: 'Blog', href: '/blog' },
 ];
 
 const scrollToSection = (id: string) => {
@@ -37,13 +37,13 @@ export function Header() {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const isHomePage = pathname === '/';
 
-  const openThemePanel = useUIStore((s) => s.openThemePanel);
-  const toggleInspectMode = useUIStore((s) => s.toggleInspectMode);
   const openTerminal = useUIStore((s) => s.openTerminal);
-  const openEditorNav = useUIStore((s) => s.openEditorNav);
+  const openSettings = useUIStore((s) => s.openSettings);
   const openContactDialog = useUIStore((s) => s.openContactDialog);
+  const openEditorNav = useUIStore((s) => s.openEditorNav);
   const isContactDialogOpen = useUIStore((s) => s.isContactDialogOpen);
-  const themeMode = useUIStore((s) => s.themeMode);
+  const playerShowing = usePlayerStore((s) => s.showing);
+  const setPlayerShowing = usePlayerStore((s) => s.setShowing);
 
   useEffect(() => {
     let ticking = false;
@@ -120,20 +120,33 @@ export function Header() {
       return;
     }
 
-    if (isHomePage) {
-      // On homepage, scroll to section
-      const sectionId = href.replace('/#', '');
-      if (sectionId) {
-        scrollToSection(sectionId);
-      } else if (href === '/') {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    } else {
-      // On other pages, navigate to homepage with hash
-      if (href.startsWith('/#')) {
-        router.push(href);
+    // If href is a page route (starts with / but not /#), navigate to it
+    if (href.startsWith('/') && !href.startsWith('/#')) {
+      router.push(href);
+      return;
+    }
+
+    // Handle section anchors (/#section)
+    if (href.startsWith('/#')) {
+      if (isHomePage) {
+        // On homepage, scroll to section
+        const sectionId = href.replace('/#', '');
+        if (sectionId) {
+          scrollToSection(sectionId);
+        }
       } else {
+        // On other pages, navigate to homepage with hash
         router.push(href);
+      }
+      return;
+    }
+
+    // Handle root path
+    if (href === '/') {
+      if (isHomePage) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        router.push('/');
       }
     }
   };
@@ -147,32 +160,38 @@ export function Header() {
   return (
     <>
       {/* Spacer to maintain layout when header is fixed */}
-      <div className="h-[73px]" />
+      <div className="h-[60px] sm:h-[65px] lg:h-[73px]" />
       <header
-        className={`fixed top-0 left-0 right-0 z-40 mx-auto border rounded-lg backdrop-blur-md transition-all duration-700 ease-in-out font-mono will-change-transform ${
+        className={`fixed top-0 left-0 right-0 z-40 mx-auto border backdrop-blur-md font-mono ${
+          // Mobile: always fixed at top, no animation
+          'lg:rounded-lg lg:transition-all lg:duration-700 lg:ease-in-out lg:will-change-transform'
+        } ${
           isScrolled
             ? 'max-w-full bg-card/70 border-none shadow-lg shadow-black/10 translate-y-0'
-            : 'max-w-7xl bg-card dark:border-none translate-y-6'
+            : 'max-w-full lg:max-w-7xl bg-card dark:border-none translate-y-0 lg:translate-y-4 xl:translate-y-6'
         }`}
         data-component="Header"
         data-file="components/layout/header.tsx"
       >
-        <div className={`bg-transparent flex items-center justify-between px-4 sm:px-8 transition-all duration-700 ease-in-out ${
+        <div className={`bg-transparent flex items-center justify-between px-3 sm:px-6 lg:px-8 transition-all duration-700 ease-in-out ${
           isScrolled
-            ? 'py-3 shadow-lg shadow-black/5'
-            : 'py-4'
+            ? 'py-2 sm:py-2.5 lg:py-3 shadow-lg shadow-black/5'
+            : 'py-2.5 sm:py-3 lg:py-4'
         }`}>
-        {/* Left: Hamburger + Brand */}
-        <div className="flex items-center gap-4">
+        {/* Left: Hamburger Menu (Mobile) + Brand */}
+        <div className="flex items-center gap-2 sm:gap-4">
+          {/* Hamburger Menu Button - Mobile Only */}
           <Button
             variant="ghost"
             size="icon"
             onClick={openEditorNav}
-            className="h-9 w-9 hover:bg-accent/50"
+            className="lg:hidden h-8 w-8 sm:h-9 sm:w-9 hover:bg-accent/50"
             aria-label="Open navigation menu"
+            data-cursor="tap"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
+
           <Link
             href="/"
             onClick={(e) => {
@@ -181,35 +200,37 @@ export function Header() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }
             }}
-            className="flex items-center gap-2 font-mono"
+            className="flex items-center gap-1 sm:gap-2 font-mono"
           >
             <span className={`font-semibold text-primary tracking-tight transition-all duration-700 ease-in-out ${
-              isScrolled ? 'text-lg' : 'pl-2 text-2xl'
+              isScrolled 
+                ? 'text-base sm:text-lg' 
+                : 'text-xl sm:text-2xl'
             }`}>{'</>'}</span>
             <span className={`font-bold tracking-tight transition-all duration-700 ease-in-out hover:text-primary ${
-              isScrolled ? 'text-lg' : 'pl-2 text-2xl'
+              isScrolled 
+                ? 'text-base sm:text-lg' 
+                : 'text-xl sm:text-2xl'
             }`}>
-              Luke Hertzler
+              <span className="text-primary sm:text-foreground">Luke</span>
+              <span className="sm:ml-1"> Hertzler</span>
             </span>
           </Link>
         </div>
 
         {/* Center: Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-8 text-md font-mono">
+        <nav className="hidden lg:flex items-center gap-10 text-lg font-mono">
           {navItems.map((item) => {
-            const isActive =
-              item.id === 'contact'
-                ? isContactDialogOpen
-                : isHomePage && activeSection === item.id;
+            const isActive = isHomePage && activeSection === item.id;
             return (
               <button
                 key={item.id}
                 onClick={(e) => handleNavClick(item.href, e)}
                 data-cursor="link"
-                className={`transition-colors font-mono ${
+                className={`transition-colors font-mono font-bold${
                   isActive
-                    ? 'text-foreground font-medium'
-                    : 'text-muted-foreground hover:text-foreground'
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-primary'
                 }`}
               >
                 {item.label}
@@ -218,47 +239,71 @@ export function Header() {
           })}
         </nav>
 
-        {/* Right: Theme Toggle + Dev Tools */}
-        <div className="flex items-center gap-3">
-          {/* Theme Toggle */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={openThemePanel}
-            className="h-9 w-9 hover:bg-accent/50"
-            aria-label="Toggle theme"
-            data-cursor="tap"
-          >
-            {themeMode === 'dark' ? (
-              <Sun className="h-4 w-4 text-yellow-400" />
-            ) : (
-              <Moon className="h-4 w-4" />
-            )}
-          </Button>
+        {/* Right: Search + Music + Settings + Start A Project */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Icon Buttons - Hidden on Mobile (shown in hamburger menu) */}
+          <div className="hidden lg:flex items-center gap-3">
+            {/* Music Icon - Shows when player is hidden */}
+            <AnimatePresence>
+              {!playerShowing && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setPlayerShowing(true)}
+                    className="h-9 w-9 hover:bg-accent/50"
+                    aria-label="Show music player"
+                    data-cursor="tap"
+                  >
+                    <Music className="h-4 w-4" />
+                  </Button>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-          {/* Dev Tools (hidden on mobile) */}
-          <div className="hidden sm:flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleInspectMode}
-              className="h-9 w-9 hover:bg-accent/50"
-              aria-label="Toggle inspect mode"
-              data-cursor="tap"
-            >
-              {'</>'}
-            </Button>
+            {/* Search Icon */}
             <Button
               variant="ghost"
               size="icon"
               onClick={openTerminal}
               className="h-9 w-9 hover:bg-accent/50"
-              aria-label="Open mini terminal"
+              aria-label="Open terminal"
               data-cursor="tap"
             >
-              {'>_'}
+              <Search className="h-4 w-4" />
+            </Button>
+
+            {/* Settings Icon */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={openSettings}
+              className="h-9 w-9 hover:bg-accent/50"
+              aria-label="Open settings"
+              data-cursor="tap"
+            >
+              <Settings className="h-4 w-4" />
             </Button>
           </div>
+
+          {/* Start A Project / Contact Button */}
+          <Button
+            variant="default"
+            onClick={(e) => {
+              e.preventDefault();
+              openContactDialog();
+            }}
+            className="font-mono animate-pulse text-sm sm:text-sm px-4 sm:px-4 h-9 sm:h-9"
+            data-cursor="tap"
+          >
+            <span className="hidden sm:inline">Start A Project</span>
+            <span className="sm:hidden">Contact</span>
+          </Button>
         </div>
       </div>
     </header>

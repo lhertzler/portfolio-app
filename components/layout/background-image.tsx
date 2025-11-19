@@ -6,8 +6,8 @@ import Image from 'next/image';
 export function BackgroundImage() {
   const themeMode = useUIStore((state) => state.themeMode);
   
-  // Use bg-dark.png for dark and studio themes, bg.png for light theme
-  const imageSrc = themeMode === 'dark' || themeMode === 'studio'
+  // Use bg-dark.png for dark theme, bg.png for light theme
+  const imageSrc = themeMode === 'dark'
     ? '/images/layout/bg-dark.png' 
     : '/images/layout/bg.png';
 

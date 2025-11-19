@@ -46,12 +46,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, email, projectType, message } = body;
+    const { name, email, businessName, websiteUrl, service, estimatedBudget, message } = body;
 
     // Validation
-    if (!name || !email || !message) {
+    if (!name || !email || !service || !estimatedBudget) {
       return NextResponse.json(
-        { error: 'Name, email, and message are required.' },
+        { error: 'Name, email, service, and estimated budget are required.' },
         { status: 400 }
       );
     }
@@ -67,9 +67,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
     }
 
-    if (message.length < 10 || message.length > 5000) {
+    // Validate website URL if provided
+    if (websiteUrl && !/^https?:\/\/.+\..+/.test(websiteUrl.trim())) {
       return NextResponse.json(
-        { error: 'Message must be between 10 and 5000 characters.' },
+        { error: 'Please provide a valid website URL (e.g., https://example.com).' },
         { status: 400 }
       );
     }
@@ -78,8 +79,11 @@ export async function POST(request: NextRequest) {
     const sanitizedData = {
       name: sanitizeInput(name),
       email: sanitizeInput(email),
-      projectType: projectType ? sanitizeInput(projectType) : 'Not specified',
-      message: sanitizeInput(message),
+      businessName: businessName ? sanitizeInput(businessName) : '',
+      websiteUrl: websiteUrl ? sanitizeInput(websiteUrl) : '',
+      service: sanitizeInput(service),
+      estimatedBudget: sanitizeInput(estimatedBudget),
+      message: message ? sanitizeInput(message) : '',
     };
 
     // TODO: Integrate with email service (Resend, SendGrid, etc.)
@@ -94,7 +98,7 @@ export async function POST(request: NextRequest) {
     // await sendEmail({
     //   to: process.env.CONTACT_EMAIL,
     //   from: process.env.FROM_EMAIL,
-    //   subject: `New contact form submission: ${sanitizedData.projectType}`,
+    //   subject: `New contact form submission: ${sanitizedData.service}`,
     //   html: formatEmailTemplate(sanitizedData),
     // });
 

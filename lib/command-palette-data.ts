@@ -63,12 +63,6 @@ export const commands: Command[] = [
     actionKey: 'toggle-theme-dark',
   },
   {
-    id: 'toggle-studio-mode',
-    type: 'action',
-    label: 'Toggle Studio Mode',
-    actionKey: 'toggle-theme-studio',
-  },
-  {
     id: 'toggle-inspect-mode',
     type: 'action',
     label: 'Toggle Inspect Mode',

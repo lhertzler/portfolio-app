@@ -16,7 +16,10 @@ export function ContactDialog() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    projectType: '',
+    businessName: '',
+    websiteUrl: '',
+    service: '',
+    estimatedBudget: '',
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,10 +40,17 @@ export function ContactDialog() {
       newErrors.email = 'Please enter a valid email address';
     }
 
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
+    if (!formData.service) {
+      newErrors.service = 'Service is required';
+    }
+
+    if (!formData.estimatedBudget) {
+      newErrors.estimatedBudget = 'Estimated budget is required';
+    }
+
+    // Website URL validation (optional but if provided, should be valid)
+    if (formData.websiteUrl.trim() && !/^https?:\/\/.+\..+/.test(formData.websiteUrl.trim())) {
+      newErrors.websiteUrl = 'Please enter a valid URL (e.g., https://example.com)';
     }
 
     setErrors(newErrors);
@@ -86,7 +96,10 @@ export function ContactDialog() {
       setFormData({
         name: '',
         email: '',
-        projectType: '',
+        businessName: '',
+        websiteUrl: '',
+        service: '',
+        estimatedBudget: '',
         message: '',
       });
       setErrors({});
@@ -104,7 +117,7 @@ export function ContactDialog() {
 
   return (
     <Dialog open={isContactDialogOpen} onOpenChange={closeContactDialog}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl bg-card">
         <DialogHeader>
           <DialogTitle>Let&apos;s build something.</DialogTitle>
           <DialogDescription>
@@ -112,53 +125,125 @@ export function ContactDialog() {
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div>
-            <Input
-              placeholder="Name"
-              value={formData.name}
-              onChange={(e) => {
-                setFormData({ ...formData, name: e.target.value });
-                if (errors.name) setErrors({ ...errors, name: '' });
-              }}
-              className={errors.name ? 'border-red-500' : ''}
-              disabled={isSubmitting}
-            />
-            {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+          {/* Name and Email Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Input
+                placeholder="Name *"
+                value={formData.name}
+                onChange={(e) => {
+                  setFormData({ ...formData, name: e.target.value });
+                  if (errors.name) setErrors({ ...errors, name: '' });
+                }}
+                className={errors.name ? 'border-red-500' : ''}
+                disabled={isSubmitting}
+              />
+              {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name}</p>}
+            </div>
+            <div>
+              <Input
+                type="email"
+                placeholder="Email *"
+                value={formData.email}
+                onChange={(e) => {
+                  setFormData({ ...formData, email: e.target.value });
+                  if (errors.email) setErrors({ ...errors, email: '' });
+                }}
+                className={errors.email ? 'border-red-500' : ''}
+                disabled={isSubmitting}
+              />
+              {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+            </div>
           </div>
-          <div>
-            <Input
-              type="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={(e) => {
-                setFormData({ ...formData, email: e.target.value });
-                if (errors.email) setErrors({ ...errors, email: '' });
-              }}
-              className={errors.email ? 'border-red-500' : ''}
-              disabled={isSubmitting}
-            />
-            {errors.email && <p className="text-sm text-red-500 mt-1">{errors.email}</p>}
+
+          {/* Business Name and Website URL Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Input
+                placeholder="Business Name"
+                value={formData.businessName}
+                onChange={(e) => {
+                  setFormData({ ...formData, businessName: e.target.value });
+                  if (errors.businessName) setErrors({ ...errors, businessName: '' });
+                }}
+                className={errors.businessName ? 'border-red-500' : ''}
+                disabled={isSubmitting}
+              />
+              {errors.businessName && <p className="text-sm text-red-500 mt-1">{errors.businessName}</p>}
+            </div>
+            <div>
+              <Input
+                type="url"
+                placeholder="Website URL"
+                value={formData.websiteUrl}
+                onChange={(e) => {
+                  setFormData({ ...formData, websiteUrl: e.target.value });
+                  if (errors.websiteUrl) setErrors({ ...errors, websiteUrl: '' });
+                }}
+                className={errors.websiteUrl ? 'border-red-500' : ''}
+                disabled={isSubmitting}
+              />
+              {errors.websiteUrl && <p className="text-sm text-red-500 mt-1">{errors.websiteUrl}</p>}
+            </div>
           </div>
-          <div>
-            <Select
-              value={formData.projectType}
-              onValueChange={(value) => setFormData({ ...formData, projectType: value })}
-              disabled={isSubmitting}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Project Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="full-build">Full Build</SelectItem>
-                <SelectItem value="shopify">Shopify</SelectItem>
-                <SelectItem value="consulting">Consulting</SelectItem>
-                <SelectItem value="collab">Collab / Music</SelectItem>
-              </SelectContent>
-            </Select>
+
+          {/* Service and Budget Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Select
+                value={formData.service}
+                onValueChange={(value) => {
+                  setFormData({ ...formData, service: value });
+                  if (errors.service) setErrors({ ...errors, service: '' });
+                }}
+                disabled={isSubmitting}
+              >
+                <SelectTrigger className={errors.service ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Service *" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="shopify-theme-edits">Shopify Theme Edits</SelectItem>
+                  <SelectItem value="custom-shopify-theme">Custom Shopify Theme Build</SelectItem>
+                  <SelectItem value="shopify-app-development">Shopify App Development (Custom Private Apps)</SelectItem>
+                  <SelectItem value="headless-shopify-build">Headless Shopify Build (Next.js)</SelectItem>
+                  <SelectItem value="shopify-performance-optimization">Shopify Performance Optimization</SelectItem>
+                  <SelectItem value="shopify-systems-integrations">Shopify Systems & Integrations</SelectItem>
+                  <SelectItem value="custom-web-application">Custom Web Application (Next.js + Supabase)</SelectItem>
+                  <SelectItem value="internal-tools-dashboards">Internal Tools / Dashboards</SelectItem>
+                  <SelectItem value="api-development-integrations">API Development & Integrations</SelectItem>
+                  <SelectItem value="long-term-engineering-partnership">Long-Term Engineering Partnership / Retainer</SelectItem>
+                  <SelectItem value="consulting-architecture-review">Consulting / Architecture Review</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.service && <p className="text-sm text-red-500 mt-1">{errors.service}</p>}
+            </div>
+            <div>
+              <Select
+                value={formData.estimatedBudget}
+                onValueChange={(value) => {
+                  setFormData({ ...formData, estimatedBudget: value });
+                  if (errors.estimatedBudget) setErrors({ ...errors, estimatedBudget: '' });
+                }}
+                disabled={isSubmitting}
+              >
+                <SelectTrigger className={errors.estimatedBudget ? 'border-red-500' : ''}>
+                  <SelectValue placeholder="Estimated Budget *" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="less-than-10k">Less than $10k</SelectItem>
+                  <SelectItem value="10k-20k">$10k - $20k</SelectItem>
+                  <SelectItem value="20k-40k">$20k - $40k</SelectItem>
+                  <SelectItem value="40k-80k">$40k - $80k</SelectItem>
+                  <SelectItem value="80k-plus">$80k+</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.estimatedBudget && <p className="text-sm text-red-500 mt-1">{errors.estimatedBudget}</p>}
+            </div>
           </div>
           <div>
             <Textarea
-              placeholder="Message"
+              placeholder="Briefly describe your project..."
               value={formData.message}
               onChange={(e) => {
                 setFormData({ ...formData, message: e.target.value });

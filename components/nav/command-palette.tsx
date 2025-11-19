@@ -45,8 +45,6 @@ export function CommandPalette() {
       openThemePanel();
     } else if (actionKey === 'toggle-theme-dark') {
       setThemeMode('dark');
-    } else if (actionKey === 'toggle-theme-studio') {
-      setThemeMode('studio');
     } else if (actionKey === 'pause-audio') {
       pause();
     } else if (actionKey.startsWith('play-track-')) {

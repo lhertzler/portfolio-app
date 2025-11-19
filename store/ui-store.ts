@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type ThemeMode = 'light' | 'dark' | 'studio';
+export type ThemeMode = 'light' | 'dark';
 export type MotionPreference = 'full' | 'reduced';
 
 type UIState = {
@@ -14,6 +14,7 @@ type UIState = {
   customCursorEnabled: boolean;
   isEditorNavOpen: boolean;
   isContactDialogOpen: boolean;
+  isSettingsOpen: boolean;
 };
 
 type UIActions = {
@@ -30,13 +31,15 @@ type UIActions = {
   closeEditorNav: () => void;
   openContactDialog: () => void;
   closeContactDialog: () => void;
+  openSettings: () => void;
+  closeSettings: () => void;
 };
 
 export const useUIStore = create<UIState & UIActions>()(
   persist(
     (set) => ({
       themeMode: 'dark',
-      accentColor: 'teal',
+      accentColor: 'lightblue',
       motionPreference: 'full',
       inspectMode: false,
       isThemePanelOpen: false,
@@ -44,6 +47,7 @@ export const useUIStore = create<UIState & UIActions>()(
       customCursorEnabled: true,
       isEditorNavOpen: false,
       isContactDialogOpen: false,
+      isSettingsOpen: false,
 
       setThemeMode: (mode) => set({ themeMode: mode }),
       setAccentColor: (accentColor) => set({ accentColor }),
@@ -60,6 +64,8 @@ export const useUIStore = create<UIState & UIActions>()(
       closeEditorNav: () => set({ isEditorNavOpen: false }),
       openContactDialog: () => set({ isContactDialogOpen: true }),
       closeContactDialog: () => set({ isContactDialogOpen: false }),
+      openSettings: () => set({ isSettingsOpen: true }),
+      closeSettings: () => set({ isSettingsOpen: false }),
     }),
     {
       name: 'ui-storage',

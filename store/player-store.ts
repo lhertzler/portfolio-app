@@ -15,6 +15,7 @@ type PlayerState = {
   currentTrackId: string | null;
   isPlaying: boolean;
   positionSeconds: number;
+  showing: boolean;
 };
 
 type PlayerActions = {
@@ -25,6 +26,7 @@ type PlayerActions = {
   next: () => void;
   prev: () => void;
   seek: (seconds: number) => void;
+  setShowing: (showing: boolean) => void;
 };
 
 export const usePlayerStore = create<PlayerState & PlayerActions>((set, get) => ({
@@ -32,6 +34,7 @@ export const usePlayerStore = create<PlayerState & PlayerActions>((set, get) => 
   currentTrackId: null,
   isPlaying: false,
   positionSeconds: 0,
+  showing: false,
 
   setQueue: (tracks) => set({ queue: tracks }),
   playTrack: (id) =>
@@ -72,5 +75,6 @@ export const usePlayerStore = create<PlayerState & PlayerActions>((set, get) => 
     });
   },
   seek: (seconds) => set({ positionSeconds: seconds }),
+  setShowing: (showing) => set({ showing }),
 }));
 

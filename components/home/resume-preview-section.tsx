@@ -9,17 +9,17 @@ export function ResumePreviewSection() {
       data-section="resume"
       data-component="ResumePreviewSection"
       data-file="components/home/resume-preview-section.tsx"
-      className="py-24 scroll-mt-24"
+      className="py-12 sm:py-16 md:py-24 scroll-mt-24"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-4">Resume</h2>
-          <p className="text-lg text-muted-foreground">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-4">Resume</h2>
+          <p className="text-base sm:text-lg text-muted-foreground">
             +12 years of passion for programming techniques
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6">
           <Card>
             <CardHeader>
               <CardTitle>Experience</CardTitle>
@@ -67,11 +67,11 @@ export function ResumePreviewSection() {
                   <p className="text-sm mt-2">Music collaboration platform</p>
                 </div>
               </div>
-              <div className="flex gap-4 pt-4 border-t">
-                <Button asChild className="flex-1">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 border-t">
+                <Button asChild className="flex-1 text-sm sm:text-base">
                   <Link href="/resume">View Full Resume</Link>
                 </Button>
-                <Button variant="outline" asChild className="flex-1">
+                <Button variant="outline" asChild className="flex-1 text-sm sm:text-base">
                   <Link href="/resume.pdf" target="_blank">Download PDF</Link>
                 </Button>
               </div>

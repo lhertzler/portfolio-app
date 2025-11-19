@@ -2,19 +2,23 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "animated-border backdrop-blur-sm text-card-foreground shadow-sm transition-all duration-1000 hover:shadow-md",
-      className
-    )}
-    {...props}
-  />
-))
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  animatedBorder?: boolean;
+}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, animatedBorder = false, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        "bg-card rounded-2xl backdrop-blur-sm text-card-foreground shadow-sm transition-all duration-1000 hover:shadow-md",
+        animatedBorder && "animated-border",
+        className
+      )}
+      {...props}
+    />
+  )
+)
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<

@@ -28,7 +28,7 @@
 
   .dark {
     /* Supabase-inspired dark theme */
-    --background: 0 0% 1%;
+    --background: 0 0% 5%;
     --foreground: 0 0% 99%;
     --card: 240 3% 12%;
     --card-foreground: 0 0% 99%;
@@ -188,5 +188,35 @@
       opacity: 1;
     }
   }
+
+  /* Blink animation for terminal icon */
+  @keyframes blink {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .blink-icon {
+    animation: blink 1s ease-in-out infinite;
+  }
 }
 
+
+.animate-pulse {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}

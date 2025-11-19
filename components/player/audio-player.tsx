@@ -19,31 +19,24 @@ export function AudioPlayer() {
   const [isMinimized, setIsMinimized] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
-  // Track mount state for hydration debugging
+  // Track mount state for hydration
   useEffect(() => {
     setIsMounted(true);
-    console.log('[AudioPlayer] Component mounted on client');
   }, []);
 
   // Listen for minimize events from other components
   useEffect(() => {
-    if (typeof window === 'undefined') {
-      console.log('[AudioPlayer] useEffect skipped - SSR');
-      return;
-    }
+    if (typeof window === 'undefined') return;
     
     const handleMinimizeChange = (e: CustomEvent<boolean>) => {
-      console.log('[AudioPlayer] Minimize event received:', e.detail);
       setIsMinimized(e.detail);
     };
     
     window.addEventListener('player-minimize-change', handleMinimizeChange as EventListener);
     
     // Check initial state after mount to avoid hydration mismatch
-    // Use requestAnimationFrame to ensure DOM is ready
     requestAnimationFrame(() => {
       const bodyHasClass = document.body.classList.contains('player-minimized');
-      console.log('[AudioPlayer] Initial body class check:', bodyHasClass);
       setIsMinimized(bodyHasClass);
     });
     
@@ -200,187 +193,168 @@ export function AudioPlayer() {
 
   const formatTime = (seconds: number) => {
     if (!seconds || isNaN(seconds) || !isFinite(seconds)) {
-      console.log('[AudioPlayer] formatTime: invalid seconds:', seconds);
       return '0:00';
     }
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    const formatted = `${mins}:${secs.toString().padStart(2, '0')}`;
-    console.log('[AudioPlayer] formatTime:', seconds, '->', formatted);
-    return formatted;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
   // Use track durationSeconds first to avoid hydration mismatch
   // Only fall back to audio element duration on client after mount
   const initialDuration = currentTrack?.durationSeconds ?? 0;
-  console.log('[AudioPlayer] Initial duration from track:', initialDuration, 'currentTrack:', currentTrack?.id);
   const [duration, setDuration] = useState(initialDuration);
   
   useEffect(() => {
-    console.log('[AudioPlayer] Duration effect running - isMounted:', isMounted, 'currentTrack:', currentTrack?.id, 'currentDuration:', duration);
-    if (typeof window === 'undefined') {
-      console.log('[AudioPlayer] Duration effect skipped - SSR');
-      return;
-    }
+    if (typeof window === 'undefined') return;
     
     // Update duration from audio element after it loads
     const audio = audioRef.current;
     if (audio) {
       const updateDuration = () => {
         if (audio.duration && isFinite(audio.duration)) {
-          console.log('[AudioPlayer] Updating duration from audio element:', audio.duration);
           setDuration(audio.duration);
-        } else {
-          console.log('[AudioPlayer] Audio duration invalid:', audio.duration);
         }
       };
       
       if (audio.duration && isFinite(audio.duration)) {
         updateDuration();
       } else {
-        console.log('[AudioPlayer] Waiting for loadedmetadata event');
         audio.addEventListener('loadedmetadata', updateDuration, { once: true });
         return () => {
           audio.removeEventListener('loadedmetadata', updateDuration);
         };
       }
     } else if (currentTrack?.durationSeconds) {
-      console.log('[AudioPlayer] No audio element, using track duration:', currentTrack.durationSeconds);
       setDuration(currentTrack.durationSeconds);
-    } else {
-      console.log('[AudioPlayer] No audio element and no track duration');
     }
   }, [currentTrack?.durationSeconds, isMounted]);
 
+  // Don't render on server to avoid hydration issues
+  if (!isMounted || !currentTrack) {
+    return <audio ref={audioRef} style={{ display: 'none' }} />;
+  }
 
-  const isSSR = typeof window === 'undefined';
-  console.log('[AudioPlayer] Render - SSR:', isSSR, 'currentTrack:', currentTrack?.id, 'title:', currentTrack?.title, 'artist:', currentTrack?.artist, 'isMinimized:', isMinimized, 'duration:', duration, 'positionSeconds:', positionSeconds, 'isMounted:', isMounted);
+  const timeDisplay = formatTime(positionSeconds);
+  const durationDisplay = formatTime(duration);
 
   return (
     <>
       {/* Audio element always mounted - CSS handles visibility */}
       <audio ref={audioRef} style={{ display: 'none' }} />
-      {typeof window !== 'undefined' && currentTrack && (() => {
-        const timeDisplay = formatTime(positionSeconds);
-        const durationDisplay = formatTime(duration);
-        console.log('[AudioPlayer] Text content - timeDisplay:', timeDisplay, 'durationDisplay:', durationDisplay, 'title:', currentTrack?.title, 'artist:', currentTrack?.artist);
-        
-        return (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="music-player fixed bottom-0 left-0 right-0 border-t border-border/50 bg-card/70 backdrop-blur-md shadow-lg shadow-black/10 z-50"
-            data-component="AudioPlayer"
-            data-file="components/player/audio-player.tsx"
-            suppressHydrationWarning
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="music-player fixed bottom-0 left-0 right-0 border-t border-border/50 bg-card/70 backdrop-blur-md shadow-lg shadow-black/10 z-50"
+        data-component="AudioPlayer"
+        data-file="components/player/audio-player.tsx"
+        suppressHydrationWarning
+      >
+        <div className="mx-auto max-w-7xl flex items-center gap-4 px-4 sm:px-8 py-4 text-xs sm:text-sm">
+          <div className="flex flex-col min-w-0 flex-shrink-0">
+            <span className="font-medium truncate" suppressHydrationWarning>{currentTrack.title}</span>
+            {currentTrack.artist && (
+              <span className="text-muted-foreground truncate text-xs" suppressHydrationWarning>
+                {currentTrack.artist}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <button
+              type="button"
+              onClick={prev}
+              className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
+              aria-label="Previous track"
+            >
+              <SkipBack className="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              onClick={handlePlayPause}
+              className="p-3 rounded-full bg-background/50 backdrop-blur-sm hover:bg-accent/50 hover:shadow-md transition-all duration-200 active:scale-95"
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              {isPlaying ? (
+                <Pause className="h-6 w-6" />
+              ) : (
+                <Play className="h-6 w-6" />
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={next}
+              className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
+              aria-label="Next track"
+            >
+              <SkipForward className="h-4 w-4" />
+            </button>
+          </div>
+
+          <div className="flex-1 flex items-center gap-2 min-w-0">
+            <span className="text-xs text-muted-foreground flex-shrink-0" suppressHydrationWarning>
+              {timeDisplay}
+            </span>
+            <input
+              type="range"
+              min={0}
+              max={duration || 0}
+              step={0.1}
+              value={positionSeconds}
+              onChange={handleSeek}
+              className="flex-1 h-1.5 bg-muted/50 rounded-lg appearance-none cursor-pointer accent-primary transition-all hover:accent-primary/80"
+              style={{
+                background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${duration > 0 ? (positionSeconds / duration) * 100 : 0}%, hsl(var(--muted) / 0.5) ${duration > 0 ? (positionSeconds / duration) * 100 : 0}%, hsl(var(--muted) / 0.5) 100%)`,
+                transition: 'background 0.1s ease-out'
+              }}
+            />
+            <span className="text-xs text-muted-foreground flex-shrink-0" suppressHydrationWarning>
+              {durationDisplay}
+            </span>
+          </div>
+
+          {/* WaveformVisualizer */}
+          <div className="hidden bg-card sm:block relative h-8 w-32 flex-shrink-0 overflow-hidden">
+            <WaveformVisualizer
+              audioElement={audioRef.current}
+              isPlaying={isPlaying}
+            />
+          </div>
+
+          {/* Playlist Button */}
+          <button
+            type="button"
+            onClick={() => setPlaylistOpen(true)}
+            className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
+            aria-label="Open playlist"
           >
-            <div className="mx-auto max-w-7xl flex items-center gap-4 px-4 sm:px-8 py-4 text-xs sm:text-sm">
-              <div className="flex flex-col min-w-0 flex-shrink-0">
-                <span className="font-medium truncate" suppressHydrationWarning>{currentTrack.title}</span>
-                {currentTrack.artist && (
-                  <span className="text-muted-foreground truncate text-xs" suppressHydrationWarning>
-                    {currentTrack.artist}
-                  </span>
-                )}
-              </div>
+            <ListMusic className="h-4 w-4" />
+          </button>
 
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <button
-                  type="button"
-                  onClick={prev}
-                  className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
-                  aria-label="Previous track"
-                >
-                  <SkipBack className="h-4 w-4" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handlePlayPause}
-                  className="p-3 rounded-full bg-background/50 backdrop-blur-sm hover:bg-accent/50 hover:shadow-md transition-all duration-200 active:scale-95"
-                  aria-label={isPlaying ? 'Pause' : 'Play'}
-                >
-                  {isPlaying ? (
-                    <Pause className="h-6 w-6" />
-                  ) : (
-                    <Play className="h-6 w-6" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={next}
-                  className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
-                  aria-label="Next track"
-                >
-                  <SkipForward className="h-4 w-4" />
-                </button>
-              </div>
-
-              <div className="flex-1 flex items-center gap-2 min-w-0">
-                <span className="text-xs text-muted-foreground flex-shrink-0" suppressHydrationWarning>
-                  {timeDisplay}
-                </span>
-                <input
-                  type="range"
-                  min={0}
-                  max={duration || 0}
-                  step={0.1}
-                  value={positionSeconds}
-                  onChange={handleSeek}
-                  className="flex-1 h-1.5 bg-muted/50 rounded-lg appearance-none cursor-pointer accent-primary transition-all hover:accent-primary/80"
-                  style={{
-                    background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${duration > 0 ? (positionSeconds / duration) * 100 : 0}%, hsl(var(--muted) / 0.5) ${duration > 0 ? (positionSeconds / duration) * 100 : 0}%, hsl(var(--muted) / 0.5) 100%)`,
-                    transition: 'background 0.1s ease-out'
-                  }}
-                />
-                <span className="text-xs text-muted-foreground flex-shrink-0" suppressHydrationWarning>
-                  {durationDisplay}
-                </span>
-              </div>
-
-              {/* WaveformVisualizer */}
-              <div className="hidden bg-card sm:block relative h-8 w-32 flex-shrink-0 overflow-hidden">
-                <WaveformVisualizer
-                  audioElement={audioRef.current}
-                  isPlaying={isPlaying}
-                />
-              </div>
-
-              {/* Playlist Button */}
-              <button
-                type="button"
-                onClick={() => setPlaylistOpen(true)}
-                className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
-                aria-label="Open playlist"
-              >
-                <ListMusic className="h-4 w-4" />
-              </button>
-
-              {/* Minimize Button */}
-              <button
-                type="button"
-                onClick={() => {
-                  const newMinimized = !isMinimized;
-                  setIsMinimized(newMinimized);
-                  
-                  if (newMinimized) {
-                    document.body.classList.add('player-minimized');
-                  } else {
-                    document.body.classList.remove('player-minimized');
-                  }
-                  
-                  // Dispatch event for other components
-                  window.dispatchEvent(new CustomEvent('player-minimize-change', { detail: newMinimized }));
-                }}
-                className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
-                aria-label="Minimize player"
-              >
-                <ChevronDown className="h-4 w-4" />
-              </button>
-            </div>
-          </motion.div>
-        );
-      })()}
+          {/* Minimize Button */}
+          <button
+            type="button"
+            onClick={() => {
+              const newMinimized = !isMinimized;
+              setIsMinimized(newMinimized);
+              
+              if (newMinimized) {
+                document.body.classList.add('player-minimized');
+              } else {
+                document.body.classList.remove('player-minimized');
+              }
+              
+              // Dispatch event for other components
+              window.dispatchEvent(new CustomEvent('player-minimize-change', { detail: newMinimized }));
+            }}
+            className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
+            aria-label="Minimize player"
+          >
+            <ChevronDown className="h-4 w-4" />
+          </button>
+        </div>
+      </motion.div>
 
       {/* Playlist Sheet */}
       <Sheet open={playlistOpen} onOpenChange={setPlaylistOpen}>

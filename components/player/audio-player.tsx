@@ -28,8 +28,11 @@ export function AudioPlayer() {
     
     window.addEventListener('player-minimize-change', handleMinimizeChange as EventListener);
     
-    // Check initial state
-    setIsMinimized(document.body.classList.contains('player-minimized'));
+    // Check initial state after mount to avoid hydration mismatch
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      setIsMinimized(document.body.classList.contains('player-minimized'));
+    });
     
     return () => {
       window.removeEventListener('player-minimize-change', handleMinimizeChange as EventListener);
@@ -183,12 +186,40 @@ export function AudioPlayer() {
   };
 
   const formatTime = (seconds: number) => {
+    if (!seconds || isNaN(seconds) || !isFinite(seconds)) return '0:00';
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const duration = currentTrack?.durationSeconds ?? audioRef.current?.duration ?? 0;
+  // Use track durationSeconds first to avoid hydration mismatch
+  // Only fall back to audio element duration on client after mount
+  const [duration, setDuration] = useState(() => currentTrack?.durationSeconds ?? 0);
+  
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    // Update duration from audio element after it loads
+    const audio = audioRef.current;
+    if (audio) {
+      const updateDuration = () => {
+        if (audio.duration && isFinite(audio.duration)) {
+          setDuration(audio.duration);
+        }
+      };
+      
+      if (audio.duration && isFinite(audio.duration)) {
+        updateDuration();
+      } else {
+        audio.addEventListener('loadedmetadata', updateDuration, { once: true });
+        return () => {
+          audio.removeEventListener('loadedmetadata', updateDuration);
+        };
+      }
+    } else if (currentTrack?.durationSeconds) {
+      setDuration(currentTrack.durationSeconds);
+    }
+  }, [currentTrack?.durationSeconds]);
 
 
   return (

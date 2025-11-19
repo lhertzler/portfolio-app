@@ -52,8 +52,11 @@ export function Header() {
     
     window.addEventListener('player-minimize-change', handleMinimizeChange as EventListener);
     
-    // Check initial state
-    setIsPlayerMinimized(document.body.classList.contains('player-minimized'));
+    // Check initial state after mount to avoid hydration mismatch
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      setIsPlayerMinimized(document.body.classList.contains('player-minimized'));
+    });
     
     return () => {
       window.removeEventListener('player-minimize-change', handleMinimizeChange as EventListener);

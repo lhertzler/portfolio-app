@@ -11,6 +11,38 @@ import { ValuePropositionThreeSection } from '@/components/home/value-propositio
 import { AboutMeSection } from '@/components/home/about-me-section';
 import { StructuredData } from '@/components/seo/structured-data';
 import { generatePersonSchema, generateWebsiteSchema } from '@/lib/structured-data';
+import type { Metadata } from 'next';
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lukehertzler.com';
+const defaultImage = `${siteUrl}/images/luke/luke-techaron.jpg`;
+
+export const metadata: Metadata = {
+  title: 'Luke Hertzler – Portfolio | Shopify & Next.js Solutions Architect',
+  description: 'Full-Stack Engineer, UI/UX Designer, Musician. I design, architect, and build custom Shopify themes, bespoke apps, and high-performance Next.js experiences that actually move the needle.',
+  openGraph: {
+    title: 'Luke Hertzler – Portfolio | Shopify & Next.js Solutions Architect',
+    description: 'Full-Stack Engineer, UI/UX Designer, Musician. I design, architect, and build custom Shopify themes, bespoke apps, and high-performance Next.js experiences that actually move the needle.',
+    url: siteUrl,
+    siteName: 'Luke Hertzler',
+    images: [
+      {
+        url: defaultImage,
+        width: 1200,
+        height: 630,
+        alt: 'Luke Hertzler - Full-Stack Engineer & Shopify & Next.js Solutions Architect',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Luke Hertzler – Portfolio | Shopify & Next.js Solutions Architect',
+    description: 'Full-Stack Engineer, UI/UX Designer, Musician. I design, architect, and build custom Shopify themes, bespoke apps, and high-performance Next.js experiences that actually move the needle.',
+    images: [defaultImage],
+    creator: '@lukehertzler',
+  },
+};
 
 export default function Home() {
   const personSchema = generatePersonSchema();

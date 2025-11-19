@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const imageUrl = project.featuredImage 
     ? `${siteUrl}${project.featuredImage}`
     : `${siteUrl}/images/luke/luke-techaron.jpg`;
+  const projectUrl = `${siteUrl}/portfolio/${resolvedParams.slug}`;
 
   return {
     title: `${project.title} | Portfolio`,
@@ -40,6 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: `${project.title} | Portfolio`,
       description: project.summary || project.description,
       type: 'website',
+      url: projectUrl,
+      siteName: 'Luke Hertzler',
       images: [
         {
           url: imageUrl,
@@ -54,6 +57,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: `${project.title} | Portfolio`,
       description: project.summary || project.description,
       images: [imageUrl],
+      creator: '@lukehertzler',
     },
   };
 }

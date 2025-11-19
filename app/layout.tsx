@@ -33,9 +33,43 @@ const inter = Inter({
   display: 'swap',
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lukehertzler.com';
+const defaultImage = `${siteUrl}/images/social-share.jpg`;
+
 export const metadata: Metadata = {
   title: 'Luke Hertzler – Portfolio',
-  description: 'Full-Stack Engineer, UI/UX Designer, Musician.',
+  description: 'Shopify & Next.js Solutions Architect — I build custom Shopify themes, bespoke apps, and high-performance Next.js experiences that actually move the needle.',
+  keywords: ['Luke Hertzler', 'Full-Stack Engineer', 'Shopify Developer', 'Next.js Developer', 'UI/UX Designer', 'Web Developer', 'Portfolio'],
+  authors: [{ name: 'Luke Hertzler' }],
+  creator: 'Luke Hertzler',
+  publisher: 'Luke Hertzler',
+  metadataBase: new URL(siteUrl),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: siteUrl,
+    siteName: 'Luke Hertzler',
+    title: 'Luke Hertzler – Portfolio',
+    description: 'Shopify & Next.js Solutions Architect — Full-Stack Engineer, UI/UX Designer, Musician. ',
+    images: [
+      {
+        url: defaultImage,
+        width: 1200,
+        height: 630,
+        alt: 'Luke Hertzler',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Luke Hertzler – Portfolio',
+    description: 'Full-Stack Engineer, UI/UX Designer, Musician. Shopify & Next.js Solutions Architect.',
+    images: [defaultImage],
+    creator: '@lukehertzler',
+  },
   icons: {
     icon: [
       { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },

@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Metadata } from 'next';
 import { getPostBySlug, getAllPosts } from '@/lib/blog-posts';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +20,7 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> | { slug: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> | { slug: string } }): Promise<Metadata> {
   // Handle both async and sync params (Next.js 15 compatibility)
   const slug = typeof params === 'object' && 'then' in params 
     ? await params.then(p => p.slug).catch(() => '') 
@@ -34,9 +35,40 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
   }
 
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.lukehertzler.com';
+  const imageUrl = post.bannerImage 
+    ? `${siteUrl}${post.bannerImage}`
+    : `${siteUrl}/images/luke/luke-techaron.jpg`;
+  const postUrl = `${siteUrl}/blog/${post.slug}`;
+
   return {
     title: `${post.title} | Blog`,
     description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: 'article',
+      url: postUrl,
+      siteName: 'Luke Hertzler',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+      publishedTime: post.date,
+      authors: [post.author || 'Luke Hertzler'],
+      tags: post.tags,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description,
+      images: [imageUrl],
+      creator: '@lukehertzler',
+    },
   };
 }
 

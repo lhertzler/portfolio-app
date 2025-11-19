@@ -1,23 +1,37 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePlayerStore } from '@/store/player-store';
 
 export function BodyClassManager() {
-  const showing = usePlayerStore((state) => state.showing);
-
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
     const body = document.body;
-    if (showing) {
-      body.classList.add('pb-[70px]');
-    } else {
-      body.classList.remove('pb-[70px]');
-    }
+    
+    const updatePadding = () => {
+      const isMinimized = body.classList.contains('player-minimized');
+      if (!isMinimized) {
+        body.classList.add('pb-[70px]');
+      } else {
+        body.classList.remove('pb-[70px]');
+      }
+    };
+    
+    // Initial check
+    updatePadding();
+    
+    // Listen for minimize events instead of MutationObserver
+    const handleMinimizeChange = () => {
+      updatePadding();
+    };
+    
+    window.addEventListener('player-minimize-change', handleMinimizeChange);
 
     return () => {
+      window.removeEventListener('player-minimize-change', handleMinimizeChange);
       body.classList.remove('pb-[70px]');
     };
-  }, [showing]);
+  }, []);
 
   return null;
 }

@@ -42,23 +42,22 @@ export function Header() {
   const openEditorNav = useUIStore((s) => s.openEditorNav);
   const isContactDialogOpen = useUIStore((s) => s.isContactDialogOpen);
 
-  // Sync with body class for player minimized state
+  // Listen for minimize events from audio player
   useEffect(() => {
-    const checkMinimized = () => {
-      setIsPlayerMinimized(document.body.classList.contains('player-minimized'));
+    if (typeof window === 'undefined') return;
+    
+    const handleMinimizeChange = (e: CustomEvent<boolean>) => {
+      setIsPlayerMinimized(e.detail);
     };
     
-    // Check initially
-    checkMinimized();
+    window.addEventListener('player-minimize-change', handleMinimizeChange as EventListener);
     
-    // Watch for changes using MutationObserver
-    const observer = new MutationObserver(checkMinimized);
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+    // Check initial state
+    setIsPlayerMinimized(document.body.classList.contains('player-minimized'));
     
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener('player-minimize-change', handleMinimizeChange as EventListener);
+    };
   }, []);
 
   useEffect(() => {
@@ -266,6 +265,9 @@ export function Header() {
               onClick={() => {
                 document.body.classList.remove('player-minimized');
                 setIsPlayerMinimized(false);
+                
+                // Dispatch event for other components
+                window.dispatchEvent(new CustomEvent('player-minimize-change', { detail: false }));
               }}
               className={`h-9 w-9 hover:bg-accent/50 transition-opacity duration-200 ${
                 isPlayerMinimized ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'

@@ -18,21 +18,22 @@ export function AudioPlayer() {
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
 
-  // Sync with body class
+  // Listen for minimize events from other components
   useEffect(() => {
-    const checkMinimized = () => {
-      setIsMinimized(document.body.classList.contains('player-minimized'));
+    if (typeof window === 'undefined') return;
+    
+    const handleMinimizeChange = (e: CustomEvent<boolean>) => {
+      setIsMinimized(e.detail);
     };
     
-    checkMinimized();
+    window.addEventListener('player-minimize-change', handleMinimizeChange as EventListener);
     
-    const observer = new MutationObserver(checkMinimized);
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+    // Check initial state
+    setIsMinimized(document.body.classList.contains('player-minimized'));
     
-    return () => observer.disconnect();
+    return () => {
+      window.removeEventListener('player-minimize-change', handleMinimizeChange as EventListener);
+    };
   }, []);
 
   const {
@@ -62,13 +63,15 @@ export function AudioPlayer() {
     queue.find((t) => t.id === currentTrackId) ?? queue[0] ?? null;
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     if (!audioRef.current || !currentTrack) return;
 
     const audio = audioRef.current;
     const currentSrc = currentTrack.src;
 
     // Only update src if it actually changed
-    if (audio.src !== currentSrc && audio.src !== `${window.location.origin}${currentSrc}`) {
+    const fullUrl = typeof window !== 'undefined' ? `${window.location.origin}${currentSrc}` : currentSrc;
+    if (audio.src !== currentSrc && audio.src !== fullUrl) {
       audio.src = currentSrc;
       seek(0);
 
@@ -286,13 +289,17 @@ export function AudioPlayer() {
               <button
                 type="button"
                 onClick={() => {
-                  const minimized = !isMinimized;
-                  setIsMinimized(minimized);
-                  if (minimized) {
+                  const newMinimized = !isMinimized;
+                  setIsMinimized(newMinimized);
+                  
+                  if (newMinimized) {
                     document.body.classList.add('player-minimized');
                   } else {
                     document.body.classList.remove('player-minimized');
                   }
+                  
+                  // Dispatch event for other components
+                  window.dispatchEvent(new CustomEvent('player-minimize-change', { detail: newMinimized }));
                 }}
                 className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
                 aria-label="Minimize player"

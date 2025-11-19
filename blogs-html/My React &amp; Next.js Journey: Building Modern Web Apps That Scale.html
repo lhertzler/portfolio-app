@@ -1,0 +1,203 @@
+<h2>Introduction</h2>
+<p>
+  In this post I’ll walk you through <strong>my React &amp; Next.js journey</strong> — how I moved from Shopify development and WordPress frustration to architecting full-scale web applications, the tech decisions I made, the systems I built (including SoundVent and my portfolio site), and the lessons I’d share with entrepreneurs, tech nerds, and anyone planning a custom application. If you’re curious how modern stacks like React, Next.js, Tailwind, Zustand and Supabase come together — or how to think like someone building at a higher level — you’re in the right place.
+</p>
+
+<h2>Background: From Shopify + WordPress to Modern Engineering</h2>
+
+<h3>My Early Years as a Shopify Developer</h3>
+<p>
+  Before React ever entered my radar, I was deep into custom Shopify theme builds and app integrations. I built for real merchants, solved performance issues, tweaked Liquid, created plugins. That experience gave me the fundamentals of commerce logic, UX for shoppers, module-based thinking and real production constraints. However, I was still constrained by what a theme system could deliver. I knew there were limits in flexibility, and every time I tried something outside the norm I hit a roadblock.
+</p>
+
+<h3>Trying to Push WordPress Beyond Its Limits</h3>
+<p>
+  Around the same time I also experimented heavily with WordPress. I built membership systems, dashboards, custom plugin stacks, and tried scaling WordPress into something it wasn’t built for. Performance floundered, updates broke custom code, plugins conflicted, and I spent more time managing tech debt than building vision. WordPress had served me well for small things — but once I tried to deploy large-scale systems, the ecosystem collapsed under its own weight.
+</p>
+
+<h3>The Breaking Point</h3>
+<p>
+  The moment I realized I needed to start over came when I was attempting to build a multi-step internal tool for a merchant: rich UI, complex state, dynamic routing, real-time updates — and WordPress just wasn’t built for that. I couldn’t build the architecture I imagined. And Shopify theme limitations amplified the frustration. I knew I needed something new.
+</p>
+
+<h3>The Decision to Start Over Completely</h3>
+<p>
+  So I tossed aside the comfortable. I chose to rebuild my toolkit. I discovered React, saw component architecture, and felt “this is how my internal thinking works.” Then Next.js emerged with routing, SSR/SSG, strong performance, and real-world engineering features. That pivot changed everything: I could build the systems I saw internally instead of battling frameworks that weren’t meant for it.
+</p>
+
+<h3>How Shopify + WordPress Gave Me the Foundation for React</h3>
+<p>
+  That earlier era mattered. Working Shopify themes taught me commerce logic, performance priority, UI for business. The WordPress experiments taught me architecture fails, plugin brittleness, tech debt pain. When I moved to React/Next.js I didn’t come in naive — I came in battle-tested, and ready. This gives me a unique vantage when building web applications now.
+</p>
+
+<h2>1. Why I Chose React &amp; Next.js</h2>
+<p>
+  React changed the game because I could break UI into components — small, reusable, predictable. I saw my designs not as pages, but as systems of interacting parts. That mindset matched how I think. Next.js amplified that by adding routing, server-rendering, static generation, and architectural scale. I realized that for custom applications, not just marketing sites, I needed full-stack thinking. React + Next.js gave me that. For entrepreneurs and tech leads looking for app development, this matters: you aren’t hiring someone who “knows a theme” — you’re hiring someone who thinks in architecture and systems.
+</p>
+
+<h2>2. Understanding the Stack: React, Next.js, Tailwind, Zustand</h2>
+
+<h3>React Component-Based Architecture Explained</h3>
+<p>
+  At its core React is about components: UI units with props, state, lifecycle. For large apps, this means modularity, reuse, predictability. I’ve leveraged that for features, dashboards, UI systems — everything from small widgets to complex flows.
+</p>
+
+<h3>What Next.js Adds on Top of React</h3>
+<p>
+  Next.js gives file-based routing, server rendering (SSR), static generation (SSG), incremental revalidation, and backend API routes. It bridges frontend and backend, letting you serve pages faster, handle data securely, and keep architecture sane at scale.
+</p>
+
+<h3>Why Tailwind + Zustand Are Part of My Productivity Build</h3>
+<p>
+  Tailwind accelerated styling: utility classes instead of writing CSS from scratch, all while keeping a consistent design system. Zustand gave me global state without Redux’s boilerplate. Combined, they made prototyping fast and architecture disciplined — perfect for React and Next.js web applications that need to move quickly without falling apart later.
+</p>
+
+<h2>3. From Idea to Architecture: Mapping Out My First Big App</h2>
+<p>
+  I learned early that writing code without architecture is like painting without a sketch. My process now: visualise the system, draw state flows, plan directories, define component contracts, think about data models. That mental mapping reduced iteration time drastically.
+</p>
+<p>
+  With SoundVent, for example, I sketched flows for user posts, follow logic, audio pipelines, then mapped them into React and Next.js routes, components, and state stores. The same approach let me complete a full portfolio site — including a custom audio player and component inspector — in about 24 hours. The key wasn’t typing speed; it was architectural clarity.
+</p>
+
+<h2>4. Real-World Case: SoundVent and the Portfolio Site</h2>
+<p>
+  SoundVent is a full-scale platform built on Next.js and Supabase, with real-time messaging, media uploads, social features, and streaming integrations. My portfolio site became a proof of that capability: it includes a persistent audio player, waveform visualisation, theme switcher, and a dev-inspector overlay that exposes component paths as you hover the UI.
+</p>
+<p>
+  None of that exists in a typical “portfolio template.” It’s the result of treating React and Next.js as a canvas, not just a job requirement. For potential clients, it sends a clear signal: this isn’t just about shipping pages — it’s about building platforms, products, and experiences that go beyond the norm.
+</p>
+
+<h2>5. Router Strategy &amp; Layouts in Next.js</h2>
+<p>
+  Next.js supports both the classic Pages Router and the newer App Router. The App Router, with nested layouts and server components, lets you build structures where certain parts of the UI persist while others change — exactly what you need for experiences like continuous music players or global navigation.
+</p>
+<p>
+  In my portfolio, I use layouts so that the music player and theme controls don’t unmount between route changes. That’s a small but powerful example: routing decisions define user experience. In custom applications, especially ones with complex flows, this kind of layout thinking is the difference between a smooth app and a frustrating one.
+</p>
+
+<h2>6. State Management: Going Beyond React’s Built-In State</h2>
+<p>
+  For small apps, React’s <code>useState</code> and <code>useReducer</code> are enough. But once you have many screens, shared global state, or features like a persistent player, theme system, notifications, and complex forms, you need something more scalable and predictable.
+</p>
+<p>
+  I use Zustand for global state management. It strikes a nice balance: simple API, minimal boilerplate, solid performance. I keep stores domain-based — for example, one for audio, one for UI/theme, one for auth, one for data. That structure keeps things maintainable, and makes it easy to understand the flow of data in the app. For clients, this means the app is more reliable, easier to extend, and less likely to devolve into “spaghetti state”.
+</p>
+
+<h2>7. Performance &amp; SEO: Why Next.js Matters for Apps</h2>
+<p>
+  One of the most powerful parts of Next.js is its rendering flexibility. You can choose between server-side rendering (SSR), static site generation (SSG), incremental static regeneration (ISR), or client-side rendering (CSR), depending on the needs of each page or route.
+</p>
+<p>
+  For marketing and landing pages, I lean on SSG or ISR for speed and reliability. For dashboards and authenticated experiences, SSR or a hybrid approach often makes more sense. The result is a React and Next.js application that loads quickly, ranks better in search, and feels snappier. For entrepreneurs and product teams, this directly affects engagement, conversions, and perceived product quality.
+</p>
+
+<h2>8. Database Architecture &amp; Backend Integration</h2>
+<p>
+  On the backend side, I use Supabase — essentially a managed Postgres with auth, storage, and real-time capabilities baked in. Designing SoundVent’s schema forced me to think deeply about database architecture: many-to-many relationships, row-level security, indexing, naming conventions, and data access patterns.
+</p>
+<p>
+  For example, mapping things like users to posts, media to posts, likes, comments, and follows required consistent, scalable relational design. I had to consider questions like “How will this be queried?” and “What happens when we have millions of records?” That discipline carries over to client projects: instead of just “getting it working,” I design systems that can grow.
+</p>
+
+<h2>9. Custom UI Systems &amp; Design Systems</h2>
+<p>
+  I don’t treat UI as a one-off theme; I treat it as a system. Components are built as primitives and patterns that can be reused across the app. Tailwind helps here by making it easy to keep spacing, colors, typography, and states consistent.
+</p>
+<p>
+  In my portfolio and in SoundVent, the same underlying patterns power modals, cards, panels, and layouts. A single design system powers both the “marketing” surfaces and the “application” surfaces. That kind of consistency is what makes apps feel cohesive and intentional, and it also speeds up development when new features are needed.
+</p>
+
+<h2>10. The Role of AI in My Workflow</h2>
+<p>
+  AI coding assistants play a big role in how I work now, but not as a substitute for understanding. They’re accelerators. Instead of manually typing boilerplate or repetitive patterns, I describe what I need: components, state shapes, APIs, layouts. The AI generates a first pass; I refine, correct, and evolve it.
+</p>
+<p>
+  The result is a shift from “coder” to “architect.” I spend more time thinking about system design, user experience, and correctness, and less time fighting syntax. For clients, that means I can ship complex applications faster — but with the same level of care and structural integrity.
+</p>
+
+<h2>11. Lessons Learned &amp; Mistakes Made</h2>
+<p>
+  I’ve learned not to chase features for their own sake. Feature bloat can make an app confusing and hard to maintain. The key is to focus on features that move the needle: better UX, clearer workflows, deeper insight, smoother performance.
+</p>
+<p>
+  I’ve also learned that speed doesn’t have to mean chaos. With a solid architecture and good patterns, you can move quickly without destroying the codebase. The painful missteps from my WordPress days taught me what tech debt looks like and how hard it is to undo. React and Next.js have given me a second chance to build with more discipline and intention.
+</p>
+
+<h2>12. For Entrepreneurs &amp; Agencies: What This Means for You</h2>
+<p>
+  If you’re planning a custom application or platform, the tech stack and who implements it matters a lot. You want someone who understands React and Next.js, but also state management, database design, routing strategies, and performance. You also want someone who has lived through real constraints — not just someone who can stitch together tutorials.
+</p>
+<p>
+  My journey from Shopify and WordPress into React, Next.js, Supabase, Tailwind, and Zustand isn’t just a tech story. It’s a story of learning what doesn’t work long-term, and choosing tools that can keep up with serious ideas. If you’re an entrepreneur, founder, or agency looking for a partner to build custom systems, this is the mindset I bring to the table.
+</p>
+
+<h2>13. Looking Ahead: What’s Next for My Stack</h2>
+<p>
+  The React and Next.js ecosystem is still evolving. Next.js continues to push forward with new routing patterns, React Server Components, performance improvements, and better DX. On my side, I’m interested in deeper integrations between audio, data, and UI — expanding SoundVent, refining my design systems, and continuing to experiment with AI-assisted development.
+</p>
+<p>
+  The core principle, though, stays the same: build systems that are fast, clear, intentional, and a joy to use. Everything else is just an evolving toolset in service of that goal.
+</p>
+
+<h2>14. Quick Takeaways</h2>
+<ul>
+  <li>Choose a stack that supports architecture: React + Next.js excel at this.</li>
+  <li>Map systems before coding: flows, state, and data should be intentional.</li>
+  <li>Use UI systems, not ad-hoc components, for consistency and speed.</li>
+  <li>Performance and SEO matter even for “apps,” not just marketing sites.</li>
+  <li>Database design (many-to-many, RLS, indexing) is not optional at scale.</li>
+  <li>Unique features like audio players or inspectors are powerful capability signals.</li>
+  <li>AI is a multiplier when guided by clear thinking — not a replacement for it.</li>
+</ul>
+
+<h2>FAQs</h2>
+
+<h3>What is the difference between React and Next.js?</h3>
+<p>
+  React is a JavaScript library for building user interfaces with components. Next.js is a framework built on top of React that adds routing, server-side rendering, static generation, and backend capabilities. Together they let you build scalable, high-performance web applications.
+</p>
+
+<h3>Why use Tailwind and Zustand together with React/Next.js?</h3>
+<p>
+  Tailwind CSS speeds up styling and keeps your UI consistent using utility classes. Zustand provides a simple, efficient way to handle global state without the complexity of larger libraries. Using them together with React and Next.js helps you build custom apps and dashboards quickly while keeping the code maintainable.
+</p>
+
+<h3>How important is database architecture in web app development?</h3>
+<p>
+  Database architecture is crucial. Poor design leads to slow queries, bugs, and painful refactors. When building with Next.js and Supabase, modelling relationships (including many-to-many), using proper indexing, and applying row-level security where needed ensures your app can scale securely and efficiently.
+</p>
+
+<h3>Can AI genuinely help my React/Next.js development workflow?</h3>
+<p>
+  Yes — as long as you know what you’re doing. AI can generate components, suggest patterns, and handle repetitive work, but it can’t replace architectural thinking. The best results come when you use AI as an assistant: you define the vision, it handles some of the grunt work, and you maintain quality control.
+</p>
+
+<h3>What should I consider when hiring a developer for custom React/Next.js applications?</h3>
+<p>
+  Look for someone who understands React, Next.js, state management, UI systems, database design, and performance. Ask about past platforms they’ve built, not just landing pages. Make sure they can talk about architecture, not just code snippets — especially if you’re planning a serious product or internal tool.
+</p>
+
+<h2>Let's chat!</h2>
+<p>
+  Thanks for reading my journey. I’d love to hear from you: <strong>what’s your biggest challenge when planning or building a custom web app?</strong> Drop a comment, share this article with someone who’s exploring React and Next.js, or reach out if you’re thinking about building something ambitious. I’m always interested in talking with entrepreneurs, tech leads, and curious builders about what’s possible.
+</p>
+
+<h2>References</h2>
+<ul>
+  <li>
+    Tanga, M. “SSR vs. SSG in Next.js: Differences, Advantages, and Use Cases.” Strapi Blog, 2024.
+  </li>
+  <li>
+    Sundaram, N. “Understanding Next.js Rendering Methods: SSR, CSR, SSG, and ISR.” Medium, 2024.
+  </li>
+  <li>
+    “Next.js.” Wikipedia, 2025.
+  </li>
+  <li>
+    “Comparing SSR and SSG in Next.js: When to Use Each.” dev.to, 2024.
+  </li>
+  <li>
+    Leitner, M. “Building a Blog with Next.js 13 and React Server Components.” MaxLeiter Blog, 2023.
+  </li>
+</ul>

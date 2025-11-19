@@ -17,12 +17,23 @@ export function AudioPlayer() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Track mount state for hydration debugging
+  useEffect(() => {
+    setIsMounted(true);
+    console.log('[AudioPlayer] Component mounted on client');
+  }, []);
 
   // Listen for minimize events from other components
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined') {
+      console.log('[AudioPlayer] useEffect skipped - SSR');
+      return;
+    }
     
     const handleMinimizeChange = (e: CustomEvent<boolean>) => {
+      console.log('[AudioPlayer] Minimize event received:', e.detail);
       setIsMinimized(e.detail);
     };
     
@@ -31,7 +42,9 @@ export function AudioPlayer() {
     // Check initial state after mount to avoid hydration mismatch
     // Use requestAnimationFrame to ensure DOM is ready
     requestAnimationFrame(() => {
-      setIsMinimized(document.body.classList.contains('player-minimized'));
+      const bodyHasClass = document.body.classList.contains('player-minimized');
+      console.log('[AudioPlayer] Initial body class check:', bodyHasClass);
+      setIsMinimized(bodyHasClass);
     });
     
     return () => {
@@ -186,41 +199,66 @@ export function AudioPlayer() {
   };
 
   const formatTime = (seconds: number) => {
-    if (!seconds || isNaN(seconds) || !isFinite(seconds)) return '0:00';
+    if (!seconds || isNaN(seconds) || !isFinite(seconds)) {
+      console.log('[AudioPlayer] formatTime: invalid seconds:', seconds);
+      return '0:00';
+    }
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    const formatted = `${mins}:${secs.toString().padStart(2, '0')}`;
+    console.log('[AudioPlayer] formatTime:', seconds, '->', formatted);
+    return formatted;
   };
 
   // Use track durationSeconds first to avoid hydration mismatch
   // Only fall back to audio element duration on client after mount
-  const [duration, setDuration] = useState(() => currentTrack?.durationSeconds ?? 0);
+  const initialDuration = currentTrack?.durationSeconds ?? 0;
+  console.log('[AudioPlayer] Initial duration from track:', initialDuration, 'currentTrack:', currentTrack?.id);
+  const [duration, setDuration] = useState(initialDuration);
   
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    console.log('[AudioPlayer] Duration effect running - isMounted:', isMounted, 'currentTrack:', currentTrack?.id, 'currentDuration:', duration);
+    if (typeof window === 'undefined') {
+      console.log('[AudioPlayer] Duration effect skipped - SSR');
+      return;
+    }
     
     // Update duration from audio element after it loads
     const audio = audioRef.current;
     if (audio) {
       const updateDuration = () => {
         if (audio.duration && isFinite(audio.duration)) {
+          console.log('[AudioPlayer] Updating duration from audio element:', audio.duration);
           setDuration(audio.duration);
+        } else {
+          console.log('[AudioPlayer] Audio duration invalid:', audio.duration);
         }
       };
       
       if (audio.duration && isFinite(audio.duration)) {
         updateDuration();
       } else {
+        console.log('[AudioPlayer] Waiting for loadedmetadata event');
         audio.addEventListener('loadedmetadata', updateDuration, { once: true });
         return () => {
           audio.removeEventListener('loadedmetadata', updateDuration);
         };
       }
     } else if (currentTrack?.durationSeconds) {
+      console.log('[AudioPlayer] No audio element, using track duration:', currentTrack.durationSeconds);
       setDuration(currentTrack.durationSeconds);
+    } else {
+      console.log('[AudioPlayer] No audio element and no track duration');
     }
-  }, [currentTrack?.durationSeconds]);
+  }, [currentTrack?.durationSeconds, isMounted]);
 
+
+  const isSSR = typeof window === 'undefined';
+  console.log('[AudioPlayer] Render - SSR:', isSSR, 'currentTrack:', currentTrack?.id, 'title:', currentTrack?.title, 'artist:', currentTrack?.artist, 'isMinimized:', isMinimized, 'duration:', duration, 'positionSeconds:', positionSeconds, 'isMounted:', isMounted);
+  
+  const timeDisplay = formatTime(positionSeconds);
+  const durationDisplay = formatTime(duration);
+  console.log('[AudioPlayer] Text content - timeDisplay:', timeDisplay, 'durationDisplay:', durationDisplay, 'title:', currentTrack?.title, 'artist:', currentTrack?.artist);
 
   return (
     <>
@@ -278,7 +316,7 @@ export function AudioPlayer() {
 
               <div className="flex-1 flex items-center gap-2 min-w-0">
                 <span className="text-xs text-muted-foreground flex-shrink-0">
-                  {formatTime(positionSeconds)}
+                  {timeDisplay}
                 </span>
                 <input
                   type="range"
@@ -294,7 +332,7 @@ export function AudioPlayer() {
                   }}
                 />
                 <span className="text-xs text-muted-foreground flex-shrink-0">
-                  {formatTime(duration)}
+                  {durationDisplay}
                 </span>
               </div>
 

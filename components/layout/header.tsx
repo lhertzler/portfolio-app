@@ -44,9 +44,14 @@ export function Header() {
 
   // Listen for minimize events from audio player
   useEffect(() => {
-    if (typeof window === 'undefined') return;
+    console.log('[Header] Minimize effect running - window exists:', typeof window !== 'undefined');
+    if (typeof window === 'undefined') {
+      console.log('[Header] Minimize effect skipped - SSR');
+      return;
+    }
     
     const handleMinimizeChange = (e: CustomEvent<boolean>) => {
+      console.log('[Header] Minimize event received:', e.detail);
       setIsPlayerMinimized(e.detail);
     };
     
@@ -55,7 +60,9 @@ export function Header() {
     // Check initial state after mount to avoid hydration mismatch
     // Use requestAnimationFrame to ensure DOM is ready
     requestAnimationFrame(() => {
-      setIsPlayerMinimized(document.body.classList.contains('player-minimized'));
+      const bodyHasClass = document.body.classList.contains('player-minimized');
+      console.log('[Header] Initial body class check:', bodyHasClass);
+      setIsPlayerMinimized(bodyHasClass);
     });
     
     return () => {

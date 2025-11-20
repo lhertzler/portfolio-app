@@ -250,7 +250,7 @@ export function AudioPlayer() {
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className="music-player fixed bottom-0 left-0 right-0 border-t border-border/50 bg-card/70 backdrop-blur-md shadow-lg shadow-black/10 z-50"
+          className="music-player fixed bottom-0 left-0 right-0 border-t border-border/50 bg-card shadow-lg shadow-black/10 z-50"
           data-component="AudioPlayer"
           data-file="components/player/audio-player.tsx"
         >

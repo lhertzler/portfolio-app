@@ -3,21 +3,10 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { useUIStore } from '@/store/ui-store';
 
 export function HeroSection() {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const headerOffset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      });
-    }
-  };
+  const openContactDialog = useUIStore((s) => s.openContactDialog);
 
   return (
     <section
@@ -43,7 +32,7 @@ export function HeroSection() {
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
                   <Button
                     variant="default"
-                    onClick={() => scrollToSection('contact')}
+                    onClick={openContactDialog}
                     size="lg"
                     className="w-full sm:w-auto"
                     data-cursor="tap"
@@ -61,7 +50,7 @@ export function HeroSection() {
               </div>
 
               {/* Image */}
-              <div className="block relative md:order-3">
+              <div className="block relative md:order-3 flex justify-center md:block">
                 <div className="relative z-10 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 mx-auto rounded-full overflow-hidden dark:mix-blend-difference opacity-90 border border-primary">
                   <Image
                     src="/images/luke/luke-poly.jpg"
@@ -72,7 +61,7 @@ export function HeroSection() {
                     quality={90}
                   />
                 </div>
-                <div className="absolute top-0 left-0 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 mx-auto rounded-full overflow-hidden mix-blend-darken">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 md:left-0 md:translate-x-0 w-48 h-48 sm:w-64 sm:h-64 md:w-72 md:h-72 rounded-full overflow-hidden mix-blend-darken">
                   <Image
                     src="/images/luke/luke-poly.jpg"
                     alt="Luke Hertzler"

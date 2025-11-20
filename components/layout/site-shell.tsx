@@ -89,10 +89,10 @@ export function SiteShell({ children }: SiteShellProps) {
   const pageComponentName = getPageComponentName();
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
+    <div className="min-h-screen flex flex-col bg-background text-foreground overflow-x-hidden">
       <Header />
       <main 
-        className="flex-1 px-4 sm:px-8 lg:px-16 pb-28 pt-8"
+        className="flex-1 px-4 sm:px-8 lg:px-16 pb-28 pt-8 overflow-x-hidden w-full"
         data-component={pageComponentName}
         data-file={`app${pathname === '/' ? '/page.tsx' : pathname}/page.tsx`}
       >

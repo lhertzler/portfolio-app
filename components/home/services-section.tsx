@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { useUIStore } from '@/store/ui-store';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useIsMobile } from '@/lib/use-is-mobile';
 
 const SHOPIFY_SERVICES = [
   'Custom theme development',
@@ -23,6 +24,7 @@ const CUSTOM_APP_SERVICES = [
 
 export function ServicesSection() {
   const openContactDialog = useUIStore((s) => s.openContactDialog);
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -49,10 +51,10 @@ export function ServicesSection() {
         <div className="grid md:grid-cols-2 gap-4 sm:gap-6 overflow-visible">
           {/* Shopify Services Card */}
           <motion.div
-            style={{ x: leftCardX, opacity, scale }}
-            transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+            style={isMobile ? { opacity: 1, x: 0, scale: 1 } : { x: leftCardX, opacity, scale }}
+            transition={isMobile ? undefined : { type: 'spring', stiffness: 100, damping: 20 }}
           >
-            <Card className="relative flex flex-col">
+            <Card className="relative flex flex-col mb-10 lg:mb-0">
             <Badge 
               variant="default" 
               className="bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-md sm:text-md px-10 sm:px-10 py-1 font-bold"
@@ -68,19 +70,21 @@ export function ServicesSection() {
                   const isTopLeft = index === 0;
                   const isTopRight = index === 1;
                   const isBottomLeft = index === 2;
+                  const isBottomRight = index === 3;
                   
                   return (
                     <div
                       key={service}
-                      className={`px-2 sm:px-4 min-h-32 sm:min-h-48 h-full flex flex-col items-center justify-center border-b border-r border-border last:border-r-0 ${
-                        isTopLeft ? 'md:border-b md:border-r md:border-border' :
-                        isTopRight ? 'md:border-b md:border-border' :
-                        isBottomLeft ? 'md:border-r md:border-border' :
-                        ''
+                      className={`px-2 sm:px-4 min-h-32 sm:min-h-48 h-full flex flex-col items-center justify-center border-border ${
+                        isTopLeft ? 'border-b border-r' :
+                        isTopRight ? 'border-b' :
+                        isBottomLeft ? 'border-r' :
+                        isBottomRight ? '' :
+                        'border-b border-r'
                       }`}
                     >
-                      <span className="text-sm sm:text-lg text-primary font-medium mb-1 text-center">{firstWord}</span>
-                      <span className="text-xs sm:text-lg text-center">{restText}</span>
+                      <span className="text-md sm:text-lg text-primary font-medium mb-1 text-center">{firstWord}</span>
+                      <span className="text-sm sm:text-lg text-center">{restText}</span>
                     </div>
                   );
                 })}
@@ -100,10 +104,10 @@ export function ServicesSection() {
 
           {/* Custom Application Development Card */}
           <motion.div
-            style={{ x: rightCardX, opacity, scale }}
-            transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+            style={isMobile ? { opacity: 1, x: 0, scale: 1 } : { x: rightCardX, opacity, scale }}
+            transition={isMobile ? undefined : { type: 'spring', stiffness: 100, damping: 20 }}
           >
-            <Card className="relative flex flex-col">
+            <Card className="relative flex flex-col mb-10 lg:mb-0">
             <Badge 
               variant="default" 
               className="bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-md sm:text-md px-10 sm:px-10 py-1 font-bold"
@@ -119,19 +123,21 @@ export function ServicesSection() {
                   const isTopLeft = index === 0;
                   const isTopRight = index === 1;
                   const isBottomLeft = index === 2;
+                  const isBottomRight = index === 3;
                   
                   return (
                     <div
                       key={service}
-                      className={`px-2 sm:px-4 min-h-32 sm:min-h-48 h-full flex flex-col items-center justify-center border-b border-r border-border last:border-r-0 ${
-                        isTopLeft ? 'md:border-b md:border-r md:border-border' :
-                        isTopRight ? 'md:border-b md:border-border' :
-                        isBottomLeft ? 'md:border-r md:border-border' :
-                        ''
+                      className={`px-2 sm:px-4 min-h-32 sm:min-h-48 h-full flex flex-col items-center justify-center border-border ${
+                        isTopLeft ? 'border-b border-r' :
+                        isTopRight ? 'border-b' :
+                        isBottomLeft ? 'border-r' :
+                        isBottomRight ? '' :
+                        'border-b border-r'
                       }`}
                     >
-                      <span className="text-sm sm:text-lg text-primary font-medium mb-1 text-center">{firstWord}</span>
-                      <span className="text-xs sm:text-lg text-center">{restText}</span>
+                      <span className="text-md sm:text-lg text-primary font-medium mb-1 text-center">{firstWord}</span>
+                      <span className="text-sm sm:text-lg text-center">{restText}</span>
                     </div>
                   );
                 })}

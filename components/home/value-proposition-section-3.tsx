@@ -2,21 +2,12 @@
 
 import { Button } from "../ui/button";
 import { motion } from 'framer-motion';
+import { useUIStore } from '@/store/ui-store';
+import { useIsMobile } from '@/lib/use-is-mobile';
 
 export function ValuePropositionThreeSection() {
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const headerOffset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth',
-      });
-    }
-  };
+  const openContactDialog = useUIStore((s) => s.openContactDialog);
+  const isMobile = useIsMobile();
   return (
     <section
       data-section="value-proposition-3"
@@ -27,17 +18,17 @@ export function ValuePropositionThreeSection() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           className="text-center space-y-4 sm:space-y-6"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.5 }}
+          initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+          viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+          transition={isMobile ? undefined : { duration: 0.5 }}
         >
           <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-tight sm:leading-normal lg:leading-normal">
           Ready to build something serious? <span className="text-primary">Let's talk.</span>
           </h2>
           <Button
             variant="default"
-            onClick={() => scrollToSection('contact')}
+            onClick={openContactDialog}
             size="lg"
             className="text-sm sm:text-base"
             data-cursor="tap"

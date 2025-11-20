@@ -41,14 +41,15 @@ export default function AmpSimulatorLabPage() {
       {/* Hero Image */}
       <Card className="overflow-hidden">
         <CardContent className="p-0">
-          <Image
-            src="/images/lab/anchorhead-amp-sim-sample.png"
-            alt="Anchorhead Amp Simulator UI Mockup"
-            width={1200}
-            height={800}
-            className="w-full h-auto"
-            priority
-          />
+            <Image
+              src="/images/lab/anchorhead-amp-sim-sample.png"
+              alt="Anchorhead Amp Simulator UI Mockup"
+              width={1200}
+              height={800}
+              className="w-full h-auto"
+              priority
+              quality={90}
+            />
         </CardContent>
       </Card>
 

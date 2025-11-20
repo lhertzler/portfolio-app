@@ -30,7 +30,7 @@ export function TrustedByCarousel() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
         <Card className="relative w-full max-w-6xl mx-auto py-4 sm:py-6 gradient-overlay">
           <Badge 
-            className="inline-flex items-center rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-primary/20 bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-md sm:text-md px-10 sm:px-10 py-1 font-bold"
+            className="inline-flex items-center rounded-full border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent hover:bg-primary/20 bg-primary text-primary-foreground absolute left-1/2 -translate-x-1/2 -top-3 font-mono text-xs sm:text-md px-6 sm:px-12 py-1 font-bold whitespace-nowrap"
           >
             Trusted by Top Brands
           </Badge>

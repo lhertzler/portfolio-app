@@ -8,8 +8,10 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { getFeaturedPosts } from '@/lib/blog-posts';
 import { formatDate } from '@/lib/utils';
+import { useIsMobile } from '@/lib/use-is-mobile';
 
 export function LabAndBlogSection() {
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   const featuredPosts = getFeaturedPosts().slice(0, 1); // Get the latest featured post
   
@@ -35,8 +37,8 @@ export function LabAndBlogSection() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           <motion.div
-            style={{ x: labX, opacity }}
-            transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+            style={isMobile ? { opacity: 1, x: 0 } : { x: labX, opacity }}
+            transition={isMobile ? undefined : { type: 'spring', stiffness: 100, damping: 20 }}
             className="md:col-span-1"
           >
             <Card id="lab">
@@ -63,8 +65,8 @@ export function LabAndBlogSection() {
           </motion.div>
 
           <motion.div
-            style={{ x: blogX, opacity }}
-            transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+            style={isMobile ? { opacity: 1, x: 0 } : { x: blogX, opacity }}
+            transition={isMobile ? undefined : { type: 'spring', stiffness: 100, damping: 20 }}
             className="md:col-span-2"
           >
             <Card id="blog">

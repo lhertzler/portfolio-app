@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useIsMobile } from '@/lib/use-is-mobile';
 
 // Helper function to truncate text to 20 words
 function truncateText(text: string, maxWords: number = 20): string {
@@ -78,6 +79,7 @@ export function PortfolioPreviewSection() {
 
   const currentProject = featuredProjects[activeIndex];
   const isOdd = activeIndex % 2 === 0; // 0-indexed, so 0, 2, 4 are "odd" positions
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -101,16 +103,16 @@ export function PortfolioPreviewSection() {
       {/* Section Heading */}
       <motion.div 
         className="text-center space-y-3 sm:space-y-4 mb-8 sm:mb-12"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-100px' }}
-        transition={{ duration: 0.5 }}
+        initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+        viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+        transition={isMobile ? undefined : { duration: 0.5 }}
       >
         <h2 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-bold leading-tight sm:leading-normal lg:leading-normal">
           Solutions I've <span className="text-primary">Crafted</span>
         </h2>
       </motion.div>
-      <div className="h-[400px] sm:h-[500px] md:h-[600px]">
+      <div className="h-[600px] sm:h-[700px] md:h-[600px]">
         {/* Navigation Arrow - Left */}
         <button
           onClick={goToPrevious}
@@ -124,15 +126,15 @@ export function PortfolioPreviewSection() {
         {/* Container Parent */}
         <motion.div 
           className="w-full h-full"
-          style={{ opacity, y, scale }}
-          transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+          style={isMobile ? { opacity: 1, y: 0, scale: 1 } : { opacity, y, scale }}
+          transition={isMobile ? undefined : { type: 'spring', stiffness: 100, damping: 20 }}
         >
           {/* Card Container */}
           <Card className="w-full h-full overflow-hidden relative bg-card">
             {/* Content Container - Flex Layout */}
             <div className="relative z-20 h-full flex">
               {/* Navigation Dots - Left Side */}
-              <div className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 sm:gap-3 z-30">
+              <div className="hidden md:flex absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 flex-col items-center gap-2 sm:gap-3 z-30">
                 {featuredProjects.map((_, index) => (
                   <button
                     key={index}
@@ -162,23 +164,16 @@ export function PortfolioPreviewSection() {
               </div>
 
               {/* Layout: Image (50%) + Content (50%) - Flips on odd/even */}
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={activeIndex}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.0, ease: 'easeInOut' }}
-                  className={`flex h-full w-full ${isOdd ? 'flex-row' : 'flex-row-reverse'}`}
-                >
-                  {/* Image Section - 50% width */}
-                  <div className="relative w-1/2 h-full" style={{ boxShadow: 'inset 0 0 80px 20px rgba(0, 0, 0, 0.5)' }}>
+              {isMobile ? (
+                <div className={`flex flex-col md:flex-row w-full h-auto md:h-full ${isOdd ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                  {/* Image Section - Full width on mobile, 50% on desktop */}
+                  <div className="relative w-full md:w-1/2 h-80 sm:h-96 md:h-full flex-shrink-0" style={{ boxShadow: 'inset 0 0 80px 20px rgba(0, 0, 0, 0.5)' }}>
                     {currentProject.featuredImage ? (
                       <Image
                         src={currentProject.featuredImage}
                         alt={currentProject.title}
                         fill
-                        className="object-cover object-center"
+                        className="object-contain object-center"
                         quality={90}
                       />
                     ) : (
@@ -191,8 +186,78 @@ export function PortfolioPreviewSection() {
                     )}
                   </div>
 
-                  {/* Content Section - 50% width */}
-                  <div className="relative w-1/2 h-full flex items-center justify-center p-6 sm:p-8 md:p-12 lg:p-16">
+                  {/* Content Section - Full width on mobile, 50% on desktop */}
+                  <div className="relative w-full md:w-1/2 md:h-full flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 flex-shrink-0">
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/60 to-transparent" />
+                    <div className="relative z-10 w-full max-w-2xl">
+                      <div>
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-foreground">
+                          {currentProject.title}
+                        </h2>
+                        <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">
+                          {truncateText(currentProject.summary, 20)}
+                        </p>
+                        <div className="mb-4 sm:mb-6">
+                          <Link href={`/portfolio/${currentProject.slug}`}>
+                            <Button
+                              variant="default"
+                              size="lg"
+                              className="font-mono text-sm sm:text-base"
+                              data-cursor="tap"
+                            >
+                              View Project
+                            </Button>
+                          </Link>
+                        </div>
+                        {/* Tags Badges */}
+                        <div className="flex flex-wrap gap-2">
+                          {currentProject.tags.slice(0, 4).map((tag) => (
+                            <Badge
+                              key={tag}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeIndex}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.0, ease: 'easeInOut' }}
+                  className={`flex flex-col md:flex-row w-full h-auto md:h-full ${isOdd ? 'md:flex-row' : 'md:flex-row-reverse'}`}
+                >
+                  {/* Image Section - Full width on mobile, 50% on desktop */}
+                  <div className="relative w-full md:w-1/2 h-80 sm:h-96 md:h-full flex-shrink-0" style={{ boxShadow: 'inset 0 0 80px 20px rgba(0, 0, 0, 0.5)' }}>
+                    {currentProject.featuredImage ? (
+                      <Image
+                        src={currentProject.featuredImage}
+                        alt={currentProject.title}
+                        fill
+                        className="object-contain object-center"
+                        quality={90}
+                      />
+                    ) : (
+                      <div 
+                        className="w-full h-full bg-gradient-to-br from-primary/20 via-background to-background"
+                        style={{
+                          backgroundImage: `linear-gradient(to bottom right, hsl(var(--primary) / 0.2), hsl(var(--background))), linear-gradient(to top, hsl(var(--background)))`,
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Content Section - Full width on mobile, 50% on desktop */}
+                  <div className="relative w-full md:w-1/2 md:h-full flex items-center justify-center p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 flex-shrink-0">
                     {/* Gradient Overlay */}
                     <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/60 to-transparent" />
                     <div className="relative z-10 w-full max-w-2xl">
@@ -240,6 +305,7 @@ export function PortfolioPreviewSection() {
                   </div>
                 </motion.div>
               </AnimatePresence>
+              )}
             </div>
           </Card>
         </motion.div>

@@ -22,9 +22,21 @@ export default function PortfolioPage() {
         {projects.map((project) => (
           <Link key={project.slug} href={`/portfolio/${project.slug}`}>
             <Card className="h-full flex flex-col hover:shadow-lg transition-all duration-300 hover:-translate-y-1 overflow-hidden group" data-component="ProjectCard" data-file="app/portfolio/page.tsx">
-              {/* Featured Grid Image */}
+              {/* Mobile Image - Featured Image */}
+              {project.featuredImage && (
+                <div className="relative w-full h-64 overflow-hidden flex-shrink-0 md:hidden">
+                  <Image
+                    src={project.featuredImage}
+                    alt={project.title}
+                    fill
+                    className="bg-black/30 py-4 object-contain transition-transform duration-300 group-hover:scale-110"
+                    quality={90}
+                  />
+                </div>
+              )}
+              {/* Desktop Image - Featured Grid Image */}
               {project.featuredGridImage && (
-                <div className="relative w-full h-48 overflow-hidden flex-shrink-0">
+                <div className="hidden md:block relative w-full h-48 overflow-hidden flex-shrink-0">
                   <Image
                     src={project.featuredGridImage}
                     alt={project.title}

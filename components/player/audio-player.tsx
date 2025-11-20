@@ -254,108 +254,177 @@ export function AudioPlayer() {
           data-component="AudioPlayer"
           data-file="components/player/audio-player.tsx"
         >
-          <div className="mx-auto max-w-7xl flex items-center gap-4 px-4 sm:px-8 py-4 text-xs sm:text-sm">
-            <div className="flex flex-col min-w-0 flex-shrink-0">
-              <span className="font-medium truncate">{currentTrack.title}</span>
-              {currentTrack.artist && (
-                <span className="text-muted-foreground truncate text-xs">
-                  {currentTrack.artist}
-                </span>
-              )}
-            </div>
-
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                type="button"
-                onClick={prev}
-                className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
-                aria-label="Previous track"
-              >
-                <SkipBack className="h-4 w-4" />
-              </button>
-              <button
-                type="button"
-                onClick={handlePlayPause}
-                className="p-3 rounded-full bg-background/50 backdrop-blur-sm hover:bg-accent/50 hover:shadow-md transition-all duration-200 active:scale-95"
-                aria-label={isPlaying ? 'Pause' : 'Play'}
-              >
-                {isPlaying ? (
-                  <Pause className="h-6 w-6" />
-                ) : (
-                  <Play className="h-6 w-6" />
+          <div className="mx-auto max-w-7xl px-4 sm:px-8 py-4 text-xs sm:text-sm">
+            {/* Mobile/Tablet Layout */}
+            <div className="flex md:hidden items-center justify-between w-full">
+              {/* Track Info - Left */}
+              <div className="flex flex-col min-w-0 flex-shrink-0 max-w-[40%]">
+                <span className="font-medium truncate">{currentTrack.title}</span>
+                {currentTrack.artist && (
+                  <span className="text-muted-foreground truncate text-xs">
+                    {currentTrack.artist}
+                  </span>
                 )}
-              </button>
+              </div>
+
+              {/* Playback Controls - Centered */}
+              <div className="flex items-center gap-2 flex-shrink-0 absolute left-1/2 -translate-x-1/2">
+                <button
+                  type="button"
+                  onClick={prev}
+                  className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
+                  aria-label="Previous track"
+                >
+                  <SkipBack className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePlayPause}
+                  className={`p-3 rounded-full backdrop-blur-sm hover:shadow-md transition-all duration-200 active:scale-95 ${
+                    isPlaying 
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                      : 'bg-background/50 hover:bg-accent/50'
+                  }`}
+                  aria-label={isPlaying ? 'Pause' : 'Play'}
+                >
+                  {isPlaying ? (
+                    <Pause className="h-6 w-6" />
+                  ) : (
+                    <Play className="h-6 w-6" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={next}
+                  className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
+                  aria-label="Next track"
+                >
+                  <SkipForward className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Playlist Button - Right */}
               <button
                 type="button"
-                onClick={next}
-                className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
-                aria-label="Next track"
+                onClick={() => setPlaylistOpen(true)}
+                className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
+                aria-label="Open playlist"
               >
-                <SkipForward className="h-4 w-4" />
+                <ListMusic className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="flex-1 flex items-center gap-2 min-w-0">
-              <span className="text-xs text-muted-foreground flex-shrink-0">
-                {timeDisplay}
-              </span>
-              <input
-                type="range"
-                min={0}
-                max={duration || 0}
-                step={0.1}
-                value={positionSeconds}
-                onChange={handleSeek}
-                className="flex-1 h-1.5 bg-muted/50 rounded-lg appearance-none cursor-pointer accent-primary transition-all hover:accent-primary/80"
-                style={{
-                  background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${duration > 0 ? (positionSeconds / duration) * 100 : 0}%, hsl(var(--muted) / 0.5) ${duration > 0 ? (positionSeconds / duration) * 100 : 0}%, hsl(var(--muted) / 0.5) 100%)`,
-                  transition: 'background 0.1s ease-out'
+            {/* Desktop Layout */}
+            <div className="hidden md:flex items-center gap-4 w-full">
+              {/* Track Info */}
+              <div className="flex flex-col min-w-0 flex-shrink-0">
+                <span className="font-medium truncate">{currentTrack.title}</span>
+                {currentTrack.artist && (
+                  <span className="text-muted-foreground truncate text-xs">
+                    {currentTrack.artist}
+                  </span>
+                )}
+              </div>
+
+              {/* Playback Controls */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={prev}
+                  className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
+                  aria-label="Previous track"
+                >
+                  <SkipBack className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handlePlayPause}
+                  className={`p-3 rounded-full backdrop-blur-sm hover:shadow-md transition-all duration-200 active:scale-95 ${
+                    isPlaying 
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90' 
+                      : 'bg-background/50 hover:bg-accent/50'
+                  }`}
+                  aria-label={isPlaying ? 'Pause' : 'Play'}
+                >
+                  {isPlaying ? (
+                    <Pause className="h-6 w-6" />
+                  ) : (
+                    <Play className="h-6 w-6" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={next}
+                  className="p-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95"
+                  aria-label="Next track"
+                >
+                  <SkipForward className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Time Scrubber */}
+              <div className="flex flex-1 flex items-center gap-2 min-w-0">
+                <span className="text-xs text-muted-foreground flex-shrink-0">
+                  {timeDisplay}
+                </span>
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  step={0.1}
+                  value={positionSeconds}
+                  onChange={handleSeek}
+                  className="flex-1 h-1.5 bg-muted/50 rounded-lg appearance-none cursor-pointer accent-primary transition-all hover:accent-primary/80"
+                  style={{
+                    background: `linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--primary)) ${duration > 0 ? (positionSeconds / duration) * 100 : 0}%, hsl(var(--muted) / 0.5) ${duration > 0 ? (positionSeconds / duration) * 100 : 0}%, hsl(var(--muted) / 0.5) 100%)`,
+                    transition: 'background 0.1s ease-out'
+                  }}
+                />
+                <span className="text-xs text-muted-foreground flex-shrink-0">
+                  {durationDisplay}
+                </span>
+              </div>
+
+              {/* WaveformVisualizer */}
+              <div className="bg-card relative h-8 w-32 flex-shrink-0 overflow-hidden">
+                <WaveformVisualizer
+                  audioElement={audioRef.current}
+                  isPlaying={isPlaying}
+                />
+              </div>
+
+              {/* Playlist Button */}
+              <button
+                type="button"
+                onClick={() => setPlaylistOpen(true)}
+                className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
+                aria-label="Open playlist"
+              >
+                <ListMusic className="h-4 w-4" />
+              </button>
+
+              {/* Minimize Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  const newMinimized = !isMinimized;
+                  setIsMinimized(newMinimized);
+                  
+                  if (newMinimized) {
+                    document.body.classList.add('player-minimized');
+                  } else {
+                    document.body.classList.remove('player-minimized');
+                  }
+                  
+                  // Dispatch event for other components
+                  window.dispatchEvent(new CustomEvent('player-minimize-change', { detail: newMinimized }));
                 }}
-              />
-              <span className="text-xs text-muted-foreground flex-shrink-0">
-                {durationDisplay}
-              </span>
+                className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
+                aria-label="Minimize player"
+              >
+                <ChevronDown className="h-4 w-4" />
+              </button>
             </div>
-
-            {/* WaveformVisualizer */}
-            <div className="hidden bg-card sm:block relative h-8 w-32 flex-shrink-0 overflow-hidden">
-              <WaveformVisualizer
-                audioElement={audioRef.current}
-                isPlaying={isPlaying}
-              />
-            </div>
-
-            {/* Playlist Button */}
-            <button
-              type="button"
-              onClick={() => setPlaylistOpen(true)}
-              className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
-              aria-label="Open playlist"
-            >
-              <ListMusic className="h-4 w-4" />
-            </button>
-
-            {/* Minimize Button */}
-            <button
-              type="button"
-              onClick={() => {
-                const newMinimized = !isMinimized;
-                setIsMinimized(newMinimized);
-                
-                if (newMinimized) {
-                  document.body.classList.add('player-minimized');
-                } else {
-                  document.body.classList.remove('player-minimized');
-                }
-                
-                // Dispatch event for other components
-                window.dispatchEvent(new CustomEvent('player-minimize-change', { detail: newMinimized }));
-              }}
-              className="px-3 py-2 rounded-lg hover:bg-accent/50 hover:text-accent-foreground transition-all duration-200 active:scale-95 flex-shrink-0"
-              aria-label="Minimize player"
-            >
-              <ChevronDown className="h-4 w-4" />
-            </button>
           </div>
         </motion.div>
       )}

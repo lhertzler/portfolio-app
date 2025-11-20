@@ -3,7 +3,7 @@
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { useUIStore } from '@/store/ui-store';
 import { useRouter } from 'next/navigation';
-import { FileText, Settings, Music, Home, User, Briefcase, FileCheck, FlaskConical, Mail, Wrench, ChevronRight, Search, Palette, BookOpen } from 'lucide-react';
+import { FileText, Settings, Music, Home, Briefcase, FlaskConical, Mail, ChevronRight, Search, Palette, BookOpen, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 
 const scrollToSection = (id: string) => {
@@ -25,10 +25,8 @@ const NAV_STRUCTURE = [
     label: 'app',
     items: [
       { icon: Home, label: 'Home', href: '/', id: 'home', sectionId: 'hero' },
-      { icon: User, label: 'About', href: '/#about', id: 'about', sectionId: 'about' },
-      { icon: Wrench, label: 'Services', href: '/#services', id: 'services', sectionId: 'services' },
-      { icon: Briefcase, label: 'Portfolio', href: '/#portfolio', id: 'portfolio', sectionId: 'portfolio' },
-      { icon: FileCheck, label: 'Resume', href: '/#resume', id: 'resume', sectionId: 'resume' },
+      { icon: Sparkles, label: 'Solutions', href: '/solutions', id: 'solutions', sectionId: null },
+      { icon: Briefcase, label: 'Portfolio', href: '/portfolio', id: 'portfolio', sectionId: null },
       { icon: FlaskConical, label: 'Lab', href: '/lab', id: 'lab', sectionId: null },
       { icon: BookOpen, label: 'Blog', href: '/blog', id: 'blog', sectionId: null },
       { icon: Mail, label: 'Contact.tsx', action: 'contact', id: 'contact' },
@@ -39,8 +37,6 @@ const NAV_STRUCTURE = [
     items: [
       { icon: Search, label: 'Search.tsx', action: 'search', id: 'search' },
       { icon: Settings, label: 'Settings.tsx', action: 'settings', id: 'settings' },
-      { icon: Music, label: 'Player.tsx', action: 'player', id: 'player' },
-      { icon: Palette, label: 'Theme.config', action: 'theme', id: 'theme' },
     ],
   },
 ];

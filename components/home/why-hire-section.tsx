@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
+import { useIsMobile } from '@/lib/use-is-mobile';
 
 const PITCH_CARDS = [
   {
@@ -24,6 +25,7 @@ const PITCH_CARDS = [
 ];
 
 export function WhyHireSection() {
+  const isMobile = useIsMobile();
   const sectionRef = useRef<HTMLElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -45,17 +47,17 @@ export function WhyHireSection() {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible w-full">
         <motion.div
-          style={{ opacity, y }}
+          style={isMobile ? { opacity: 1, y: 0 } : { opacity, y }}
         >
           <Card className="p-3 sm:p-4 gradient-overlay">
             <div className="grid md:grid-cols-3 gap-4 sm:gap-6 overflow-visible">
               {PITCH_CARDS.map((card, index) => (
                 <motion.div
                   key={card.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-100px' }}
-                  transition={{ delay: index * 0.1, duration: 0.5 }}
+                  initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+                  viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+                  transition={isMobile ? undefined : { delay: index * 0.1, duration: 0.5 }}
                   className={`relative flex flex-col justify-center p-3 sm:p-4 ${
                     index < PITCH_CARDS.length - 1 ? 'md:after:content-[""] md:after:absolute md:after:right-[-0.75rem] md:after:top-6 md:after:bottom-6 md:after:w-px md:after:bg-border' : ''
                   }`}

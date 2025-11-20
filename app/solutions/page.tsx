@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { useUIStore } from '@/store/ui-store';
 import { motion } from 'framer-motion';
 import { ArrowRight, Check } from 'lucide-react';
+import { useIsMobile } from '@/lib/use-is-mobile';
 
 const solutions = [
   {
@@ -169,6 +170,7 @@ const faqs = [
 
 export default function SolutionsPage() {
   const openContactDialog = useUIStore((s) => s.openContactDialog);
+  const isMobile = useIsMobile();
 
   const scrollToContact = () => {
     const element = document.getElementById('contact');
@@ -191,9 +193,9 @@ export default function SolutionsPage() {
       <section className="py-16 md:py-24" data-component="SolutionsHero" data-file="app/solutions/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+            transition={isMobile ? undefined : { duration: 0.6 }}
             className="max-w-4xl"
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
@@ -221,10 +223,10 @@ export default function SolutionsPage() {
             {solutions.map((solution, index) => (
               <motion.div
                 key={solution.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+                viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+                transition={isMobile ? undefined : { delay: index * 0.1, duration: 0.5 }}
               >
                 <Card className="h-full flex flex-col" data-component="SolutionCard" data-file="app/solutions/page.tsx">
                   <CardHeader>
@@ -287,10 +289,10 @@ export default function SolutionsPage() {
       <section className="py-16" data-component="ProcessSection" data-file="app/solutions/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+            viewport={isMobile ? undefined : { once: true }}
+            transition={isMobile ? undefined : { duration: 0.6 }}
             className="mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Process</h2>
@@ -300,10 +302,10 @@ export default function SolutionsPage() {
             {processSteps.map((step, index) => (
               <motion.div
                 key={step.step}
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                initial={isMobile ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+                whileInView={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, x: 0 }}
+                viewport={isMobile ? undefined : { once: true, margin: '-50px' }}
+                transition={isMobile ? undefined : { delay: index * 0.1, duration: 0.5 }}
               >
                 <Card data-component="ProcessStepCard" data-file="app/solutions/page.tsx">
                   <CardContent className="p-6">
@@ -328,10 +330,10 @@ export default function SolutionsPage() {
       <section className="py-16" data-component="CaseStudiesSection" data-file="app/solutions/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+            viewport={isMobile ? undefined : { once: true }}
+            transition={isMobile ? undefined : { duration: 0.6 }}
             className="mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Case Studies</h2>
@@ -341,10 +343,10 @@ export default function SolutionsPage() {
             {caseStudies.map((study, index) => (
               <motion.div
                 key={study.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-100px' }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+                viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+                transition={isMobile ? undefined : { delay: index * 0.1, duration: 0.5 }}
               >
                 <Card className="h-full flex flex-col" data-component="CaseStudyCard" data-file="app/solutions/page.tsx">
                   <CardHeader>
@@ -379,10 +381,10 @@ export default function SolutionsPage() {
       <section className="py-16" data-component="FAQSection" data-file="app/solutions/page.tsx">
         <div className="max-w-4xl mx-auto px-4 sm:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+            viewport={isMobile ? undefined : { once: true }}
+            transition={isMobile ? undefined : { duration: 0.6 }}
             className="mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4">FAQ</h2>
@@ -407,10 +409,10 @@ export default function SolutionsPage() {
       <section className="py-16 md:py-24" data-component="FinalCTASection" data-file="app/solutions/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+            whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+            viewport={isMobile ? undefined : { once: true }}
+            transition={isMobile ? undefined : { duration: 0.6 }}
             className="text-center"
           >
             <Card className="gradient-overlay" data-component="FinalCTACard" data-file="app/solutions/page.tsx">

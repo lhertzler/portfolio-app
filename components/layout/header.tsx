@@ -183,7 +183,7 @@ export function Header() {
       {/* Spacer to maintain layout when header is fixed */}
       <div className="h-[60px] sm:h-[65px] lg:h-[73px]" />
       <header
-        className={`fixed top-0 left-0 right-0 z-40 mx-auto border backdrop-blur-md font-mono ${
+        className={`fixed top-0 left-0 right-0 z-40 mx-auto border backdrop-blur-md font-mono overflow-x-hidden ${
           // Mobile: always fixed at top, no animation
           'lg:rounded-lg lg:transition-all lg:duration-700 lg:ease-in-out lg:will-change-transform'
         } ${
@@ -194,7 +194,7 @@ export function Header() {
         data-component="Header"
         data-file="components/layout/header.tsx"
       >
-        <div className={`bg-transparent flex items-center justify-between px-3 sm:px-6 lg:px-8 transition-all duration-700 ease-in-out ${
+        <div className={`animated-border bg-transparent flex items-center justify-between px-3 sm:px-6 lg:px-8 transition-all duration-700 ease-in-out ${
           isScrolled
             ? 'py-2 sm:py-2.5 lg:py-3 shadow-lg shadow-black/5'
             : 'py-2.5 sm:py-3 lg:py-4'

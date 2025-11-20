@@ -3,8 +3,10 @@
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';
+import { useIsMobile } from '@/lib/use-is-mobile';
 
 export function AboutMeSection() {
+  const isMobile = useIsMobile();
   return (
     <section
       id="about"
@@ -15,10 +17,10 @@ export function AboutMeSection() {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.5 }}
+          initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+          viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+          transition={isMobile ? undefined : { duration: 0.5 }}
         >
           <Card className="gradient-overlay p-0">
             <CardContent className="p-4 sm:p-6 md:p-0">

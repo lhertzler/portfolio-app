@@ -6,10 +6,28 @@ import { useUIStore } from '@/store/ui-store';
 export function CustomCursor() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [cursorType, setCursorType] = useState<string>('default');
+  const [isMobile, setIsMobile] = useState(false);
   const { customCursorEnabled, motionPreference } = useUIStore();
 
   useEffect(() => {
-    if (!customCursorEnabled || motionPreference === 'reduced') return;
+    // Check if device is mobile/touch device
+    const checkMobile = () => {
+      return window.matchMedia('(max-width: 1024px)').matches || 
+             'ontouchstart' in window || 
+             navigator.maxTouchPoints > 0;
+    };
+    
+    setIsMobile(checkMobile());
+    
+    const mediaQuery = window.matchMedia('(max-width: 1024px)');
+    const handleChange = () => setIsMobile(checkMobile());
+    mediaQuery.addEventListener('change', handleChange);
+    
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
+
+  useEffect(() => {
+    if (!customCursorEnabled || motionPreference === 'reduced' || isMobile) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       setPosition({ x: e.clientX, y: e.clientY });
@@ -23,9 +41,9 @@ export function CustomCursor() {
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [customCursorEnabled, motionPreference]);
+  }, [customCursorEnabled, motionPreference, isMobile]);
 
-  if (!customCursorEnabled || motionPreference === 'reduced') return null;
+  if (!customCursorEnabled || motionPreference === 'reduced' || isMobile) return null;
 
   const cursorStyles: Record<string, string> = {
     default: 'w-4 h-4 border border-foreground/30',

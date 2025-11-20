@@ -1,11 +1,14 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import Link from 'next/link';
 import { projects } from '@/lib/projects';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { StructuredData } from '@/components/seo/structured-data';
 import { generateProjectSchema } from '@/lib/structured-data';
+import { ArrowLeft } from 'lucide-react';
 
 // Generate static params for all projects
 export async function generateStaticParams() {
@@ -86,6 +89,16 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     <>
       <StructuredData data={projectSchema} />
       <div className="max-w-6xl mx-auto space-y-8 px-4 sm:px-6 lg:px-8">
+      {/* Back Button */}
+      <div className="pt-4">
+        <Link href="/portfolio">
+          <Button variant="ghost" className="gap-2" data-cursor="link">
+            <ArrowLeft className="h-4 w-4" />
+            All Projects
+          </Button>
+        </Link>
+      </div>
+
       {/* Featured Image */}
       {project.featuredImage && (
         <div className="rounded-lg overflow-hidden">

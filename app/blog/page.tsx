@@ -8,8 +8,10 @@ import { motion } from 'framer-motion';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import { getAllPosts } from '@/lib/blog-posts';
 import { formatDate } from '@/lib/utils';
+import { useIsMobile } from '@/lib/use-is-mobile';
 
 export default function BlogPage() {
+  const isMobile = useIsMobile();
   const publishedPosts = getAllPosts().sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -19,9 +21,9 @@ export default function BlogPage() {
       <div className="max-w-4xl mx-auto px-4 sm:px-8">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+          transition={isMobile ? undefined : { duration: 0.6 }}
           className="mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
@@ -36,9 +38,9 @@ export default function BlogPage() {
             {publishedPosts.map((post, index) => (
               <motion.div
                 key={post.slug}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
+                initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                animate={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+                transition={isMobile ? undefined : { delay: index * 0.1, duration: 0.5 }}
               >
                 <Card className="hover:shadow-md transition-shadow duration-300 group">
                   <CardHeader>

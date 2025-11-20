@@ -44,16 +44,19 @@ export default function BlogPage() {
               >
                 <Card className="hover:shadow-md transition-shadow duration-300 group">
                   <CardHeader>
-                    <div className="flex items-start justify-between gap-4 mb-2">
-                      <div className="flex-1">
-                        <CardTitle className="text-2xl mb-2 group-hover:text-primary transition-colors">
+                    <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 md:gap-4 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <CardTitle className="text-xl sm:text-2xl mb-2 md:mb-2 group-hover:text-primary transition-colors break-words">
                           <Link href={`/blog/${post.slug}`} className="hover:underline">
                             {post.title}
                           </Link>
                         </CardTitle>
-                        <CardDescription className="text-base">{post.description}</CardDescription>
+                        <Badge variant="secondary" className="mb-2 md:hidden shrink-0 w-fit">
+                          {post.category}
+                        </Badge>
+                        <CardDescription className="text-sm sm:text-base break-words">{post.description}</CardDescription>
                       </div>
-                      <Badge variant="secondary" className="shrink-0">
+                      <Badge variant="secondary" className="hidden md:flex shrink-0">
                         {post.category}
                       </Badge>
                     </div>

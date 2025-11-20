@@ -183,13 +183,13 @@ export function Header() {
       {/* Spacer to maintain layout when header is fixed */}
       <div className="h-[60px] sm:h-[65px] lg:h-[73px]" />
       <header
-        className={`fixed top-0 left-0 right-0 z-40 mx-auto border backdrop-blur-md font-mono overflow-x-hidden ${
+        className={`fixed top-0 left-0 right-0 z-40 mx-auto border font-mono overflow-x-hidden backdrop-blur-lg ${
           // Mobile: always fixed at top, no animation
           'lg:rounded-lg lg:transition-all lg:duration-700 lg:ease-in-out lg:will-change-transform'
         } ${
           isScrolled
-            ? 'max-w-full bg-card/70 border-none shadow-lg shadow-black/10 translate-y-0'
-            : 'max-w-full lg:max-w-7xl bg-card dark:border-none translate-y-0 lg:translate-y-4 xl:translate-y-6'
+            ? 'max-w-full bg-card/80 border-none shadow-lg shadow-black/10 translate-y-0'
+            : 'max-w-full lg:max-w-7xl bg-card/80 dark:border-none translate-y-0 lg:translate-y-4 xl:translate-y-6'
         }`}
         data-component="Header"
         data-file="components/layout/header.tsx"
@@ -223,15 +223,15 @@ export function Header() {
             }}
             className="flex items-center gap-1 sm:gap-2 font-mono"
           >
-            <span className={`font-semibold text-primary tracking-tight lg:transition-all lg:duration-700 lg:ease-in-out ${
+            <span className={`font-semibold text-primary tracking-tight transition-none lg:transition-all lg:duration-700 lg:ease-in-out ${
               isScrolled 
-                ? 'text-base sm:text-base lg:text-lg' 
-                : 'text-base sm:text-base lg:text-xl xl:text-2xl'
+                ? 'text-base lg:text-lg' 
+                : 'text-base lg:text-xl xl:text-2xl'
             }`}>{'</>'}</span>
-            <span className={`font-bold tracking-tight lg:transition-all lg:duration-700 lg:ease-in-out hover:text-primary ${
+            <span className={`font-bold tracking-tight transition-none lg:transition-all lg:duration-700 lg:ease-in-out hover:text-primary ${
               isScrolled 
-                ? 'text-base sm:text-base lg:text-lg' 
-                : 'text-base sm:text-base lg:text-xl xl:text-2xl'
+                ? 'text-base lg:text-lg' 
+                : 'text-base lg:text-xl xl:text-2xl'
             }`}>
               <span className="text-primary sm:text-foreground">Luke</span>
               <span className="sm:ml-1"> Hertzler</span>

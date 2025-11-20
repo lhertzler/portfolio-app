@@ -227,18 +227,19 @@ export default function SolutionsPage() {
                 whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
                 viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
                 transition={isMobile ? undefined : { delay: index * 0.1, duration: 0.5 }}
+                className="min-w-0 w-full"
               >
-                <Card className="h-full flex flex-col" data-component="SolutionCard" data-file="app/solutions/page.tsx">
-                  <CardHeader>
-                    <CardTitle className="text-2xl mb-3">{solution.title}</CardTitle>
-                    <CardDescription className="text-base">{solution.description}</CardDescription>
+                <Card className="h-full flex flex-col min-w-0 overflow-hidden" data-component="SolutionCard" data-file="app/solutions/page.tsx">
+                  <CardHeader className="min-w-0">
+                    <CardTitle className="text-xl sm:text-2xl mb-3 break-words">{solution.title}</CardTitle>
+                    <CardDescription className="text-sm sm:text-base break-words">{solution.description}</CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-1 flex flex-col">
-                    <ul className="space-y-2 mb-6 flex-1">
+                  <CardContent className="flex-1 flex flex-col min-w-0">
+                    <ul className="space-y-2 mb-6 flex-1 min-w-0">
                       {solution.services.map((service) => (
-                        <li key={service} className="flex items-start gap-2">
+                        <li key={service} className="flex items-start gap-2 min-w-0">
                           <Check className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-                          <span className="text-sm text-muted-foreground">{service}</span>
+                          <span className="text-sm text-muted-foreground break-words">{service}</span>
                         </li>
                       ))}
                     </ul>

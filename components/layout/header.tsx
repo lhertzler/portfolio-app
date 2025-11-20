@@ -223,15 +223,15 @@ export function Header() {
             }}
             className="flex items-center gap-1 sm:gap-2 font-mono"
           >
-            <span className={`font-semibold text-primary tracking-tight transition-all duration-700 ease-in-out ${
+            <span className={`font-semibold text-primary tracking-tight lg:transition-all lg:duration-700 lg:ease-in-out ${
               isScrolled 
-                ? 'text-base sm:text-lg' 
-                : 'text-xl sm:text-2xl'
+                ? 'text-base sm:text-base lg:text-lg' 
+                : 'text-base sm:text-base lg:text-xl xl:text-2xl'
             }`}>{'</>'}</span>
-            <span className={`font-bold tracking-tight transition-all duration-700 ease-in-out hover:text-primary ${
+            <span className={`font-bold tracking-tight lg:transition-all lg:duration-700 lg:ease-in-out hover:text-primary ${
               isScrolled 
-                ? 'text-base sm:text-lg' 
-                : 'text-xl sm:text-2xl'
+                ? 'text-base sm:text-base lg:text-lg' 
+                : 'text-base sm:text-base lg:text-xl xl:text-2xl'
             }`}>
               <span className="text-primary sm:text-foreground">Luke</span>
               <span className="sm:ml-1"> Hertzler</span>

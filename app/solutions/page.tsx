@@ -246,7 +246,7 @@ export default function SolutionsPage() {
                     <Button
                       onClick={scrollToContact}
                       variant="outline"
-                      className="w-full justify-between group"
+                      className="w-full justify-between group hidden lg:flex"
                     >
                       {solution.cta}
                       <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />

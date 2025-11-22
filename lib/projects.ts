@@ -20,6 +20,25 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    slug: 'kavalkade',
+    title: 'Kavalkade — A Modern Music, Media & Merch Experience Built with Next.js',
+    role: 'Founder & Lead Engineer',
+    summary: 'A full-stack, immersive music experience for my own band — persistent audio, dynamic media, ecommerce, fan accounts, and a custom UI system. Essentially a mini–music platform built from scratch using the same tech and architecture I use for high-end app builds.',
+    tags: ['Music', 'Ecommerce', 'Next.js', 'Stripe', 'Supabase', 'Printful', 'Audio Player', 'Full-Stack'],
+    tech: ['Next.js', 'React', 'Stripe', 'Printful', 'Supabase', 'Zustand', 'TypeScript', 'TailwindCSS'],
+    featured: true,
+    featuredGridImage: '/images/portfolios/kavalkade-grid.jpg',
+    featuredImage: '/images/portfolios/kavalkade.png',
+    description: 'Kavalkade\'s website wasn\'t meant to be "just another band page." I built it as a full-stack, immersive experience — persistent audio, dynamic media, ecommerce, fan accounts, and a custom UI system. It\'s essentially a mini–music platform built from scratch for my own band, using the same tech and architecture I use for high-end app builds.',
+    caseStudySections: {
+      overview: 'The goal was clear: create a fast, cinematic, next-gen home for the band — something that combines music streaming, video/photo galleries, and merch into one unified product.\n\nI designed and built the entire system using Next.js, leveraging Server Components, shared state management, and a persistent audio engine. Fans can listen to music while browsing media or shopping, without interruption.\n\nOn top of that, I integrated a complete ecommerce workflow with Stripe, Printful, and Supabase to handle accounts, auth, and order visibility.',
+      architecture: 'Kavalkade\'s site is structured like a production-grade application rather than a simple website. The main features sit inside a layered architecture that keeps everything modular and scalable:\n\n• Next.js App Router for clean routing and segmented domains\n• Server Components for data-heavy pages and SEO-critical surfaces\n• Client Components for interactivity (player, cart, media viewer)\n• Global Zustand Store managing audio, cart state, and UI context\n• Singleton audio engine preserved across all navigation\n• Supabase Auth handling logins, accounts, and secure user data\n• Stripe for payment intents and checkout\n• Printful API for automated fulfillment\n\nNothing reloads unnecessarily. The audio engine never unmounts. Pages are lightweight, composable, and fast — the way a music experience should feel.',
+      uiux: 'The design direction was inspired by Kavalkade\'s aesthetic: dark, minimal, moody, modern. I built a fully custom component system — buttons, cards, media grids, modals, layout primitives — all with consistent spacing, typography, and motion.\n\nEvery part of the UI is crafted to feel smooth and intentional:\n• A sticky global audio player with animated transitions\n• A full-screen music panel with artwork + track details\n• A responsive media grid for both photos and videos\n• Auto-playing video previews (desktop only)\n• Cinematic modal viewer for photos + videos\n• A clean, minimal storefront experience\n• A simple, fan-friendly account dashboard\n\nDesktop feels premium. Mobile feels tight and frictionless. The experience is cohesive across every touchpoint.',
+      challenges: '1. Continuous music playback across routes\nTraditional sites break audio on navigation.\nSolution: a singleton global audio engine in a persistent layout + global store that keeps playback alive across all pages.\n\n2. Handling both images and video in the media grid\nDifferent formats = different behaviors and load strategies.\nSolution: a unified media card component with intelligent detection, lazy loading, and dynamic rendering.\n\n3. Integrating ecommerce seamlessly into the fan experience\nFans should be able to shop without losing their place in the listening experience.\nI built a SPA-like cart system using global state + Stripe checkout + Printful fulfillment.\n\n4. Making the site feel like a real app, not a template\nI built a custom design system from scratch — no templates, no theme boilerplate — ensuring the entire product feels cohesive and intentional.',
+      impact: 'The finished product feels nothing like a traditional band site — it\'s closer to a mini streaming platform, merch store, and media hub blended into one.\n\nIt gives our fans:\n• A persistent listening experience\n• Fast, clean access to all media\n• A frictionless way to support the band with merch\n• A modern UI that matches the identity of our music\n\nFor me, it represents the level of polish and execution I bring to the apps I build — thoughtful architecture, a cohesive design system, and an obsessive focus on user experience end to end.',
+    },
+  },
+  {
     slug: 'soundvent-persistent-music-player',
     title: 'SoundVent Persistent Music Player',
     role: 'Founder & Lead Engineer',

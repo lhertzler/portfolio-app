@@ -451,7 +451,7 @@ export function AudioPlayer() {
                   <div className="font-medium truncate">{track.title}</div>
                   {track.artist && (
                     <div className={`text-sm truncate ${
-                      isActive ? 'text-foreground/80' : 'text-muted-foreground'
+                      isActive ? '' : 'text-muted-foreground'
                     }`}>
                       {track.artist}
                     </div>

@@ -9,6 +9,7 @@ export type Project = {
   description: string;
   featuredGridImage?: string; // Path to featured image for grid view (e.g., '/images/portfolios/image.png')
   featuredImage?: string; // Path to featured image for detail page (e.g., '/images/portfolios/image.png')
+  video?: string; // Path to video file (e.g., '/videos/project-demo.mp4')
   showOverlay?: boolean; // Whether to show the dark overlay on portfolio card images (default: true)
   caseStudySections?: {
     overview?: string;
@@ -50,6 +51,7 @@ export const projects: Project[] = [
     featured: true,
     featuredGridImage: '/images/portfolios/kavalkade-grid.jpg',
     featuredImage: '/images/portfolios/kavalkade.png',
+    video: '/videos/kavalkade-next-js-app-min.mp4',
     showOverlay: true,
     description: 'Kavalkade\'s website wasn\'t meant to be "just another band page." I built it as a full-stack, immersive experience — persistent audio, dynamic media, ecommerce, fan accounts, and a custom UI system. It\'s essentially a mini–music platform built from scratch for my own band, using the same tech and architecture I use for high-end app builds.',
     caseStudySections: {

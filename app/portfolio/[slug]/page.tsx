@@ -99,8 +99,26 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </Link>
       </div>
 
-      {/* Featured Image */}
-      {project.featuredImage && (
+      {/* Featured Video or Image */}
+      {project.video ? (
+        <div className="rounded-lg overflow-hidden bg-black">
+          <div className="relative w-full aspect-video">
+            <video
+              src={project.video}
+              controls
+              autoPlay
+              muted
+              loop
+              className="w-full h-full object-contain"
+              preload="auto"
+              playsInline
+            >
+              <source src={project.video} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      ) : project.featuredImage && (
         <div className="rounded-lg overflow-hidden">
           <div className="relative w-full aspect-video">
             <Image

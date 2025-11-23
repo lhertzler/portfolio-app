@@ -105,6 +105,68 @@
     background-color: hsl(var(--primary) / 0.2);
     color: hsl(var(--foreground));
   }
+
+  /* Custom scrollbar styling - Sleek and minimal */
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 4px;
+  }
+
+  /* Light theme scrollbar - darker for visibility */
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--foreground) / 0.2);
+    border-radius: 4px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: hsl(var(--primary) / 0.8);
+    background-clip: padding-box;
+  }
+
+  /* Dark theme scrollbar - lighter for visibility */
+  .dark ::-webkit-scrollbar-thumb {
+    background: hsl(var(--foreground) / 0.15);
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary));
+    background-clip: padding-box;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:active {
+    background: hsl(var(--primary) / 0.8);
+    background-clip: padding-box;
+  }
+
+  /* Firefox - Light theme */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--foreground) / 0.2) transparent;
+  }
+
+  /* Firefox - Dark theme */
+  .dark * {
+    scrollbar-color: hsl(var(--foreground) / 0.15) transparent;
+  }
+
+  /* Smooth scrollbar transitions */
+  html {
+    scrollbar-gutter: stable;
+  }
 }
 
 @layer utilities {

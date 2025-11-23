@@ -190,7 +190,7 @@ export default function SolutionsPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="py-16 md:py-24" data-component="SolutionsHero" data-file="app/solutions/page.tsx">
+      <section className="py-16 md:py-24 md:pt-12" data-component="SolutionsHero" data-file="app/solutions/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
           <motion.div
             initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -407,7 +407,7 @@ export default function SolutionsPage() {
       </section>
 
       {/* Final CTA Section */}
-      <section className="py-16 md:py-24" data-component="FinalCTASection" data-file="app/solutions/page.tsx">
+      <section className="py-16 md:py-24 md:pt-12" data-component="FinalCTASection" data-file="app/solutions/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
           <motion.div
             initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}

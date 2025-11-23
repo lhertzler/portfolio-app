@@ -41,7 +41,7 @@ export function IdentitySliderSection() {
       data-section="identity"
       data-component="IdentitySliderSection"
       data-file="components/home/identity-slider-section.tsx"
-      className="py-12 sm:py-16 md:py-24 scroll-mt-24"
+      className="py-12 sm:py-16 md:py-24 md:pt-12 scroll-mt-24"
     >
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-6 sm:mb-8">

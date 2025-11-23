@@ -17,7 +17,7 @@ export default function BlogPage() {
   );
 
   return (
-    <div className="min-h-screen py-16">
+    <div className="min-h-screen pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-8">
         {/* Header */}
         <motion.div

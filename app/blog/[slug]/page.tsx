@@ -97,7 +97,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   return (
     <>
       <StructuredData data={articleSchema} />
-      <article className="min-h-screen py-16">
+      <article className="min-h-screen pt-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-8">
         {/* Back Button */}
         <div className="mb-8">

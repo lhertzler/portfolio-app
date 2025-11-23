@@ -11,7 +11,6 @@ import { BackgroundImage } from '@/components/layout/background-image';
 import { AnimatedGradients } from '@/components/layout/animated-gradients';
 import { AudioPlayer } from '@/components/player/audio-player';
 import { CommandPalette } from '@/components/nav/command-palette';
-import { CustomCursor } from '@/components/nav/custom-cursor';
 import { EditorNavPanel } from '@/components/nav/editor-nav-panel';
 import { InspectorOverlay } from '@/components/devtools/inspector-overlay';
 import { MiniTerminal } from '@/components/devtools/mini-terminal';
@@ -109,7 +108,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <SiteShell>{children}</SiteShell>
             <AudioPlayer />
             <CommandPalette />
-            <CustomCursor />
             <EditorNavPanel />
             <InspectorOverlay />
             <MiniTerminal />

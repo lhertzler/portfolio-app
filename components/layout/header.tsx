@@ -4,14 +4,19 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUIStore } from '@/store/ui-store';
-import { Settings, Terminal, Music, Menu } from 'lucide-react';
+import { PanelRightOpen, Music, Menu, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const HOME_SECTIONS = [
+type NavItem = {
+  id: string;
+  label: string;
+  href: string;
+};
+
+const HOME_SECTIONS: NavItem[] = [
+  { id: 'headless-shopify', label: 'Headless Shopify', href: '/headless-shopify' },
   { id: 'solutions', label: 'Solutions', href: '/solutions' },
   { id: 'portfolio', label: 'Portfolio', href: '/portfolio' },
-  { id: 'lab', label: 'Lab', href: '/lab' },
-  { id: 'blog', label: 'Blog', href: '/blog' },
 ];
 
 const scrollToSection = (id: string) => {
@@ -36,7 +41,6 @@ export function Header() {
   const [isPlayerMinimized, setIsPlayerMinimized] = useState(false);
   const isHomePage = pathname === '/';
 
-  const openTerminal = useUIStore((s) => s.openTerminal);
   const openSettings = useUIStore((s) => s.openSettings);
   const openContactDialog = useUIStore((s) => s.openContactDialog);
   const openEditorNav = useUIStore((s) => s.openEditorNav);
@@ -194,7 +198,7 @@ export function Header() {
         data-component="Header"
         data-file="components/layout/header.tsx"
       >
-        <div className={`animated-border bg-transparent flex items-center justify-between px-3 sm:px-6 lg:px-8 transition-all duration-700 ease-in-out ${
+        <div className={`animated-border bg-transparent flex items-center justify-between px-3 sm:px-4 lg:px-4 transition-all duration-700 ease-in-out ${
           isScrolled
             ? 'py-2 sm:py-2.5 lg:py-3 shadow-lg shadow-black/5'
             : 'py-2.5 sm:py-3 lg:py-4'
@@ -240,7 +244,7 @@ export function Header() {
         </div>
 
         {/* Center: Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-10 text-lg font-mono">
+        <nav className="hidden lg:flex items-center gap-12 text-lg font-mono">
           {navItems.map((item) => {
             const isActive = isHomePage && activeSection === item.id;
             return (
@@ -248,7 +252,7 @@ export function Header() {
                 key={item.id}
                 onClick={(e) => handleNavClick(item.href, e)}
                 data-cursor="link"
-                className={`transition-colors font-mono font-bold${
+                className={`transition-colors font-mono font-bold whitespace-nowrap${
                   isActive
                     ? 'text-primary'
                     : 'text-muted-foreground hover:text-primary'
@@ -284,28 +288,19 @@ export function Header() {
               <Music className="h-4 w-4" />
             </Button>
 
-            {/* Terminal Icon */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={openTerminal}
-              className="h-9 w-9 hover:bg-accent/50"
-              aria-label="Open terminal"
-              data-cursor="tap"
-            >
-              <Terminal className="h-4 w-4" />
-            </Button>
+          </div>
 
-            {/* Settings Icon */}
+          {/* Settings Icon */}
+          <div className="scale-[1] hover:scale-[1.20] transition-all duration-400">
             <Button
               variant="ghost"
               size="icon"
               onClick={openSettings}
-              className="h-9 w-9 hover:bg-accent/50"
-              aria-label="Open settings"
+              className="hover:bg-transparent animate-settings-icon hover:text-primary hover:scale-[1.20] transition-all duration-400"
+              aria-label="Explore & Settings"
               data-cursor="tap"
             >
-              <Settings className="h-4 w-4" />
+              <Sparkles className="h-5 w-5" />
             </Button>
           </div>
 
@@ -316,12 +311,13 @@ export function Header() {
               e.preventDefault();
               openContactDialog();
             }}
-            className="font-mono animate-pulse text-sm sm:text-sm px-4 sm:px-4 h-9 sm:h-9"
+            className="font-mono animate-pulse text-sm sm:text-base px-4 sm:px-4 h-9 sm:h-9"
             data-cursor="tap"
           >
-            <span className="hidden sm:inline">Start A Project</span>
+            <span className="hidden sm:inline">Start a Project</span>
             <span className="sm:hidden">Contact</span>
           </Button>
+
         </div>
       </div>
     </header>

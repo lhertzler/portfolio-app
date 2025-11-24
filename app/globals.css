@@ -301,3 +301,34 @@
 .group:hover .portfolio-overlay {
   mix-blend-mode: normal !important;
 }
+
+/* Settings icon color transition animation */
+@keyframes color-pulse {
+  0%, 100% {
+    color: #fafafa;
+  }
+  50% {
+    color: hsl(var(--primary));
+  }
+}
+
+/* Settings icon floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+    transform: translate(1px, -1px) rotate(0.5deg);
+  }
+  50% {
+    transform: translate(-1px, 1px) rotate(-0.5deg);
+  }
+  75% {
+    transform: translate(1px, 1px) rotate(0.3deg);
+  }
+}
+
+/* Combined animation for settings icon */
+.animate-settings-icon {
+  animation: color-pulse 3s ease-in-out infinite, float 6s ease-in-out infinite;
+}

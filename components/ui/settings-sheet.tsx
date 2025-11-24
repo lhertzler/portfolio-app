@@ -5,7 +5,9 @@ import { useUIStore, ThemeMode } from '@/store/ui-store';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Terminal } from 'lucide-react';
+import { Terminal, Sun, Moon, BookOpen, FlaskConical } from 'lucide-react';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const ACCENT_COLORS = [
   { name: 'Green', value: 'green', color: 'hsl(120 55% 40%)' },
@@ -35,28 +37,63 @@ export function SettingsSheet() {
 
   return (
     <Sheet open={isSettingsOpen} onOpenChange={closeSettings}>
-      <SheetContent className="bg-card">
-        <SheetHeader>
-          <SheetTitle>Site Settings</SheetTitle>
-          <SheetDescription>
-            Customize the appearance and behavior of the site.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="mt-6 space-y-6">
+      <SheetContent className="bg-card flex flex-col">
+        <div className="mt-6 space-y-8 flex-1">
+          {/* Explore */}
+          <div>
+            <Label className="text-xl font-bold mb-3 block">Explore</Label>
+            <div className="flex gap-3">
+              <Link
+                href="/blog"
+                onClick={() => closeSettings()}
+                className="flex-1 h-24 flex flex-col items-center justify-center gap-2 bg-transparent hover:bg-transparent text-muted-foreground hover:text-primary transition-colors group"
+              >
+                <BookOpen className="h-8 w-8 group-hover:text-primary transition-colors" />
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">Blog</span>
+              </Link>
+              <Link
+                href="/lab"
+                onClick={() => closeSettings()}
+                className="flex-1 h-24 flex flex-col items-center justify-center gap-2 bg-transparent hover:bg-transparent text-muted-foreground hover:text-primary transition-colors group"
+              >
+                <FlaskConical className="h-8 w-8 group-hover:text-primary transition-colors" />
+                <span className="text-sm font-medium group-hover:text-primary transition-colors">Lab</span>
+              </Link>
+            </div>
+          </div>
+
           {/* Color Mode */}
           <div>
             <Label className="text-xl font-bold mb-3 block">Color Mode</Label>
-            <div className="flex flex-col gap-2">
-              {(['light', 'dark'] as ThemeMode[]).map((mode) => (
-                <Button
-                  key={mode}
-                  variant={themeMode === mode ? 'default' : 'outline'}
-                  onClick={() => setThemeMode(mode)}
-                  className="w-full justify-start capitalize"
-                >
-                  {mode}
-                </Button>
-              ))}
+            <div className="flex gap-3">
+              <Button
+                variant="ghost"
+                onClick={() => setThemeMode('light')}
+                className={cn(
+                  "flex-1 h-24 flex flex-col items-center justify-center gap-2 bg-transparent hover:bg-transparent",
+                  themeMode === 'light' 
+                    ? 'text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+                aria-label="Light mode"
+              >
+                <Sun className={cn("h-8 w-8", themeMode === 'light' ? 'text-primary' : '')} />
+                <span className="text-sm font-medium">Light</span>
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={() => setThemeMode('dark')}
+                className={cn(
+                  "flex-1 h-24 flex flex-col items-center justify-center gap-2 bg-transparent hover:bg-transparent hover:text-primary",
+                  themeMode === 'dark' 
+                    ? 'text-primary' 
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+                aria-label="Dark mode"
+              >
+                <Moon className={cn("h-8 w-8", themeMode === 'dark' ? 'text-primary' : '')} />
+                <span className="text-sm font-medium">Dark</span>
+              </Button>
             </div>
           </div>
 
@@ -87,8 +124,9 @@ export function SettingsSheet() {
             <Label className="text-xl font-bold mb-3 block">Developer Tools</Label>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <Label htmlFor="inspect-mode" className="text-sm font-normal cursor-pointer">
+                <Label htmlFor="inspect-mode" className="text-md font-normal cursor-pointer">
                   Component Highlighter
+                  <span className="block text-xs text-muted-foreground">See components under the hood</span>
                 </Label>
                 <Switch
                   id="inspect-mode"
@@ -98,36 +136,21 @@ export function SettingsSheet() {
               </div>
             </div>
           </div>
-
-          {/* Extras */}
-          <div>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="custom-cursor" className="text-sm font-normal cursor-pointer">
-                  Custom Cursor
-                </Label>
-                <Switch
-                  id="custom-cursor"
-                  checked={customCursorEnabled}
-                  onCheckedChange={toggleCustomCursor}
-                />
-              </div>
-              <button
-                onClick={() => {
-                  openTerminal();
-                  closeSettings();
-                }}
-                className={`transition-colors flex items-center gap-2 text-sm pt-2 font-normal ${
-                  themeMode === 'light'
-                    ? 'text-foreground hover:text-foreground/80'
-                    : 'text-primary hover:text-primary/80'
-                }`}
-              >
-                Open Terminal
-                <Terminal className="w-4 h-4 blink-icon" />
-              </button>
-            </div>
-          </div>
+        </div>
+        
+        {/* Terminal Button at Bottom */}
+        <div className="mt-auto pt-6">
+          <Button
+            onClick={() => {
+              openTerminal();
+              closeSettings();
+            }}
+            variant="default"
+            className="w-full flex items-center justify-center gap-2"
+          >
+            Launch Terminal
+            <Terminal className="w-4 h-4" />
+          </Button>
         </div>
       </SheetContent>
     </Sheet>

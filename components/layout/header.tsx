@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUIStore } from '@/store/ui-store';
 import { PanelRightOpen, Music, Menu, Sparkles } from 'lucide-react';
@@ -227,11 +228,19 @@ export function Header() {
             }}
             className="flex items-center gap-1 sm:gap-2 font-mono"
           >
-            <span className={`font-semibold text-primary tracking-tight transition-none lg:transition-all lg:duration-700 lg:ease-in-out ${
+            <div className={`relative transition-none lg:transition-all lg:duration-700 lg:ease-in-out ${
               isScrolled 
-                ? 'text-base lg:text-lg' 
-                : 'text-base lg:text-xl xl:text-2xl'
-            }`}>{'</>'}</span>
+                ? 'w-4 h-4 lg:w-5 lg:h-5' 
+                : 'w-11 h-6'
+            }`}>
+              <Image
+                src="/images/layout/LH-Icon-500.png"
+                alt="LH"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
             <span className={`font-bold tracking-tight transition-none lg:transition-all lg:duration-700 lg:ease-in-out hover:text-primary ${
               isScrolled 
                 ? 'text-base lg:text-lg' 

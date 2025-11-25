@@ -341,13 +341,22 @@
 }
 
 .animate-grow-grow {
-  animation: grow-grow 5s infinite alternate 5s;
+  animation: grow-grow 7s infinite;
 }
 @keyframes grow-grow {
-  90% {
+  80% {
     transform: scale(1);
   }
-  100% {
+  85% {
     transform: scale(1.05);
+  }
+  90% {
+    transform: scale(1);
+  } 
+  95% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
   }
 }

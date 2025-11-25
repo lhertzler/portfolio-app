@@ -15,6 +15,7 @@ type UIState = {
   isEditorNavOpen: boolean;
   isContactDialogOpen: boolean;
   isSettingsOpen: boolean;
+  isLogoVisible: boolean;
 };
 
 type UIActions = {
@@ -33,6 +34,8 @@ type UIActions = {
   closeContactDialog: () => void;
   openSettings: () => void;
   closeSettings: () => void;
+  toggleLogoVisibility: () => void;
+  setLogoVisible: (visible: boolean) => void;
 };
 
 export const useUIStore = create<UIState & UIActions>()(
@@ -48,6 +51,7 @@ export const useUIStore = create<UIState & UIActions>()(
       isEditorNavOpen: false,
       isContactDialogOpen: false,
       isSettingsOpen: false,
+      isLogoVisible: false,
 
       setThemeMode: (mode) => set({ themeMode: mode }),
       setAccentColor: (accentColor) => set({ accentColor }),
@@ -66,6 +70,9 @@ export const useUIStore = create<UIState & UIActions>()(
       closeContactDialog: () => set({ isContactDialogOpen: false }),
       openSettings: () => set({ isSettingsOpen: true }),
       closeSettings: () => set({ isSettingsOpen: false }),
+      toggleLogoVisibility: () =>
+        set((state) => ({ isLogoVisible: !state.isLogoVisible })),
+      setLogoVisible: (visible) => set({ isLogoVisible: visible }),
     }),
     {
       name: 'ui-storage',

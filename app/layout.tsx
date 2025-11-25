@@ -17,6 +17,7 @@ import { MiniTerminal } from '@/components/devtools/mini-terminal';
 import { SettingsSheet } from '@/components/ui/settings-sheet';
 import { ContactDialog } from '@/components/contact/contact-dialog';
 import { Toaster } from '@/components/ui/sonner';
+import SplashScreen from '@/components/layout/splash-screen';
 import './globals.css';
 
 const dmMono = DM_Mono({
@@ -99,7 +100,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             gtag('config', 'G-5ZRNB8JVPS');
           `}
         </Script>
-        
+        <SplashScreen />
         <ThemeProvider>
           <ToastProvider>
             <BodyClassManager />

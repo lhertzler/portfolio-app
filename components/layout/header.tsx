@@ -7,6 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useUIStore } from '@/store/ui-store';
 import { PanelRightOpen, Music, Menu, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import Logo from '../ui/logo';
 
 type NavItem = {
   id: string;
@@ -48,6 +49,12 @@ export function Header() {
   const [isNoChange, setIsNoChange] = useState(false);
   const prevCountRef = useRef<number>(5);
   const isHomePage = pathname === '/';
+  const isLogoVisible = useUIStore((s) => s.isLogoVisible);
+  const setLogoVisible = useUIStore((s) => s.setLogoVisible);
+  const isInitialMount = useRef(true);
+  const previousPathname = useRef(pathname);
+  const hideStartTime = useRef<number | null>(null);
+  const MIN_HIDE_DURATION = 700; // 1 second minimum hide duration
   
   // Load from localStorage after mount to avoid hydration issues
   useEffect(() => {
@@ -234,6 +241,88 @@ export function Header() {
     }
   }, [isHomePage]);
 
+  // Show logo when page initially loads
+  useEffect(() => {
+    setLogoVisible(true);
+  }, [setLogoVisible]);
+
+  // Handle route changes: show after route loads (with minimum hide duration)
+  useEffect(() => {
+    // Skip on initial mount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      previousPathname.current = pathname;
+      return;
+    }
+
+    // Only handle if pathname actually changed
+    if (previousPathname.current !== pathname) {
+      previousPathname.current = pathname;
+      
+      // Calculate how long we've been hiding
+      const showLogo = () => {
+        setLogoVisible(true);
+        hideStartTime.current = null;
+      };
+
+      if (hideStartTime.current !== null) {
+        const elapsed = Date.now() - hideStartTime.current;
+        const remaining = MIN_HIDE_DURATION - elapsed;
+        
+        if (remaining > 0) {
+          // Wait for the remaining time to complete the minimum hide duration
+          const timer = setTimeout(() => {
+            showLogo();
+          }, remaining);
+          return () => clearTimeout(timer);
+        } else {
+          // Minimum duration has passed, show immediately
+          showLogo();
+        }
+      } else {
+        // No hide time tracked, show after small delay
+        const timer = setTimeout(() => {
+          showLogo();
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [pathname, setLogoVisible]);
+
+  // Global link click handler for all Next.js Link components
+  useEffect(() => {
+    const handleLinkClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest('a[href]');
+      
+      if (!link) return;
+      
+      const href = link.getAttribute('href');
+      if (!href) return;
+      
+      // Only handle internal links (starts with /)
+      // Skip hash-only links (/#section) when on homepage (just scrolling)
+      if (href.startsWith('/')) {
+        // If it's a hash link on homepage, don't hide logo (just scrolling)
+        if (href.startsWith('/#') && isHomePage) {
+          return;
+        }
+        
+        // If it's the same page, don't hide logo
+        if (href === pathname) {
+          return;
+        }
+        
+        // Hide logo for navigation to different pages and track hide start time
+        hideStartTime.current = Date.now();
+        setLogoVisible(false);
+      }
+    };
+
+    document.addEventListener('click', handleLinkClick, true);
+    return () => document.removeEventListener('click', handleLinkClick, true);
+  }, [pathname, isHomePage, setLogoVisible]);
+
   const handleNavClick = (href: string, e: React.MouseEvent) => {
     e.preventDefault();
 
@@ -244,6 +333,9 @@ export function Header() {
 
     // If href is a page route (starts with / but not /#), navigate to it
     if (href.startsWith('/') && !href.startsWith('/#')) {
+      // Hide logo immediately on click and track hide start time
+      hideStartTime.current = Date.now();
+      setLogoVisible(false);
       router.push(href);
       return;
     }
@@ -251,13 +343,15 @@ export function Header() {
     // Handle section anchors (/#section)
     if (href.startsWith('/#')) {
       if (isHomePage) {
-        // On homepage, scroll to section
+        // On homepage, scroll to section (no navigation, keep logo visible)
         const sectionId = href.replace('/#', '');
         if (sectionId) {
           scrollToSection(sectionId);
         }
       } else {
         // On other pages, navigate to homepage with hash
+        hideStartTime.current = Date.now();
+        setLogoVisible(false);
         router.push(href);
       }
       return;
@@ -268,6 +362,8 @@ export function Header() {
       if (isHomePage) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
+        hideStartTime.current = Date.now();
+        setLogoVisible(false);
         router.push('/');
       }
     }
@@ -320,30 +416,28 @@ export function Header() {
               if (isHomePage) {
                 e.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+              } else {
+                // Hide logo when clicking to navigate home and track hide start time
+                hideStartTime.current = Date.now();
+                setLogoVisible(false);
               }
             }}
             className="flex items-center gap-1 sm:gap-2 font-mono"
           >
-            <div className={`relative transition-all duration-700 ease-in-out ${
+            <div className={`relative animate-pulse-slow md:ml-1 mr-2 transition-all duration-700 ease-in-out ${
               isScrolled 
                 ? 'w-4 h-4' 
-                : 'w-4 h-4 md:w-11 md:h-6'
+                : 'w-4 h-4 md:w-5 md:h-5 md:mr-1'
             }`}>
-              <Image
-                src="/images/layout/LH-Icon-500.png"
-                alt="LH"
-                fill
-                className="object-contain"
-                priority
-              />
+                <Logo isVisible={isLogoVisible} />
             </div>
-            <span className={`font-bold tracking-tight transition-none lg:transition-all lg:duration-700 lg:ease-in-out hover:text-primary ${
+            <span className={`font-bold transition-none lg:transition-all lg:duration-700 lg:ease-in-out hover:text-primary ${
               isScrolled 
                 ? 'text-base lg:text-lg' 
                 : 'text-base lg:text-xl xl:text-2xl'
             }`}>
-              <span className="text-primary sm:text-foreground">Luke</span>
-              <span className="sm:ml-1"> Hertzler</span>
+              <span className="">Luke</span>
+              <span className=""> Hertzler</span>
             </span>
           </Link>
         </div>
@@ -357,7 +451,7 @@ export function Header() {
                 key={item.id}
                 onClick={(e) => handleNavClick(item.href, e)}
                 data-cursor="link"
-                className={`transition-colors font-mono font-bold whitespace-nowrap${
+                className={`transition-colors transition-all duration-500 ease-in-out font-mono font-bold whitespace-nowrap${
                   isActive
                     ? 'text-primary'
                     : 'text-muted-foreground hover:text-primary'
@@ -416,7 +510,7 @@ export function Header() {
               e.preventDefault();
               openContactDialog();
             }}
-            className="font-mono animate-pulse text-sm sm:text-base px-4 sm:px-4 h-9 sm:h-9"
+            className="font-mono relative bottom-0 animate-grow-grow text-sm sm:text-base px-4 sm:px-4 h-9 sm:h-9 md:mr-1 transition-all duration-300 ease-in-out hover:bottom-0.5 hover:shadow-[0px_5px_10px_3px_rgba(0,0,0,0.3)] "
             data-cursor="tap"
           >
             <span className="hidden sm:inline">Start a Project</span>
@@ -425,13 +519,18 @@ export function Header() {
 
           {/* Live Users Indicator */}
           <div 
-            className="hidden w-4 relative sm:flex gap-2"
+            className="animate-pulse hidden w-4 relative sm:flex gap-2"
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
           >
             {/* Dot */}
             <span 
-              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full transition-opacity duration-300 ${
+              className={`ring-2 ring-primary-500 absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-3 h-3 bg-card rounded-full transition-opacity duration-300 ${
+                showNumber ? 'opacity-0' : 'opacity-100'
+              }`}
+            />
+            <span 
+              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary/70 rounded-full transition-opacity duration-300 ${
                 showNumber ? 'opacity-0' : 'opacity-100'
               }`}
             />

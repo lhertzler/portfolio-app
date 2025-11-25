@@ -10,7 +10,7 @@
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 120 55% 40%;
+    --primary: 200 100% 70%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -22,7 +22,7 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 200 100% 70%;
     --radius: 0.5rem;
   }
 
@@ -34,42 +34,21 @@
     --card-foreground: 0 0% 99%;
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 99%;
-    --primary: 130 55% 52%;
+    --primary: 200 100% 70%;
     --primary-foreground: 0 0% 7%;
     --secondary: 0 0% 18%;
     --secondary-foreground: 0 0% 99%;
     --muted: 0 0% 18%;
     --muted-foreground: 0 0% 75%;
-    --accent: 152 58% 52%;
+    --accent: 200 100% 70%;
     --accent-foreground: 0 0% 7%;
     --destructive: 5 100% 71%;
     --destructive-foreground: 0 0% 99%;
     --border: 0 0% 18%;
     --input: 0 0% 18%;
-    --ring: 152 58% 52%;
+    --ring: 200 100% 70%;
   }
 
-  .studio {
-    --background: 240 20% 8%;
-    --foreground: 0 0% 98%;
-    --card: 240 20% 10%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 20% 10%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 280 80% 60%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 20% 15%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 20% 15%;
-    --muted-foreground: 0 0% 70%;
-    --accent: 280 80% 60%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 50%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 20% 20%;
-    --input: 240 20% 20%;
-    --ring: 280 80% 60%;
-  }
 }
 
 @layer base {
@@ -282,18 +261,22 @@
 
 
 .animate-pulse {
-  animation: pulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes pulse {
   0% {
-    opacity: 0.7;
+    opacity: 0.5;
   }
   50% {
     opacity: 1;
   }
   100% {
-    opacity: 0.7;
+    opacity: 0.5;
   }
 }
 
@@ -331,4 +314,40 @@
 /* Combined animation for settings icon */
 .animate-settings-icon {
   animation: color-pulse 3s ease-in-out infinite, float 6s ease-in-out infinite;
+}
+
+/* Delayed flashing animation - flashes twice every 10 seconds */
+@keyframes delayed-flash {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  18% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+  20% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  68% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-grow-grow {
+  animation: grow-grow 5s infinite alternate 5s;
+}
+@keyframes grow-grow {
+  90% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.05);
+  }
 }

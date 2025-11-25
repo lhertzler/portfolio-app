@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -40,7 +40,40 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [isPlayerMinimized, setIsPlayerMinimized] = useState(false);
+  // Start with consistent initial value to avoid hydration mismatch
+  const [liveUsersCount, setLiveUsersCount] = useState(5);
+  const [showTooltip, setShowTooltip] = useState(false);
+  const [showNumber, setShowNumber] = useState(false);
+  const [isIncrease, setIsIncrease] = useState(true);
+  const [isNoChange, setIsNoChange] = useState(false);
+  const prevCountRef = useRef<number>(5);
   const isHomePage = pathname === '/';
+  
+  // Load from localStorage after mount to avoid hydration issues
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('liveUsersCount');
+      if (stored !== null) {
+        const parsed = parseInt(stored, 10);
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= 10) {
+          setLiveUsersCount(parsed);
+          prevCountRef.current = parsed;
+        } else {
+          // If stored value is invalid, generate random and save it
+          const randomValue = Math.floor(Math.random() * 10) + 1;
+          setLiveUsersCount(randomValue);
+          prevCountRef.current = randomValue;
+          localStorage.setItem('liveUsersCount', randomValue.toString());
+        }
+      } else {
+        // No stored value, generate random and save it
+        const randomValue = Math.floor(Math.random() * 10) + 1;
+        setLiveUsersCount(randomValue);
+        prevCountRef.current = randomValue;
+        localStorage.setItem('liveUsersCount', randomValue.toString());
+      }
+    }
+  }, []);
 
   const openSettings = useUIStore((s) => s.openSettings);
   const openContactDialog = useUIStore((s) => s.openContactDialog);
@@ -96,6 +129,69 @@ export function Header() {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Save live users count to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('liveUsersCount', liveUsersCount.toString());
+    }
+  }, [liveUsersCount]);
+
+  // Live users count update
+  const iterationCountRef = useRef(0);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLiveUsersCount(prev => {
+        iterationCountRef.current += 1;
+        // Every other time, change by 2, otherwise change by 1
+        const changeAmount = iterationCountRef.current % 2 === 0 ? 2 : 1;
+        
+        let change: number;
+        
+        // If at 0, force positive change
+        if (prev === 0) {
+          change = changeAmount;
+        } else {
+          // Three options: increase, no change, or decrease
+          const random = Math.random();
+          if (random < 0.33) {
+            // Increase
+            change = changeAmount;
+          } else if (random < 0.66) {
+            // No change
+            change = 0;
+          } else {
+            // Decrease
+            change = -changeAmount;
+          }
+        }
+        
+        let next = prev + change;
+        // Clamp values
+        if (next < 0) next = 0;
+        if (next > 10) next = 10;
+        
+        // Track change type for color coding
+        const actualChange = next - prev;
+        setIsNoChange(actualChange === 0);
+        setIsIncrease(actualChange > 0);
+        prevCountRef.current = next;
+        
+        // Trigger animation: fade out dot, fade in number
+        setShowNumber(false); // Reset to dot first
+        setTimeout(() => {
+          setShowNumber(true); // Show number
+          // After showing number briefly, fade back to dot
+          setTimeout(() => {
+            setShowNumber(false);
+          }, 2000); // Show number for 2 seconds
+        }, 300); // Small delay to ensure dot fades out first
+        
+        return next;
+      });
+    }, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   // Track active section on homepage
@@ -228,10 +324,10 @@ export function Header() {
             }}
             className="flex items-center gap-1 sm:gap-2 font-mono"
           >
-            <div className={`relative transition-none lg:transition-all lg:duration-700 lg:ease-in-out ${
+            <div className={`relative transition-all duration-700 ease-in-out ${
               isScrolled 
-                ? 'w-4 h-4 lg:w-5 lg:h-5' 
-                : 'w-11 h-6'
+                ? 'w-4 h-4' 
+                : 'w-4 h-4 md:w-11 md:h-6'
             }`}>
               <Image
                 src="/images/layout/LH-Icon-500.png"
@@ -326,6 +422,41 @@ export function Header() {
             <span className="hidden sm:inline">Start a Project</span>
             <span className="sm:hidden">Contact</span>
           </Button>
+
+          {/* Live Users Indicator */}
+          <div 
+            className="hidden w-4 relative sm:flex gap-2"
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            {/* Dot */}
+            <span 
+              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-2 h-2 bg-primary rounded-full transition-opacity duration-300 ${
+                showNumber ? 'opacity-0' : 'opacity-100'
+              }`}
+            />
+            {/* Number */}
+            <span 
+              className={`absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 text-sm font-mono font-extrabold transition-opacity duration-300 ${
+                showNumber ? 'opacity-100' : 'opacity-0'
+              } ${
+                isNoChange 
+                  ? 'text-yellow-500' 
+                  : isIncrease 
+                    ? 'text-green-500' 
+                    : 'text-red-500'
+              }`}
+            >
+              {liveUsersCount}
+            </span>
+            {/* Tooltip */}
+            {showTooltip && (
+              <div className="absolute right-full mr-2 top-1/2 -translate-y-1/2 px-2 py-1 bg-black text-white text-xs rounded whitespace-nowrap pointer-events-none z-50">
+                {liveUsersCount} Live Users
+                <div className="absolute left-full top-1/2 -translate-y-1/2 w-0 h-0 border-t-4 border-b-4 border-l-4 border-transparent border-l-black" />
+              </div>
+            )}
+          </div>
 
         </div>
       </div>

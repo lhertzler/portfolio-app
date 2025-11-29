@@ -186,6 +186,62 @@
     z-index: 1;
   }
 
+  .gradient-overlay-soft {
+    position: relative;
+  }
+
+  .gradient-overlay-soft::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .gradient-overlay-softer {
+    position: relative;
+  }
+
+  .gradient-overlay-softer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.15) 0%,
+      rgba(0, 0, 0, 0) 50%,
+      rgba(0, 0, 0, 0) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .gradient-overlay-primary {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gradient-overlay-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: rotate(8deg) scale(5);
+    background: linear-gradient(
+      to top,
+      hsl(var(--primary) / 0.2) 0%,
+      hsl(var(--primary) / 0) 50%,
+      hsl(0,0,0,0) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
   /* Lighter gradient overlay for light mode */
   .light .gradient-overlay::before {
     background: linear-gradient(

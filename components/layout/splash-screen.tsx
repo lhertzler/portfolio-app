@@ -114,10 +114,10 @@ export default function SplashScreen() {
   }
 
   return (    
-    <div className={`fixed top-0 left-0 right-0 bottom-0 bg-background/50 backdrop-blur-lg z-[9999] flex items-center justify-center transition-all duration-300 ${
+    <div className={`overflow-hidden fixed top-0 left-0 right-0 bottom-0 bg-background/50 backdrop-blur-lg z-[9999] flex items-center justify-center transition-all duration-300 ${
       isFadingOut ? 'h-[0vh]' : 'h-[100vh]'
     }`}>
-      <div className="w-[200px] h-[200px] flex items-center justify-center animate-pulse">
+      <div className="w-[200px] h-[200px] flex items-center justify-center">
         <Logo isVisible={logoVisible} />
       </div>
     </div>

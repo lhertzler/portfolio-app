@@ -38,6 +38,17 @@ function sanitizeInput(input: string): string {
   return input.trim().slice(0, 10000); // Max 10k characters
 }
 
+function escapeHtml(text: string): string {
+  const map: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+  };
+  return text.replace(/[&<>"']/g, (m) => map[m]);
+}
+
 // Email template function
 function createEmailTemplate(data: {
   name: string;
@@ -90,25 +101,25 @@ function createEmailTemplate(data: {
                     <table role="presentation" style="width: 100%; border-collapse: collapse;">
                       <tr>
                         <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Name:</td>
-                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">${data.name}</td>
+                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">${escapeHtml(data.name)}</td>
                       </tr>
                       <tr>
                         <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Email:</td>
                         <td style="padding: 8px 0;">
-                          <a href="mailto:${data.email}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.email}</a>
+                          <a href="mailto:${escapeHtml(data.email)}" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${escapeHtml(data.email)}</a>
                         </td>
                       </tr>
                       ${data.businessName ? `
                       <tr>
                         <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Business:</td>
-                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 500;">${data.businessName}</td>
+                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 500;">${escapeHtml(data.businessName)}</td>
                       </tr>
                       ` : ''}
                       ${data.websiteUrl ? `
                       <tr>
                         <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Website:</td>
                         <td style="padding: 8px 0;">
-                          <a href="${data.websiteUrl}" target="_blank" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${data.websiteUrl}</a>
+                          <a href="${escapeHtml(data.websiteUrl)}" target="_blank" rel="noopener noreferrer" style="color: #667eea; text-decoration: none; font-size: 14px; font-weight: 500;">${escapeHtml(data.websiteUrl)}</a>
                         </td>
                       </tr>
                       ` : ''}
@@ -129,7 +140,7 @@ function createEmailTemplate(data: {
                         <td style="padding-bottom: 12px; color: #6b7280; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Service Requested</td>
                       </tr>
                       <tr>
-                        <td style="color: #111827; font-size: 16px; font-weight: 600;">${data.service}</td>
+                        <td style="color: #111827; font-size: 16px; font-weight: 600;">${escapeHtml(data.service)}</td>
                       </tr>
                     </table>
                   </td>
@@ -139,7 +150,7 @@ function createEmailTemplate(data: {
                     <table role="presentation" style="width: 100%; border-collapse: collapse;">
                       <tr>
                         <td style="width: 120px; padding: 8px 0; color: #6b7280; font-size: 14px; font-weight: 500;">Budget:</td>
-                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">${data.estimatedBudget}</td>
+                        <td style="padding: 8px 0; color: #111827; font-size: 14px; font-weight: 600;">${escapeHtml(data.estimatedBudget)}</td>
                       </tr>
                     </table>
                   </td>
@@ -151,7 +162,7 @@ function createEmailTemplate(data: {
               <div style="margin-top: 24px;">
                 <div style="padding: 20px; background-color: #f9fafb; border-radius: 8px; border-left: 4px solid #667eea;">
                   <p style="margin: 0 0 12px 0; color: #6b7280; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Message</p>
-                  <div style="color: #374151; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${data.message.replace(/\n/g, '<br>')}</div>
+                  <div style="color: #374151; font-size: 15px; line-height: 1.7; white-space: pre-wrap;">${escapeHtml(data.message).replace(/\n/g, '<br>')}</div>
                 </div>
               </div>
               ` : ''}
@@ -180,7 +191,7 @@ function createEmailTemplate(data: {
               <table role="presentation" style="width: 100%; border-collapse: collapse; margin-top: 32px;">
                 <tr>
                   <td align="center">
-                    <a href="mailto:${data.email}?subject=Re: ${data.service}" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">Reply to ${data.name}</a>
+                    <a href="mailto:${escapeHtml(data.email)}?subject=Re: ${escapeHtml(data.service)}" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: 600; box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);">Reply to ${escapeHtml(data.name)}</a>
                   </td>
                 </tr>
               </table>
@@ -212,19 +223,19 @@ Portfolio Contact Form
 CONTACT INFORMATION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Name: ${data.name}
-Email: ${data.email}
-${data.businessName ? `Business: ${data.businessName}\n` : ''}${data.websiteUrl ? `Website: ${data.websiteUrl}\n` : ''}
+Name: ${escapeHtml(data.name)}
+Email: ${escapeHtml(data.email)}
+${data.businessName ? `Business: ${escapeHtml(data.businessName)}\n` : ''}${data.websiteUrl ? `Website: ${escapeHtml(data.websiteUrl)}\n` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 PROJECT DETAILS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Service Requested: ${data.service}
-Estimated Budget: ${data.estimatedBudget}
+Service Requested: ${escapeHtml(data.service)}
+Estimated Budget: ${escapeHtml(data.estimatedBudget)}
 
-${data.message ? `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nMESSAGE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${data.message}\n` : ''}
+${data.message ? `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nMESSAGE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${escapeHtml(data.message)}\n` : ''}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -233,7 +244,7 @@ IP Address: ${ip}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Reply to: ${data.email}
+Reply to: ${escapeHtml(data.email)}
   `.trim();
 
   return { html, text };
@@ -301,7 +312,7 @@ export async function POST(request: NextRequest) {
         to: process.env.CONTACT_EMAIL,
         from: process.env.FROM_EMAIL,
         replyTo: sanitizedData.email,
-        subject: `New Contact Form Submission: ${sanitizedData.service}`,
+        subject: `New Contact Form Submission: ${sanitizedData.service.replace(/[<>]/g, '')}`,
         html: emailTemplate.html,
         text: emailTemplate.text,
       };

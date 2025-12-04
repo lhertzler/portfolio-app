@@ -167,7 +167,3 @@ Full-Stack Engineer • UI/UX Designer • Shopify Headless Specialist • Found
 
 - Portfolio: https://www.lukehertzler.com  
 - GitHub: https://github.com/lhertzler  
-
----
-
-If you want a more casual, more aggressive, or more humorous version, say the word.

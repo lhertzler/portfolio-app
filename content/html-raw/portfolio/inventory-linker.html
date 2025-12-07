@@ -1,0 +1,176 @@
+<p><em>An automated inventory engine synchronizing linked Shopify products/variants in real time.</em></p>
+<h2>Intro</h2>
+<p>
+  The Inventory Linker is a custom Shopify extension designed to solve a core operational 
+  challenge for Dwarven Forge: keeping inventory accurate across dozens of product variants 
+  that represent the same physical item. Many collections contain multiple listings, bundle 
+  configurations, or stylistic variants that all pull from a single shared stock. Without 
+  automation, updating each one manually is error-prone, slow, and guarantees inconsistencies 
+  during high-volume events.
+</p>
+<p>
+  To eliminate this entire class of problems, I built a fully automated inventory engine that 
+  synchronizes linked Shopify variants in real time. Whenever any item in a defined group changes 
+  quantity—whether through an order, a manual inventory update, or an API adjustment—the 
+  engine recalculates the delta and updates every linked variant instantly and consistently.
+</p>
+<h2>Overview</h2>
+<p>
+  The system operates on the concept of <strong>Inventory Groups</strong>: sets of Shopify variants that 
+  represent the same physical stock. Each group can contain two or more variants, and inventory 
+  for all members is always kept perfectly aligned.
+</p>
+<p>
+  Behind the scenes, a custom webhook pipeline captures Shopify’s 
+  <code>inventory_levels/update</code> events and triggers a synchronization cycle. The engine determines 
+  which group the change belongs to, identifies the master item for the event, reads its updated 
+  quantity, and applies the correct adjustments to every linked member.
+</p>
+<p>
+  The result is a system that remains invisible to customers and staff while ensuring that inventory 
+  across complex product structures stays accurate down to the second.
+</p>
+<h2>Architecture</h2>
+<p>
+  The inventory engine is designed for stability, speed, and clarity. Each part of the system 
+  has a single responsibility, and together they form a reliable real-time synchronization 
+  pipeline.
+</p>
+<p>Key architectural elements include:</p>
+<ul>
+  <li>
+    <strong>Inventory Groups Model</strong><br />
+    A normalized schema in Supabase maps Shopify <code>inventory_item_id</code>s into logical groups. 
+    Groups support any number of variants, enabling simple two-item links or large multi-variant 
+    product families.
+  </li>
+  <li>
+    <strong>Webhook-Driven Syncing</strong><br />
+    Shopify sends real-time <code>inventory_levels/update</code> events for every quantity change. 
+    The app verifies signatures, reads the updated inventory item, locates its group, and 
+    initiates the synchronization cycle.
+  </li>
+  <li>
+    <strong>Master Item Resolution</strong><br />
+    The system treats the variant associated with the webhook event as the temporary “master” 
+    for that cycle. Its quantity becomes the source of truth, and all peers in the group are 
+    synced to match.
+  </li>
+  <li>
+    <strong>Delta-Based Adjustments</strong><br />
+    Instead of overwriting values blindly, the engine calculates the 
+    <em>exact difference</em> between the master quantity and each member’s current quantity, then 
+    applies only the necessary adjustments via Shopify’s GraphQL API.
+  </li>
+  <li>
+    <strong>Location-Aware Inventory Mapping</strong><br />
+    All reads and writes target the correct Shopify location using GIDs, guaranteeing that 
+    fulfillment centers remain in sync even when merchants operate multiple inventory points.
+  </li>
+  <li>
+    <strong>Activity Logging Layer</strong><br />
+    A built-in activity engine records syncs, webhook events, group updates, and structural 
+    changes, giving administrators a clear view into system behavior and history.
+  </li>
+</ul>
+<p>
+  Together, this architecture makes the engine robust, deterministic, and fully automated—ensuring 
+  accurate stock levels with zero ongoing manual work.
+</p>
+<h2>UI/UX</h2>
+<p>
+  While most of the system runs automatically behind the scenes, the merchant-facing interface 
+  provides a clean, modern way to manage groups, inspect items, and monitor activity. The UI is 
+  designed to be intuitive for staff while still providing deep visibility for operations teams.
+</p>
+<p>UX highlights include:</p>
+<ul>
+  <li>
+    <strong>Group Management Dashboard</strong> for creating and editing inventory groups, inspecting 
+    linked products, and triggering manual syncs when needed.
+  </li>
+  <li>
+    <strong>Folder organization</strong> that allows merchants to categorize and structure large inventories 
+    using a flexible many-to-many grouping system.
+  </li>
+  <li>
+    <strong>Search and filtering tools</strong> enabling instant navigation across large product catalogs.
+  </li>
+  <li>
+    <strong>Activity &amp; Stats Panel</strong> with real-time indicators for total groups, items, and webhook 
+    activity throughout the day.
+  </li>
+  <li>
+    <strong>Recent activity feed</strong> showing sync events, item updates, group modifications, and 
+    webhook events, with timestamps and automatic refresh.
+  </li>
+  <li>
+    <strong>Modern card-based layout</strong> using product thumbnails, clean typography, badges, and 
+    responsive actions.
+  </li>
+</ul>
+<p>
+  The interface blends Shopify-native elements with custom UI components to create a fast, 
+  polished experience for managing complex variant relationships.
+</p>
+<h2>Challenges &amp; Solutions</h2>
+<h3>1. Keeping inventory consistent across multiple variants</h3>
+<p>
+  Shopify treats each variant as an independent inventory source. When multiple variants represent 
+  the same physical item, quantities quickly drift out of sync.
+</p>
+<p>
+  <strong>Solution:</strong> Inventory Groups enforce a shared quantity model. Any change to a member 
+  triggers a synchronization cycle that updates all linked variants instantly.
+</p>
+<h3>2. Interpreting real-time webhook events safely</h3>
+<p>
+  Webhooks must be verified, parsed, and processed without delay to prevent race conditions 
+  or missed updates.
+</p>
+<p>
+  <strong>Solution:</strong> The engine validates signatures using Shopify’s HMAC system, processes events 
+  atomically, and logs each step to ensure reliable and traceable behavior.
+</p>
+<h3>3. Ensuring accurate updates at the correct Shopify location</h3>
+<p>
+  Merchants often use multiple Shopify locations, and syncing the wrong one would corrupt stock.
+</p>
+<p>
+  <strong>Solution:</strong> All queries and mutations resolve against a configured <code>SHOPIFY_LOCATION_ID</code>, 
+  guaranteeing that reads and writes remain consistent across the entire platform.
+</p>
+<h3>4. Preventing cascading sync loops</h3>
+<p>
+  A naïve implementation could trigger additional webhooks with each update, creating an 
+  infinite sync chain.
+</p>
+<p>
+  <strong>Solution:</strong> The system reads only the master’s updated quantity and applies minimal deltas 
+  to members, avoiding redundant state changes and minimizing webhook noise.
+</p>
+<h3>5. Giving merchants clarity into automated behavior</h3>
+<p>
+  Automation without visibility creates uncertainty.
+</p>
+<p>
+  <strong>Solution:</strong> A dedicated Activity Log and Stats Panel surfaces everything—syncs, 
+  webhook triggers, updates, group changes, and recent events—all in real time.
+</p>
+<h2>Impact</h2>
+<p>
+  The Inventory Linker dramatically improves operational accuracy for Dwarven Forge’s complex 
+  product ecosystem. What previously required constant manual checking and adjustments now 
+  happens automatically, reliably, and instantly.
+</p>
+<p>
+  For staff, it reduces errors, prevents overselling, and removes the need to update multiple 
+  product listings individually. For customers, it ensures accurate stock availability across 
+  the storefront. For the system as a whole, it establishes a scalable model for handling shared 
+  inventory logic in Shopify environments that were never designed for it.
+</p>
+<p>
+  The engine now serves as the backbone for Dwarven Forge’s multi-variant catalog, ensuring 
+  stable, synchronized inventory across every touchpoint — from direct orders to API updates 
+  to high-traffic product launches.
+</p>

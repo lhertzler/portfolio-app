@@ -1,5 +1,5 @@
 import { projects } from '@/lib/projects';
-import { PortfolioItem } from '@/components/portfolio/portfolio-item';
+import { PortfolioItem } from '@/components/content/portfolio/portfolio-item';
 
 export default function PortfolioPage() {
   return (

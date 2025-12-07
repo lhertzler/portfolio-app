@@ -13,7 +13,7 @@ import { SecondaryServiceRow } from '@/components/services/secondary-service-row
 import { ServiceGrid } from '@/components/services/service-grid';
 import { ServiceDetailsModal } from '@/components/services/service-details-modal';
 import { whatIDoBest, skillSetAboveAndBeyond } from '@/lib/agency-services';
-import { ContentHero } from '@/components/main-content/hero';
+import { ContentHero } from '@/components/content/hero';
 
 const heroBadges = [
   '10+ Years Shopify',

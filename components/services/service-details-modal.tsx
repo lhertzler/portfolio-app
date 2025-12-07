@@ -25,9 +25,14 @@ export function ServiceDetailsModal({ open, onOpenChange, service, onStartProjec
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-component="ServiceDetailsModal" data-file="components/services/service-details-modal.tsx">
         <DialogHeader className="mb-4">
-          <DialogTitle className="text-2xl md:text-3xl font-mono">
-            {service.title}
-          </DialogTitle>
+          <div className="flex items-center gap-3">
+            {service.icon && (
+              <service.icon className="h-8 w-8 text-primary shrink-0" />
+            )}
+            <DialogTitle className="text-2xl md:text-3xl font-mono">
+              {service.title}
+            </DialogTitle>
+          </div>
           {service.note && (
             <p className="text-lg text-muted-foreground leading-relaxed mt-2">
               {service.note}

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
 import { useIsMobile } from '@/lib/use-is-mobile';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, LucideIcon } from 'lucide-react';
 
 export type ServiceItem = {
   title: string;
@@ -18,6 +18,7 @@ export type ServiceItem = {
   note?: string;
   priority?: 'featured' | 'secondary' | 'default';
   graphicType?: string; // Used to determine which graphic to render
+  icon?: LucideIcon; // Icon component from lucide-react
 };
 
 interface FeaturedServiceCardProps {
@@ -210,9 +211,14 @@ export function FeaturedServiceCard({ service, onOpen, onStartProject }: Feature
             <div className="w-full md:w-[55%] relative flex items-center justify-center p-8 md:p-12">
               <div className="relative z-10 w-full max-w-2xl space-y-6">
                 <div>
-                  <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 font-mono">
-                    {service.title}
-                  </h3>
+                  <div className="flex items-center gap-3 mb-4">
+                    {service.icon && (
+                      <service.icon className="h-8 w-8 sm:h-10 sm:w-10 text-primary shrink-0" />
+                    )}
+                    <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold font-mono">
+                      {service.title}
+                    </h3>
+                  </div>
                   {/* Badges */}
                   {service.badgeLabels && service.badgeLabels.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-6">

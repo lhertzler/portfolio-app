@@ -12,7 +12,7 @@ import { FeaturedServiceCard, ServiceItem } from '@/components/services/featured
 import { SecondaryServiceRow } from '@/components/services/secondary-service-row';
 import { ServiceGrid } from '@/components/services/service-grid';
 import { ServiceDetailsModal } from '@/components/services/service-details-modal';
-import { whatIDoBest, skillSetAboveAndBeyond } from '@/lib/agency-services';
+import { allServices, whatIDoBest, skillSetAboveAndBeyond } from '@/lib/agency-services';
 import { ContentHero } from '@/components/content/hero';
 
 const heroBadges = [
@@ -167,72 +167,40 @@ export default function AgencyPage() {
         onButton2Click={scrollToContact}
       />
 
-      {/* What I Do Best Section */}
-      <section className="" data-component="WhatIDoBest" data-file="app/agency/page.tsx">
+      <section className="" data-component="AllServices" data-file="app/agency/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
-          <motion.div
-            initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
-            viewport={isMobile ? undefined : { once: true }}
-            transition={isMobile ? undefined : { duration: 0.6 }}
-            className="mb-12"
-          >
-            {/* Terminal Window */}
-            <div className="mx-auto max-w-5xl rounded-lg overflow-hidden border border-[#30363d] shadow-2xl bg-[#0d1117]">
-              {/* Terminal Header Bar */}
-              <div className="px-4 py-3 bg-[#161b22] border-b border-[#30363d] flex items-center gap-2">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
-                  <div className="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
-                  <div className="w-3 h-3 rounded-full bg-[#27c93f]"></div>
-                </div>
-                <span className="text-[#8b949e] text-xs ml-2 font-mono">terminal — luke@portfolio</span>
-              </div>
-              
-              {/* Terminal Content */}
-              <div className="p-6 md:p-8 space-y-4">
-                <div className="space-y-2">
-                  <div className="flex gap-2 items-start">
-                    <span className="text-[#6e7681] shrink-0 font-mono text-sm">$</span>
-                    <div className="flex-1">
-                      <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#c9d1d9] mb-3 leading-tight">
-                        Some of the Things I Do Best
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <div className="flex gap-2 items-start">
-                    <span className="text-[#6e7681] shrink-0 font-mono text-sm">$</span>
-                    <div className="flex-1">
-                      <p className="text-sm md:text-base text-[#8b949e] mb-3">Available services:</p>
-                      <div className="space-y-1.5 pl-4">
-                        {whatIDoBest.map((service, index) => (
-                          <button
-                            key={service.title}
-                            onClick={() => scrollToService(service.title)}
-                            className="block text-left text-sm md:text-base text-[#58a6ff] hover:text-[#79c0ff] hover:underline transition-colors font-mono group"
-                            data-cursor="tap"
-                          >
-                            <span className="text-[#6e7681] group-hover:text-[#8b949e]">→</span>{' '}
-                            {service.title}
-                          </button>
-                        ))}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allServices.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <motion.div
+                  key={item.title}
+                  initial={isMobile ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                  whileInView={isMobile ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
+                  viewport={isMobile ? undefined : { once: true, margin: '-100px' }}
+                  transition={isMobile ? undefined : { delay: index * 0.1, duration: 0.5 }}
+                >
+                  <Card className="h-full flex flex-col" data-component="WhyGoHeadlessCard" data-file="app/headless-shopify/page.tsx">
+                    <CardHeader>
+                      <div className="flex items-center gap-3 mb-2">
+                        {Icon && <Icon className="h-6 w-6 text-primary" />}
+                        <CardTitle className="text-xl">{item.title}</CardTitle>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Terminal Prompt */}
-                <div className="flex gap-2 items-center pt-2">
-                  <span className="text-[#58a6ff] shrink-0 font-mono text-sm">luke@portfolio:~$</span>
-                  <span className="text-[#6e7681] font-mono text-sm animate-pulse">▋</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-          
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription className="text-sm">{item.description.short}</CardDescription>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* What I Do Best Section */}
+      <section className="py-16" data-component="WhatIDoBest" data-file="app/agency/page.tsx">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8">
           {/* Tier A - Featured */}
           <FeaturedServiceCard 
             service={whatIDoBestFeatured} 

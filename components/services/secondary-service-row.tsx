@@ -40,9 +40,14 @@ export function SecondaryServiceRow({ services, onOpen }: SecondaryServiceRowPro
             <ServiceGraphic graphicType={service.graphicType} />
             
             <CardHeader className="pb-4 flex-1">
-              <CardTitle className="text-xl md:text-2xl font-mono mb-3">
-                {service.title}
-              </CardTitle>
+              <div className="flex items-center gap-3 mb-3">
+                {service.icon && (
+                  <service.icon className="h-6 w-6 text-primary shrink-0" />
+                )}
+                <CardTitle className="text-xl md:text-2xl font-mono">
+                  {service.title}
+                </CardTitle>
+              </div>
               <CardDescription className="text-md font-mono leading-relaxed">
                 {service.description.full}
               </CardDescription>

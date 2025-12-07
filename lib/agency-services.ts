@@ -1,8 +1,22 @@
 import { ServiceItem } from '@/components/services/featured-service-card';
+import { 
+  Palette, 
+  ArrowRightLeft, 
+  Wrench, 
+  Users, 
+  MessageSquare,
+  Code,
+  Repeat,
+  Plug,
+  Layers,
+  Rocket,
+  FileCode
+} from 'lucide-react';
 
 export const whatIDoBest: ServiceItem[] = [
     {
       title: 'Custom Shopify Themes',
+      icon: Palette,
       priority: 'featured' as const,
       graphicType: 'shopify-theme',
       description: {
@@ -34,6 +48,7 @@ export const whatIDoBest: ServiceItem[] = [
   
     {
       title: 'Migrations To Shopify',
+      icon: ArrowRightLeft,
       priority: 'secondary' as const,
       graphicType: 'migration',
       description: {
@@ -64,6 +79,7 @@ export const whatIDoBest: ServiceItem[] = [
   
     {
       title: 'Custom Shopify Features',
+      icon: Wrench,
       priority: 'secondary' as const,
       graphicType: 'custom-features',
       description: {
@@ -94,6 +110,7 @@ export const whatIDoBest: ServiceItem[] = [
   
     {
       title: 'Agency Integration',
+      icon: Users,
       priority: 'default' as const,
       graphicType: 'agency-integration',
       description: {
@@ -124,6 +141,7 @@ export const whatIDoBest: ServiceItem[] = [
   
     {
       title: 'Client Communication',
+      icon: MessageSquare,
       priority: 'default' as const,
       graphicType: 'client-communication',
       description: {
@@ -157,6 +175,7 @@ export const whatIDoBest: ServiceItem[] = [
 export const skillSetAboveAndBeyond: ServiceItem[] = [
     {
       title: 'Custom Shopify Apps',
+      icon: Code,
       priority: 'secondary' as const,
       graphicType: 'custom-apps',
       description: {
@@ -187,6 +206,7 @@ export const skillSetAboveAndBeyond: ServiceItem[] = [
   
     {
       title: 'Recharge Subscription Systems',
+      icon: Repeat,
       priority: 'default' as const,
       graphicType: 'recharge',
       description: {
@@ -217,6 +237,7 @@ export const skillSetAboveAndBeyond: ServiceItem[] = [
   
     {
       title: 'Custom Shopify Integrations',
+      icon: Plug,
       priority: 'default' as const,
       graphicType: 'integrations',
       description: {
@@ -247,6 +268,7 @@ export const skillSetAboveAndBeyond: ServiceItem[] = [
   
     {
       title: 'React Storefront Features',
+      icon: Layers,
       priority: 'default' as const,
       graphicType: 'react-storefront',
       description: {
@@ -277,6 +299,7 @@ export const skillSetAboveAndBeyond: ServiceItem[] = [
   
     {
       title: 'Headless Shopify',
+      icon: Rocket,
       priority: 'featured' as const,
       graphicType: 'headless',
       description: {
@@ -307,6 +330,7 @@ export const skillSetAboveAndBeyond: ServiceItem[] = [
   
     {
       title: 'Next.js Applications',
+      icon: FileCode,
       priority: 'secondary' as const,
       graphicType: 'nextjs-apps',
       description: {
@@ -334,5 +358,10 @@ export const skillSetAboveAndBeyond: ServiceItem[] = [
       ],
       note: 'You provide the goals — I deliver the complete system.',
     },
+];
+
+export const allServices: ServiceItem[] = [
+  ...whatIDoBest,
+  ...skillSetAboveAndBeyond,
 ];
 

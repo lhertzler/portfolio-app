@@ -37,9 +37,14 @@ export function ServiceGrid({ services, onOpen }: ServiceGridProps) {
             data-cursor="tap"
           >
             <CardHeader className="pb-3 flex-1">
-              <CardTitle className="text-lg font-mono mb-2">
-                {service.title}
-              </CardTitle>
+              <div className="flex items-center gap-2 mb-2">
+                {service.icon && (
+                  <service.icon className="h-5 w-5 text-primary shrink-0" />
+                )}
+                <CardTitle className="text-lg font-mono">
+                  {service.title}
+                </CardTitle>
+              </div>
               <CardDescription className="text-sm font-mono leading-relaxed">
                 {service.description.short}
               </CardDescription>

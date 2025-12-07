@@ -97,7 +97,7 @@ const performSearch = (query: string): Array<{ type: string; title: string; href
 
   // Search projects
   projects.forEach((project) => {
-    const searchableText = `${project.title} ${project.summary} ${project.description} ${project.tags.join(' ')} ${project.tech.join(' ')}`.toLowerCase();
+    const searchableText = `${project.title} ${project.summary} ${project.tags.join(' ')} ${project.tech.join(' ')}`.toLowerCase();
     if (searchableText.includes(lowerQuery)) {
       results.push({
         type: 'Project',

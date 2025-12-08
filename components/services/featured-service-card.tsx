@@ -248,7 +248,7 @@ export function FeaturedServiceCard({ service, onOpen, onStartProject }: Feature
                     )}
 
                   {/* CTA Row */}
-                  <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3 mt-8">
                     <Button
                       variant="default"
                       size="lg"

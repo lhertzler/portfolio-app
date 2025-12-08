@@ -44,6 +44,14 @@ export const metadata: Metadata = {
   },
 };
 
+const defaultFacts = [
+  { highlight: '10+', label: 'Years Experience' },
+  { highlight: 'Top 0.2%', label: 'Shopify Expert' },
+  { highlight: 'Trusted', label: 'by Top Brands' },
+  { highlight: 'Architect', label: 'of SoundVent.com' },
+  { highlight: 'Born', label: 'in England' },
+];
+
 export default function Home() {
   const personSchema = generatePersonSchema();
   const websiteSchema = generateWebsiteSchema();
@@ -53,7 +61,7 @@ export default function Home() {
       <StructuredData data={personSchema} />
       <StructuredData data={websiteSchema} />
       <HeroSection />
-      <QuickFactsSection />
+      <QuickFactsSection facts={defaultFacts} />
       <ValuePropositionSection />
       <ServicesSection />
       <ValuePropositionTwoSection />

@@ -107,69 +107,6 @@ export const whatIDoBest: ServiceItem[] = [
       ],
       note: 'High-impact features without needing a full rebuild.',
     },
-  
-    {
-      title: 'Agency Integration',
-      icon: Users,
-      priority: 'default' as const,
-      graphicType: 'agency-integration',
-      description: {
-        full:
-          'Years inside high-volume Shopify agencies means I plug into your workflow instantly — I speak “agency,” understand sprints, deadlines, communication styles, and deliver exactly what your team expects.',
-        short: 'Fast onboarding into any agency workflow.',
-      },
-      badgeLabels: [
-        'Sprints',
-        'QA-Friendly',
-        'Fast Onboarding',
-        'Process-Ready',
-        'Reliable',
-        'Low-Overhead',
-        'Aligned',
-        'Collaborative',
-      ],
-      benefits: [
-        'Immediate onboarding',
-        'Understands agency constraints',
-        'Reliable communication',
-        'Sprint-friendly execution',
-        'QA-aligned development',
-        'Predictable handoffs',
-      ],
-      note: 'Blends seamlessly into any existing workflow.',
-    },
-  
-    {
-      title: 'Client Communication',
-      icon: MessageSquare,
-      priority: 'default' as const,
-      graphicType: 'client-communication',
-      description: {
-        full:
-          'If your team needs client-facing support, I can join calls, handle walkthroughs, explain builds clearly, and keep conversations steady and professional — without overwhelming non-technical clients.',
-        short:
-          '(Optional) • Professional communication when clients need facetime.',
-      },
-      badgeLabels: [
-        'Clear',
-        'Confident',
-        'Client-Ready',
-        'Professional',
-        'Calm',
-        'Friendly',
-        'Reliable',
-        'Optional',
-      ],
-      benefits: [
-        'Clear explanations without jargon',
-        'Confident client presence',
-        'Expectation-setting clients appreciate',
-        'Calm under changing scopes',
-        'Professional handoffs and updates',
-        'Supports your agency’s relationship',
-      ],
-      note: 'Clear, steady, professional client interaction when needed.',
-    },
 ];
 
 export const skillSetAboveAndBeyond: ServiceItem[] = [

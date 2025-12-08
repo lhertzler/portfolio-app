@@ -14,6 +14,7 @@ type UIState = {
   customCursorEnabled: boolean;
   isEditorNavOpen: boolean;
   isContactDialogOpen: boolean;
+  isAgencyContactDialogOpen: boolean;
   isSettingsOpen: boolean;
   isLogoVisible: boolean;
 };
@@ -32,6 +33,8 @@ type UIActions = {
   closeEditorNav: () => void;
   openContactDialog: () => void;
   closeContactDialog: () => void;
+  openAgencyContactDialog: () => void;
+  closeAgencyContactDialog: () => void;
   openSettings: () => void;
   closeSettings: () => void;
   toggleLogoVisibility: () => void;
@@ -50,6 +53,7 @@ export const useUIStore = create<UIState & UIActions>()(
       customCursorEnabled: true,
       isEditorNavOpen: false,
       isContactDialogOpen: false,
+      isAgencyContactDialogOpen: false,
       isSettingsOpen: false,
       isLogoVisible: false,
 
@@ -68,6 +72,8 @@ export const useUIStore = create<UIState & UIActions>()(
       closeEditorNav: () => set({ isEditorNavOpen: false }),
       openContactDialog: () => set({ isContactDialogOpen: true }),
       closeContactDialog: () => set({ isContactDialogOpen: false }),
+      openAgencyContactDialog: () => set({ isAgencyContactDialogOpen: true }),
+      closeAgencyContactDialog: () => set({ isAgencyContactDialogOpen: false }),
       openSettings: () => set({ isSettingsOpen: true }),
       closeSettings: () => set({ isSettingsOpen: false }),
       toggleLogoVisibility: () =>

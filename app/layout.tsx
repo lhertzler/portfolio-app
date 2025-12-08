@@ -16,6 +16,7 @@ import { InspectorOverlay } from '@/components/devtools/inspector-overlay';
 import { MiniTerminal } from '@/components/devtools/mini-terminal';
 import { SettingsSheet } from '@/components/ui/settings-sheet';
 import { ContactDialog } from '@/components/contact/contact-dialog';
+import { AgencyContactDialog } from '@/components/contact/agency-contact-dialog';
 import { Toaster } from '@/components/ui/sonner';
 import SplashScreen from '@/components/layout/splash-screen';
 import './globals.css';
@@ -114,6 +115,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <MiniTerminal />
             <SettingsSheet />
             <ContactDialog />
+            <AgencyContactDialog />
             <Toaster />
           </ToastProvider>
         </ThemeProvider>

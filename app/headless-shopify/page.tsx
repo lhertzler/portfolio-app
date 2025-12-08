@@ -5,8 +5,40 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { useUIStore } from '@/store/ui-store';
 import { motion } from 'framer-motion';
-import { Check, Zap, Palette, Search, Smartphone, Puzzle, Infinity } from 'lucide-react';
+import { Check, Zap, Palette, Search, Smartphone, Puzzle, Infinity, Rocket } from 'lucide-react';
 import { useIsMobile } from '@/lib/use-is-mobile';
+import { FeaturedServiceCard } from '@/components/services/featured-service-card';
+
+const headlessShopifyHero = {
+  title: 'Headless Shopify',
+  icon: Rocket,
+  priority: 'featured' as const,
+  graphicType: 'headless',
+  description: {
+    full:
+      'Next.js-powered headless storefronts for premium brands needing performance, flexibility, and full control over the customer experience.',
+    short: 'High-performance headless Shopify builds.',
+  },
+  badgeLabels: [
+    'Headless',
+    'Next.js',
+    'Performance',
+    'Custom',
+    'Flexible',
+    'Modern',
+    'Scalable',
+    'Premium',
+  ],
+  benefits: [
+    'Ultra-fast storefronts',
+    'Reusable design systems',
+    'Custom user journeys',
+    'Full layout & UX freedom',
+    'Production API integration',
+    'Stable, scalable architecture',
+  ],
+  note: 'The best option for high-budget, performance-focused brands.',
+};
 
 const whyGoHeadless = [
   {
@@ -16,27 +48,27 @@ const whyGoHeadless = [
   },
   {
     icon: Palette,
-    title: '100% custom UI — no theme limitations',
+    title: '100% custom UI',
     description: 'If you can dream it in Figma, I can build the real thing. No fighting Dawn, no hacking around Shopify\'s templating system.',
   },
   {
     icon: Search,
-    title: 'Better SEO + crawl speeds',
+    title: 'Better SEO',
     description: 'Next.js static rendering + server components means a cleaner structure that Google absolutely eats up.',
   },
   {
     icon: Smartphone,
-    title: 'A seamless UX across devices',
+    title: 'Seamless UX',
     description: 'Headless lets you design for mobile exactly the way your users deserve — not whatever constraints the theme imposes.',
   },
   {
     icon: Puzzle,
-    title: 'Integrations become effortless',
+    title: 'Effortless Integrations',
     description: 'Algolia search, personalized product feeds, dynamic bundles, real-time recommendations… headless turns "hard" into "straightforward."',
   },
   {
     icon: Infinity,
-    title: 'Future-proof architecture',
+    title: 'Future-proof',
     description: 'Once your data sits in Shopify and your UI layer sits in Next.js, you can evolve, test, and iterate without wrecking your live store.',
   },
 ];
@@ -127,7 +159,15 @@ export default function HeadlessShopifyPage() {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+
+      <div className="max-w-6xl mx-auto px-4 sm:px-8">
+      <FeaturedServiceCard 
+                  service={headlessShopifyHero} 
+                  onOpen={openContactDialog}
+                  onStartProject={openContactDialog}
+                />
+      </div>
+      {/* Hero Section 
       <section className="py-16 md:py-24 md:pt-12" data-component="HeadlessShopifyHero" data-file="app/headless-shopify/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
           <motion.div
@@ -157,6 +197,8 @@ export default function HeadlessShopifyPage() {
         </div>
       </section>
 
+      */}
+
       {/* Why Go Headless Section */}
       <section className="py-16" data-component="WhyGoHeadless" data-file="app/headless-shopify/page.tsx">
         <div className="max-w-6xl mx-auto px-4 sm:px-8">
@@ -182,14 +224,14 @@ export default function HeadlessShopifyPage() {
                   transition={isMobile ? undefined : { delay: index * 0.1, duration: 0.5 }}
                 >
                   <Card className="h-full flex flex-col" data-component="WhyGoHeadlessCard" data-file="app/headless-shopify/page.tsx">
-                    <CardHeader>
-                      <div className="flex items-center gap-3 mb-2">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center gap-3 mb-0">
                         <Icon className="h-6 w-6 text-primary" />
-                        <CardTitle className="text-xl">{item.title}</CardTitle>
+                        <CardTitle className="text-2xl">{item.title}</CardTitle>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <CardDescription className="text-sm">{item.description}</CardDescription>
+                      <CardDescription className="text-md">{item.description}</CardDescription>
                     </CardContent>
                   </Card>
                 </motion.div>

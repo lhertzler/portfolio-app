@@ -233,7 +233,6 @@ export const skillSetAboveAndBeyond: ServiceItem[] = [
       ],
       note: 'Responsive, stable UX built with clean state architecture.',
     },
-  
     {
       title: 'Headless Shopify',
       icon: Rocket,

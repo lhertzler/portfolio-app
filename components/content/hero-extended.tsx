@@ -155,7 +155,7 @@ export function ContentHeroExtended({
                         variant="default"
                         onClick={handleButton1Click}
                         size="lg"
-                        className="w-full sm:w-auto font-mono"
+                        className="w-full sm:w-auto font-mono text-lg"
                         data-cursor="tap"
                       >
                         {buttonText1}
@@ -166,7 +166,7 @@ export function ContentHeroExtended({
                         variant="outline"
                         onClick={handleButton2Click}
                         size="lg"
-                        className="w-full sm:w-auto font-mono"
+                        className="w-full sm:w-auto font-mono text-lg"
                         data-cursor="tap"
                       >
                         {buttonText2}
@@ -341,7 +341,7 @@ export function ContentHeroExtended({
                       variant="default"
                       onClick={handleButton1Click}
                       size="lg"
-                      className="w-full sm:w-auto font-mono text-sm"
+                      className="w-full sm:w-auto font-mono text-lg"
                       data-cursor="tap"
                     >
                       {buttonText1}
@@ -352,7 +352,7 @@ export function ContentHeroExtended({
                       variant="outline"
                       onClick={handleButton2Click}
                       size="lg"
-                      className="w-full sm:w-auto font-mono text-sm"
+                      className="w-full sm:w-auto font-mono text-lg"
                       data-cursor="tap"
                     >
                       {buttonText2}

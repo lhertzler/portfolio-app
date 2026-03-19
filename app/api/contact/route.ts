@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sgMail from '@sendgrid/mail';
+import { Resend } from 'resend';
 
-// Initialize SendGrid
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 // Rate limiting: simple in-memory store (use Redis in production)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -304,28 +301,30 @@ export async function POST(request: NextRequest) {
       message: message ? sanitizeInput(message) : '',
     };
 
-    // Send email using SendGrid
-    if (process.env.SENDGRID_API_KEY && process.env.FROM_EMAIL && process.env.CONTACT_EMAIL) {
+    // Send email using Resend
+    if (resend && process.env.FROM_EMAIL && process.env.CONTACT_EMAIL) {
       const emailTemplate = createEmailTemplate(sanitizedData, ip);
-      
-      const msg = {
+
+      const { error } = await resend.emails.send({
         to: process.env.CONTACT_EMAIL,
         from: process.env.FROM_EMAIL,
         replyTo: sanitizedData.email,
         subject: `New Contact Form Submission: ${sanitizedData.service.replace(/[<>]/g, '')}`,
         html: emailTemplate.html,
         text: emailTemplate.text,
-      };
+      });
 
-      await sgMail.send(msg);
+      if (error) {
+        throw error;
+      }
     } else {
-      // Fallback to console log if SendGrid not configured
+      // Fallback to console log if Resend not configured
       console.log('Contact form submission:', {
         ...sanitizedData,
         timestamp: new Date().toISOString(),
         ip,
       });
-      console.warn('SendGrid not configured. Set SENDGRID_API_KEY, FROM_EMAIL, and CONTACT_EMAIL environment variables.');
+      console.warn('Resend not configured. Set RESEND_API_KEY, FROM_EMAIL, and CONTACT_EMAIL environment variables.');
     }
 
     return NextResponse.json(
@@ -338,10 +337,9 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Contact form error:', error);
     
-    // SendGrid specific error handling
-    if (error instanceof Error && 'response' in error) {
-      const sgError = error as any;
-      console.error('SendGrid error details:', sgError.response?.body);
+    // Resend specific error handling
+    if (error && typeof error === 'object' && 'message' in error) {
+      console.error('Resend error details:', error);
     }
     
     return NextResponse.json(

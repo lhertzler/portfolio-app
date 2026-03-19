@@ -79,7 +79,7 @@ These aren’t afterthoughts — they’re part of my baseline.
 - **Tailwind CSS & shadcn/ui** — Custom design system + reusable components  
 - **Zustand** — Lightweight global state management  
 - **Framer Motion** — High-end interaction & animation  
-- **SendGrid** — Email delivery via API routes  
+- **Resend** — Email delivery via API routes  
 - **Web Audio API** — Custom audio visualization and persistent playback  
 
 This mirrors the same modern stack I use when building client apps, SaaS tools, headless Shopify builds, or full product architectures.
